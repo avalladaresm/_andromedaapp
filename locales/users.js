@@ -1,4 +1,4 @@
-export const users_en = {
+export const usersEn = {
   users: 'Users',
   addNew: 'Add New',
   searchUsers: 'search users',
@@ -12,7 +12,7 @@ export const users_en = {
   verified: 'Verified',
   cellphone: 'Cellphone',
   address: 'Address',
-  city: 'City', 
+  city: 'City',
   state: 'State',
   country: 'Country',
   createdAt: 'Created at',
@@ -24,7 +24,7 @@ export const users_en = {
   clearSearch: 'clear search'
 }
 
-export const users_es = {
+export const usersEs = {
   users: 'Usuarios',
   addNew: 'Agregar nuevo',
   searchUsers: 'buscar usuarios',
@@ -38,7 +38,7 @@ export const users_es = {
   verified: 'Verificado',
   cellphone: 'Celular',
   address: 'Dirección',
-  city: 'Ciudad', 
+  city: 'Ciudad',
   state: 'Estado',
   country: 'País',
   createdAt: 'Creado',

@@ -1,12 +1,10 @@
-import dashboard from "../pages/dashboard";
-
-import { dashboard_es } from './dashboard'
-import { users_es } from './users'
-import { logs_es } from './logs'
+import { dashboardEs } from './dashboard'
+import { usersEs } from './users'
+import { logsEs } from './logs'
 
 export const es = {
-  ...dashboard_es,
-  ...users_es,
-  ...logs_es,
+  ...dashboardEs,
+  ...usersEs,
+  ...logsEs,
   logout: 'Cerrar sesión'
 }

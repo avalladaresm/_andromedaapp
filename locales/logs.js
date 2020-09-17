@@ -1,4 +1,4 @@
-export const logs_en = {
+export const logsEn = {
   logs: 'Logs',
   type: 'Type',
   date: 'Date',
@@ -6,7 +6,7 @@ export const logs_en = {
   data: 'Additional data'
 }
 
-export const logs_es = {
+export const logsEs = {
   logs: 'Registros',
   type: 'Tipo',
   date: 'Fecha',

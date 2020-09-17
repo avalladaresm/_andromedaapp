@@ -1,10 +1,10 @@
-import { dashboard_en } from './dashboard'
-import { users_en } from './users'
-import { logs_en } from './logs'
+import { dashboardEn } from './dashboard'
+import { usersEn } from './users'
+import { logsEn } from './logs'
 
 export const en = {
-  ...dashboard_en,
-  ...users_en,
-  ...logs_en,
+  ...dashboardEn,
+  ...usersEn,
+  ...logsEn,
   logout: 'Logout'
 }

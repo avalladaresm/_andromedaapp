@@ -3,9 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8000",
+    "lint": "standardx --verbose | snazzy",
+    "dev": "next dev -p 8000 && \"npm run lint\"",
     "build": "next build",
     "start": "next start"
+  },
+  "eslintConfig": {
+		"extends": "eslint:recommended",
+    "rules": {
+      "no-unused-vars": "error",
+			"@typescript-eslint/no-unused-vars": "error",
+			"no-mixed-spaces-and-tabs": "error",
+			"no-multi-spaces": "error",
+			"indent": ["error", 2, { "SwitchCase": 1 }],
+			"no-tabs": ["error", { "allowIndentationTabs": true }],
+			"quotes": ["error", "single"]
+    }
+  },
+  "standardx": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint/eslint-plugin"
+    ]
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
@@ -34,16 +53,22 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
+    "snazzy": "^8.0.0",
     "typescript": "^4.0.2",
     "webpack-filter-warnings-plugin": "1.2.1"
   },
   "license": "ISC",
   "devDependencies": {
     "@types/react": "^16.9.36",
-    "@typescript-eslint/eslint-plugin": "^4.1.0",
-    "@typescript-eslint/parser": "^4.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
     "eslint": "^7.9.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.20.6",
-    "standard": "^14.3.4"
+    "eslint-plugin-standard": "^4.0.1",
+    "standardx": "^5.0.0"
   }
 }
