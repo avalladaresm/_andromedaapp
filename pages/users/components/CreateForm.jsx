@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Input, Modal, Form, DatePicker, Select } from 'antd'
-import { queryGetCitiesByStateId, queryGetStatesByCountryId } from '../../../services/users'
+// import { queryGetCitiesByStateId, queryGetStatesByCountryId } from '../../../services/users'
 const { Option } = Select
 
 const CreateForm = ({ visible, onCreate, onCancel, loading }) => {

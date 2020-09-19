@@ -1,41 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import MainLayout from '../../layouts/main'
-import { Button, message, notification, PageHeader, Result, Table } from 'antd';
-import { FcOk, FcHighPriority, FcPrevious } from 'react-icons/fc';
+import { Button, PageHeader, Result, Table } from 'antd'
 import moment from 'moment'
-import { SearchInTable } from '../../components/SearchInTable'
-import { useDispatch, useSelector } from 'react-redux';
-import { GetAllUsers } from '../../services/users';
-import _ from 'lodash'
-import CreateForm from './components/CreateForm';
-import { GetSearchedUsers, CreateNewUser } from '../../services/users';
-import { useIntl } from 'react-intl';
-import { CreateUnauthorizedAccessLog, GetLogs } from '../../services/logs';
+import { useDispatch, useSelector } from 'react-redux'
+import { useIntl } from 'react-intl'
+import { CreateUnauthorizedAccessLog, GetLogs } from '../../services/logs'
 import { useRouter } from 'next/router'
 import { LogTypes } from '../../models/LogTypes'
 
-const Users: React.FC<{}> = ({props}) => {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState<boolean>(false)
+const Logs: React.FC<React.ReactNode> = () => {
   const [isAuthorized, setIsAuthorized] = useState(true)
-  const dispatch = useDispatch();
-  const d = useSelector(state => state.users.users)
-  const searchedUsers = useSelector(state => state.users.searchedUsers)
+  const dispatch = useDispatch()
   const intl = useIntl()
   const logs = useSelector(state => state.logs.logs)
   const loggedInUser = useSelector(state => state.auth.loggedInUser)
   const router = useRouter()
-
-  const userNotFound = () => {
-    message.error('User was not found!');
-  };
-
-  const handleAddErrorNotification = (type: string, title: string, description: string) => {
-    notification[type]({
-      message: title,
-      description: description,
-    });
-  };
 
   useEffect(() => {
     dispatch(GetLogs())
@@ -50,15 +29,14 @@ const Users: React.FC<{}> = ({props}) => {
       if (loggedInUser.userName) {
         dispatch(CreateUnauthorizedAccessLog({
           userName: loggedInUser.userName,
-          date: moment(), 
-          type:`${LogTypes.UNAUTHORIZED_ACCESS}`, 
-          description: `User ${loggedInUser.userName} attempting to access ${router.pathname}`, 
+          date: moment(),
+          type:`${LogTypes.UNAUTHORIZED_ACCESS}`,
+          description: `User ${loggedInUser.userName} attempting to access ${router.pathname}`,
           data: JSON.stringify({path: router.pathname})
         }))
       }
       setIsAuthorized(false)
     }
-    return () => {}
   }, [isAuthorized])
 
   const Unauthorized = () => {
@@ -72,7 +50,7 @@ const Users: React.FC<{}> = ({props}) => {
     )
   }
 
-  const columns: Array<any> = [
+  const columns = [
     {
       title: `${intl.formatMessage({id:'username', defaultMessage: 'userName tr?'})}`,
       dataIndex: 'userName',
@@ -116,12 +94,12 @@ const Users: React.FC<{}> = ({props}) => {
       key: 'data',
       responsive: ['lg'],
       isShowing: true
-    },
-  ];
+    }
+  ]
 
   return (
     <MainLayout>
-      {isAuthorized ? 
+      {isAuthorized ?
         <>
           <PageHeader
             title={intl.formatMessage({id:'logs', defaultMessage:'logs tr?'})}
@@ -131,19 +109,19 @@ const Users: React.FC<{}> = ({props}) => {
           <Table
             size='small'
             style={{overflowX:'auto'}}
-            columns={columns} 
+            columns={columns}
             dataSource={logs && logs.length > 0 ? logs : []}
             pagination={{
-              pageSize: 100, 
+              pageSize: 100,
               position:[ 'topRight', 'bottomRight']
             }}
-            //loading={loading}
-          /> 
+            // loading={loading}
+          />
         </> :
         <Unauthorized />
       }
     </MainLayout>
-  );
-};
+  )
+}
 
-export default Users;
+export default Logs

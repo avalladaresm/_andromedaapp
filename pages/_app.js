@@ -1,4 +1,5 @@
-import '../less/antd-custom.less' // includes antd style and our customization
+// includes antd style and our customization
+import '../less/antd-custom.less'
 import { useEffect, useState } from 'react'
 import { createWrapper } from 'next-redux-wrapper'
 import { Provider, useDispatch, useSelector } from 'react-redux'
@@ -7,11 +8,11 @@ import { GetSignedInUserFromCookie, GetWantedPath } from '../services/auth'
 import Cookies from 'js-cookie'
 import store from '../store'
 import { SignInStatus } from '../models/SignInStatus'
-import { GetAllUsers } from '../services/users'
 import { LangProvider } from '../utils/LangContext'
 import { CreateRouteChangeLog } from '../services/logs'
 import moment from 'moment'
 import { IsPageLoading } from '../services/global'
+import { ReactQueryDevtools } from 'react-query-devtools'
 
 const Start = ({ Component, pageProps }) => {
   const dispatch = useDispatch()
@@ -74,16 +75,13 @@ const Start = ({ Component, pageProps }) => {
       if (userDataInCookie && signInStatus !== SignInStatus.SIGN_IN_SUCCESS) {
         dispatch(GetSignedInUserFromCookie(userDataInCookie))
         if (router.pathname === '/auth/login') {
-          dispatch(GetAllUsers())
           router.push('/dashboard')
         } else {
-          dispatch(GetAllUsers())
           if (router.pathname === '/') {
             router.push('/dashboard')
           }
         }
       } else if (signInStatus === SignInStatus.SIGN_IN_SUCCESS) {
-        dispatch(GetAllUsers())
         if (wantedPath) {
           router.push(wantedPath)
         } else {
@@ -100,6 +98,7 @@ const Start = ({ Component, pageProps }) => {
     <LangProvider>
       <Provider store={store}>
         <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen />
       </Provider>
     </LangProvider>
   )

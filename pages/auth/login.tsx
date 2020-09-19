@@ -1,17 +1,17 @@
-import { Form, Input, Button, Checkbox, message } from 'antd';
+import { Form, Input, Button, Checkbox, message } from 'antd'
 import { DoSignIn } from '../../services/auth'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react'
 import { SignInStatus } from '../../models/SignInStatus'
 
 const layout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
+  wrapperCol: { span: 16 }
+}
 const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
-};
+  wrapperCol: { offset: 8, span: 16 }
+}
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -19,7 +19,7 @@ const Login = () => {
   const loggedInUser = useSelector(state => state.auth.loggedInUser)
   const isSigningIn = useSelector(state => state.auth.isSigningIn)
   const signInStatus = useSelector(state => state.auth.signInStatus)
-  
+
   useEffect(() => {
     if (signInStatus === SignInStatus.SIGN_IN_SUCCESS) {
       message.success(`Login success, whoo! Welcome ${loggedInUser.userName}`)
@@ -27,19 +27,16 @@ const Login = () => {
     }
     else if (signInStatus === SignInStatus.SIGN_IN_ERROR)
       message.error('Error!!!!')
-    return () => {
-      
-    }
   }, [signInStatus])
 
   const onFinish = values => {
-    console.log('Success:', values);
+    console.log('Success:', values)
     dispatch(DoSignIn(values))
-  };
+  }
 
   const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
 
   return (
     <Form
@@ -75,7 +72,7 @@ const Login = () => {
         </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
 export default Login

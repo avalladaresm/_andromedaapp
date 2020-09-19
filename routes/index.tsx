@@ -1,13 +1,12 @@
-import React from 'react';
 import { Route } from '@ant-design/pro-layout/lib/typings'
-import { UserOutlined, DashboardOutlined } from '@ant-design/icons';       
+import { UserOutlined, DashboardOutlined } from '@ant-design/icons'
 
 export const routes: Route = {
   route: {
     path: '/',
     routes: [
       {
-        path: '/auth/login',
+        path: '/auth/login'
       },
       {
         path: '/dashboard',
@@ -30,7 +29,7 @@ export const routes: Route = {
         icon: <UserOutlined />,
         authority: ['ROLE_ADMIN'],
         hideInMenu: true
-      },
-    ],
+      }
+    ]
   }
-};
+}

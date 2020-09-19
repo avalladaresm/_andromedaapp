@@ -1,6 +1,6 @@
-import { Spin } from 'antd';
+import { Spin } from 'antd'
 
-const Loading = () => {
+const Loading: React.FC<unknown> = () => {
   console.log('loading bitch')
   return (
     <div style={{ textAlign: 'center' }}>

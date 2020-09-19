@@ -1,22 +1,30 @@
 import { Card, Table, Tooltip } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
-import { GetLatestUsers } from '../../services/dashboard'
+import { GetLatestUsers, GetAllUserss } from '../../services/dashboard'
+import { GetAllUsers } from '../../services/users'
 import { useEffect } from 'react'
 import moment from 'moment'
-import { useIntl } from 'react-intl';
+import { useIntl } from 'react-intl'
+
+import { useQuery } from 'react-query'
 
 const LatestUsers = () => {
   const allUsers = useSelector(state => state.users.users)
   const latestUsers = useSelector(state => state.dashboard.latestUsers)
   const isFetchingLatestUsers = useSelector(state => state.dashboard.isFetchingLatestUsers)
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   const intl = useIntl()
+  // const { isLoading, isError, data, error } = useQuery('users', GetLatestUsers(allUsers))
+  const { isLoading, isError, data, error } = useQuery('Users', GetAllUsers)
 
   useEffect(() => {
-    dispatch(GetLatestUsers(allUsers))
-  }, [allUsers])
+    // dispatch(GetLatestUsers(allUsers))
+    console.log('isLoading', isLoading)
+    console.log('dataa', data)
+    console.log('error', error)
+  }, [])
 
-  const columns: Array<any> = [
+  const columns = [
     {
       title: `${intl.formatMessage({id:'username'})}`,
       dataIndex: 'userName',
@@ -49,17 +57,18 @@ const LatestUsers = () => {
       ),
       isShowing: true
     }
-  ];
+  ]
+
 
   return (
     <Card title={intl.formatMessage({id:'latestUsers'})}>
       <Table
-        dataSource={latestUsers && latestUsers}
+        dataSource={data && data.data.slice(data.data.length-5, data.data.length)}
         columns={columns}
         pagination={false}
         size='small'
         bordered
-        loading={isFetchingLatestUsers}
+        loading={isLoading}
       />
     </Card>
   )

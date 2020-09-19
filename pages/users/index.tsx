@@ -1,58 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import MainLayout from '../../layouts/main'
-import { Button, Checkbox, Divider, Drawer, Dropdown, Input, message, notification, PageHeader, Space, Table, Tooltip } from 'antd';
-import { FcOk, FcHighPriority, FcPrevious } from 'react-icons/fc';
-import { EditTwoTone, DeleteTwoTone, DownOutlined, PlusOutlined, InfoCircleOutlined, CloseOutlined, SettingFilled } from '@ant-design/icons';
+import { Button, Divider, message, notification, PageHeader, Space, Table, Tooltip } from 'antd'
+import { FcOk, FcHighPriority } from 'react-icons/fc'
+import { EditTwoTone, DeleteTwoTone, PlusOutlined, CloseOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import { SearchInTable } from '../../components/SearchInTable'
-import { useDispatch, useSelector } from 'react-redux';
-import { GetAllUsers } from '../../services/users';
+import { useDispatch, useSelector } from 'react-redux'
+import { GetAllUsers } from '../../services/users'
 import size from 'lodash/size'
-import CreateForm from './components/CreateForm';
-import { GetSearchedUsers, CreateNewUser } from '../../services/users';
-import { useIntl } from 'react-intl';
+import CreateForm from './components/CreateForm'
+import { GetSearchedUsers, CreateNewUser } from '../../services/users'
+import { useIntl } from 'react-intl'
+// import { useQuery } from 'react-query'
 
-const Users: React.FC<{}> = ({props}) => {
+const Users: React.FC<{}> = ({ props }) => {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState<boolean>(false)
   const [createUserLoading, setCreateUserLoading] = useState(false)
-  const [settingsDrawerVisible, setSettingsDrawerVisible] = useState<boolean>(false)
-  const [addNewModalLoading, setAddNewModalLoading] = useState<boolean>(false);
-  const [cols, setCols] = useState([])
-  const dispatch = useDispatch();
+  const [addNewModalLoading, setAddNewModalLoading] = useState<boolean>(false)
+  const dispatch = useDispatch()
   const d = useSelector(state => state.users.users)
   const searchedUsers = useSelector(state => state.users.searchedUsers)
   const justCreated = useSelector(state => state.users.justCreated)
   const intl = useIntl()
+  // const { isLoading, isError, data, error } = useQuery('Users', GetAllUsers)
 
   const userNotFound = () => {
-    message.error('User was not found!');
-  };
+    message.error('User was not found!')
+  }
 
   const handleAddErrorNotification = (type: string, title: string, description: string) => {
     notification[type]({
       message: title,
-      description: description,
-    });
-  };
+      description: description
+    })
+  }
 
   const handleAdd = (fields) => {
     try {
       dispatch(CreateNewUser(fields))
-      message.success('Added successfully');
-      return true;
+      message.success('Added successfully')
+      return true
     } catch (error) {
       handleAddErrorNotification('error', 'Possible error', error.messagee)
-      message.error('Add failed, please try again!');
-      return false;
+      message.error('Add failed, please try again!')
+      return false
     }
-  };
+  }
 
   useEffect(() => {
     console.log('INITIAL', props)
     if (size(users) === 0){
       setLoading(true)
-      dispatch(GetAllUsers())
+      // dispatch(GetAllUsers())
       setUsers(d)
     }
     else if (justCreated) {
@@ -65,7 +65,7 @@ const Users: React.FC<{}> = ({props}) => {
     }
 
   }, [d, justCreated])
-  
+
   useEffect(() => {
     if (searchedUsers && searchedUsers.data.length > 0){
       setUsers(searchedUsers.data)
@@ -75,7 +75,7 @@ const Users: React.FC<{}> = ({props}) => {
     }
   }, [searchedUsers])
 
-  const AddNew = () => {
+  const AddNew: React.ReactNode = () => {
     return (
       <Button
         type='primary'
@@ -95,8 +95,8 @@ const Users: React.FC<{}> = ({props}) => {
       </Space>
     )
   }
-    
-  const columns: Array<any> = [
+
+  const columns = [
     {
       title: `${intl.formatMessage({id:'username'})}`,
       dataIndex: 'userName',
@@ -152,7 +152,7 @@ const Users: React.FC<{}> = ({props}) => {
       responsive: ['xxl'],
       render: (verified) => (
         <span>
-          { (verified && verified) ? 
+          { (verified && verified) ?
             <FcOk /> : <FcHighPriority /> }
         </span>
       ),
@@ -221,8 +221,8 @@ const Users: React.FC<{}> = ({props}) => {
         <>
           <a
             onClick={async () => {
-              //handleUpdateModalVisible(true);
-              //setUpdateFormValues(record);
+              // handleUpdateModalVisible(true)
+              // setUpdateFormValues(record)
             }} >
             <Tooltip title='Edit user'>
               <EditTwoTone />
@@ -231,7 +231,7 @@ const Users: React.FC<{}> = ({props}) => {
           <Divider type='vertical' />
           <a
             onClick={() => {
-              //handleDeleteUser(record.id);
+              // handleDeleteUser(record.id)
             }} >
             <Tooltip title='Delete user'>
               <DeleteTwoTone />
@@ -240,8 +240,8 @@ const Users: React.FC<{}> = ({props}) => {
         </>
       ),
       isShowing: true
-    },
-  ];
+    }
+  ]
 
   return (
     <MainLayout >
@@ -250,8 +250,11 @@ const Users: React.FC<{}> = ({props}) => {
         extra={
           <Space>
             <TableHeader />
-            {searchedUsers && searchedUsers.status === 'Found' ? 
-              <Button type='link' icon={<CloseOutlined />} onClick={() => {dispatch(GetSearchedUsers({data: [], status: 'NotSearchedYet'})); setUsers(d); }}>{intl.formatMessage({id:'clearSearch'})}</Button> : 
+            {searchedUsers && searchedUsers.status === 'Found' ?
+              <Button
+                type='link'
+                icon={<CloseOutlined />}
+                onClick={() => { dispatch(GetSearchedUsers({data: [], status: 'NotSearchedYet'})); setUsers(d) }}>{intl.formatMessage({id:'clearSearch'})}</Button> :
               ''}
           </Space>
         }
@@ -260,32 +263,32 @@ const Users: React.FC<{}> = ({props}) => {
       </PageHeader>
       <Table
         style={{overflowX:'auto'}}
-        columns={columns} 
+        columns={columns}
         dataSource={users && users.length > 0 ? users : []}
         loading={loading}
         pagination={{
-          pageSize: 20, 
+          pageSize: 20,
           position:[ 'topRight', 'bottomRight']
         }}
       />
-      <CreateForm 
+      <CreateForm
         onCreate={async (value) => {
-          setCreateUserLoading(true);
-          const success = await handleAdd(value);
+          setCreateUserLoading(true)
+          const success = await handleAdd(value)
           if (success) {
-            setCreateUserLoading(false);
-            setAddNewModalLoading(false);
+            setCreateUserLoading(false)
+            setAddNewModalLoading(false)
           }
-          setCreateUserLoading(false);
+          setCreateUserLoading(false)
         }}
         visible={addNewModalLoading}
         onCancel={() => {
-          setAddNewModalLoading(false);
+          setAddNewModalLoading(false)
         }}
         loading={createUserLoading}
       />
     </MainLayout>
-  );
-};
+  )
+}
 
-export default Users;
+export default Users
