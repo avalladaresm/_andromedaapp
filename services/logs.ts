@@ -1,12 +1,11 @@
 import axios from 'axios'
-import { CREATE_ERROR_LOG, CREATE_ROUTE_CHANGE_LOG, GET_LOGS, CREATE_LOGIN_LOG, CREATE_LOGOUT_LOG, CREATE_LANGUAGE_CHANGE_LOG, CREATE_UNAUTHORIZED_ACCESS_LOG } from '../actionTypes/logs'
+import { CREATE_ERROR_LOG, CREATE_ROUTE_CHANGE_LOG, CREATE_LOGIN_LOG, CREATE_LOGOUT_LOG, CREATE_LANGUAGE_CHANGE_LOG, CREATE_UNAUTHORIZED_ACCESS_LOG } from '../actionTypes/logs'
 import moment from 'moment'
 import { LogTypes } from '../models/LogTypes'
 import { message } from 'antd'
 
-export const GetLogs = () => async (dispatch) => {
-  const res = await axios.get('http://localhost:8080/docs/logs')
-  dispatch({ type: GET_LOGS, payload: res.data })
+export const GetLogs = () => {
+  return axios.get('http://localhost:8080/docs/logs')
 }
 
 export const CreateRouteChangeLog = (logData) => (dispatch) => {

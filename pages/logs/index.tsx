@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import MainLayout from '../../layouts/main'
-import { Button, PageHeader, Result, Table } from 'antd'
+import { Button, message, PageHeader, Result, Table } from 'antd'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 import { useIntl } from 'react-intl'
 import { CreateUnauthorizedAccessLog, GetLogs } from '../../services/logs'
 import { useRouter } from 'next/router'
 import { LogTypes } from '../../models/LogTypes'
+import { useQuery } from 'react-query'
+import orderBy from 'lodash/orderBy'
 
 const Logs: React.FC<React.ReactNode> = () => {
   const [isAuthorized, setIsAuthorized] = useState(true)
   const dispatch = useDispatch()
   const intl = useIntl()
-  const logs = useSelector(state => state.logs.logs)
   const loggedInUser = useSelector(state => state.auth.loggedInUser)
   const router = useRouter()
-
-  useEffect(() => {
-    dispatch(GetLogs())
-  }, [])
+	const { isLoading, isError, data } = useQuery('Users', GetLogs)
 
   useEffect(() => {
     if (loggedInUser.roles && loggedInUser.roles.includes('ROLE_ADMIN')) {
@@ -95,7 +93,9 @@ const Logs: React.FC<React.ReactNode> = () => {
       responsive: ['lg'],
       isShowing: true
     }
-  ]
+	]
+	
+	if (isError) message.error('Something bad happened: ')
 
   return (
     <MainLayout>
@@ -110,12 +110,13 @@ const Logs: React.FC<React.ReactNode> = () => {
             size='small'
             style={{overflowX:'auto'}}
             columns={columns}
-            dataSource={logs && logs.length > 0 ? logs : []}
+						dataSource={data && data.data.length > 0 ? orderBy(data.data, 'date', 'desc') : []}
+
             pagination={{
               pageSize: 100,
               position:[ 'topRight', 'bottomRight']
             }}
-            // loading={loading}
+            loading={isLoading}
           />
         </> :
         <Unauthorized />

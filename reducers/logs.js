@@ -1,5 +1,4 @@
-import { GET_LOGS, CREATE_ERROR_LOG, CREATE_ROUTE_CHANGE_LOG, CREATE_LANGUAGE_CHANGE_LOG, CREATE_UNAUTHORIZED_ACCESS_LOG } from '../actionTypes/logs'
-import _ from 'lodash'
+import { CREATE_ERROR_LOG, CREATE_ROUTE_CHANGE_LOG, CREATE_LANGUAGE_CHANGE_LOG, CREATE_UNAUTHORIZED_ACCESS_LOG } from '../actionTypes/logs'
 
 const initialState = {
   logs: [],
@@ -8,13 +7,6 @@ const initialState = {
 
 const logs = (state = initialState, action) => {
   switch (action.type) {
-    case GET_LOGS: {
-      const ordered = _.orderBy(action.payload, 'date', 'desc')
-      return {
-        ...state,
-        logs: ordered
-      }
-    }
     case CREATE_ERROR_LOG: {
       return {
         ...state,
