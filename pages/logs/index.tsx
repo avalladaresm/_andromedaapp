@@ -16,7 +16,7 @@ const Logs: React.FC<React.ReactNode> = () => {
   const intl = useIntl()
   const loggedInUser = useSelector(state => state.auth.loggedInUser)
   const router = useRouter()
-	const { isLoading, isError, data } = useQuery('Users', GetLogs)
+	const { isLoading, isError, data } = useQuery('Logs', GetLogs)
 
   useEffect(() => {
     if (loggedInUser.roles && loggedInUser.roles.includes('ROLE_ADMIN')) {
