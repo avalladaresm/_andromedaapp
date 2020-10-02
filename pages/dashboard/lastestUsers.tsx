@@ -45,16 +45,16 @@ const LatestUsers = () => {
 	if (users.isError) message.error('Something happened!')
 
   return (
-    <Card title={intl.formatMessage({id:'latestUsers'})}>
-      <Table
-        dataSource={users.data && users.data.data.slice(users.data.data.length-5, users.data.data.length)}
-        columns={columns}
-        pagination={false}
-        size='small'
-        bordered
+		<Card title={intl.formatMessage({id:'latestUsers'})}>
+			<Table
+				dataSource={users.data && users.data.data.slice(users.data.data.length-5, users.data.data.length)}
+				columns={columns}
+				pagination={false}
+				size='small'
+				bordered
 				loading={users.isLoading}
-      />
-    </Card>
+			/>
+		</Card>
   )
 }
 

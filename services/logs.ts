@@ -7,9 +7,8 @@ import { queryCache, useMutation, useQueryCache } from 'react-query'
 import { useQuery } from 'react-query';
 import { ILog } from '../models'
 
-export const GetLogs = () => async (dispatch) => {
-  const res = await axios.get('http://localhost:8080/docs/logs')
-  dispatch({ type: GET_LOGS, payload: res.data })
+export const GetLogs = () => {
+  return axios.get('http://localhost:8080/docs/logs')
 }
 
 export const useLogs = () => {

@@ -106,7 +106,6 @@ const Logs: React.FC<React.ReactNode> = () => {
             style={{overflowX:'auto'}}
             columns={columns}
 						dataSource={logs.data && logs.data.data.length > 0 ? orderBy(logs.data.data, 'date', 'desc') : []}
-
             pagination={{
               pageSize: 100,
               position:[ 'topRight', 'bottomRight']
