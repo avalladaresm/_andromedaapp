@@ -5,8 +5,29 @@ import { SignInStatus } from '../models/SignInStatus'
 import { LogTypes } from '../models/LogTypes'
 import { CreateLoginLog, CreateLogoutLog } from './logs'
 import moment from 'moment'
+import { queryCache, useMutation, useQuery } from 'react-query'
+import { ILogIn } from '../models'
+import { message } from 'antd'
 
-export const DoSignIn = (params) => (dispatch) => {
+export const useDoSignIn = () => {
+	return useMutation((values: ILogIn) => {
+		return axios.post('http://localhost:8080/docs/auth/signin', {
+			username: values.username, password: values.password
+		})
+	})
+}
+
+export const useGetCookieAuth = () => {
+	return useMutation((values) => {
+		return values
+	})
+}
+
+export const useAuth = () => {
+	return useQuery('Auth')
+}
+
+/* export const DoSignIn = (params) => (dispatch) => {
   dispatch({ type: IS_SIGNING_IN, payload: true })
   axios.post('http://localhost:8080/docs/auth/signin', {
     username: params.username, password: params.password
@@ -34,7 +55,7 @@ export const DoSignIn = (params) => (dispatch) => {
     }))
     dispatch({ type: IS_SIGNING_IN, payload: false })
   })
-}
+} */
 
 export const DoSignOut = (userName) => (dispatch) => {
   Cookies.remove('currentUser')

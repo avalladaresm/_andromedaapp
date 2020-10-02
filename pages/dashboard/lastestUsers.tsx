@@ -1,28 +1,11 @@
-import { Card, Table, Tooltip } from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
-import { GetLatestUsers, GetAllUserss } from '../../services/dashboard'
-import { GetAllUsers } from '../../services/users'
-import { useEffect } from 'react'
+import { Card, message, Table, Tooltip } from 'antd'
 import moment from 'moment'
 import { useIntl } from 'react-intl'
-
-import { useQuery } from 'react-query'
+import { useUsers } from '../../services/users'
 
 const LatestUsers = () => {
-  const allUsers = useSelector(state => state.users.users)
-  const latestUsers = useSelector(state => state.dashboard.latestUsers)
-  const isFetchingLatestUsers = useSelector(state => state.dashboard.isFetchingLatestUsers)
-  // const dispatch = useDispatch()
   const intl = useIntl()
-  // const { isLoading, isError, data, error } = useQuery('users', GetLatestUsers(allUsers))
-  const { isLoading, isError, data, error } = useQuery('Users', GetAllUsers)
-
-  useEffect(() => {
-    // dispatch(GetLatestUsers(allUsers))
-    console.log('isLoading', isLoading)
-    console.log('dataa', data)
-    console.log('error', error)
-  }, [])
+  const users = useUsers()
 
   const columns = [
     {
@@ -59,16 +42,17 @@ const LatestUsers = () => {
     }
   ]
 
+	if (users.isError) message.error('Something happened!')
 
   return (
     <Card title={intl.formatMessage({id:'latestUsers'})}>
       <Table
-        dataSource={data && data.data.slice(data.data.length-5, data.data.length)}
+        dataSource={users.data && users.data.data.slice(users.data.data.length-5, users.data.data.length)}
         columns={columns}
         pagination={false}
         size='small'
         bordered
-        loading={isLoading}
+				loading={users.isLoading}
       />
     </Card>
   )

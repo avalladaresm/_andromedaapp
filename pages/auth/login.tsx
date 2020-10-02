@@ -1,9 +1,13 @@
-import { Form, Input, Button, Checkbox, message } from 'antd'
-import { DoSignIn } from '../../services/auth'
-import { useDispatch, useSelector } from 'react-redux'
+import { Card, Form, Input, Button, message } from 'antd'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { SignInStatus } from '../../models/SignInStatus'
+import { useCreateLog } from '../../services/logs'
+import { useDoSignIn } from '../../services/auth'
+import moment from 'moment'
+import { LogTypes } from '../../models/LogTypes'
+import { queryCache } from 'react-query'
+import { AxiosError } from 'axios'
+import Cookies from 'js-cookie'
 
 const layout = {
   labelCol: { span: 8 },
@@ -14,64 +18,69 @@ const tailLayout = {
 }
 
 const Login = () => {
-  const dispatch = useDispatch()
   const router = useRouter()
-  const loggedInUser = useSelector(state => state.auth.loggedInUser)
-  const isSigningIn = useSelector(state => state.auth.isSigningIn)
-  const signInStatus = useSelector(state => state.auth.signInStatus)
-
-  useEffect(() => {
-    if (signInStatus === SignInStatus.SIGN_IN_SUCCESS) {
-      message.success(`Login success, whoo! Welcome ${loggedInUser.userName}`)
-      router.push('/')
-    }
-    else if (signInStatus === SignInStatus.SIGN_IN_ERROR)
-      message.error('Error!!!!')
-  }, [signInStatus])
+	const [doSignIn, doSignInInfo] = useDoSignIn()
+	const [createLog] = useCreateLog()
 
   const onFinish = values => {
-    console.log('Success:', values)
-    dispatch(DoSignIn(values))
-  }
-
-  const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo)
+		doSignIn(values, {
+			onSuccess: (data, variables) => {
+				message.success(`Login success, whoo! Welcome ${variables.username}`)
+				queryCache.setQueryData('Auth', data)
+				Cookies.set('currentUser', JSON.stringify(data.data), { expires: 7 })
+				createLog({
+					userName: variables && variables.username,
+					date: moment(),
+					type: LogTypes.SIGNIN,
+					description: `${SignInStatus.SIGN_IN_SUCCESS}: ${variables && variables.username} signed in successfully.`,
+					data: JSON.stringify(`${SignInStatus.SIGN_IN_SUCCESS}`)
+				})
+				router.push('/dashboard')
+			},
+			onError: (error: AxiosError, variables) => {
+				message.error('Login failed!')
+				createLog({
+					userName: variables && variables.username,
+					date: moment(),
+					type: LogTypes.SIGNIN,
+					description: `${SignInStatus.SIGN_IN_ERROR}: ${variables.username} had an error logging in.`,
+					data: JSON.stringify(error.response.data)
+				})
+			}
+		})
   }
 
   return (
-    <Form
-      {...layout}
-      name='basic'
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
-      <Form.Item
-        label='Username'
-        name='username'
-        rules={[{ required: true, message: 'Please input your username!' }]}
-      >
-        <Input />
-      </Form.Item>
+		<Card style={{width:400,margin:'0 auto', float: 'none', marginBottom:'10px', marginTop:50}}>
+			<Form
+				{...layout}
+				name='basic'
+				initialValues={{ remember: true }}
+				onFinish={onFinish}
+			>
+				<Form.Item
+					label='Username'
+					name='username'
+					rules={[{ required: true, message: 'Please input your username!' }]}
+				>
+					<Input />
+				</Form.Item>
 
-      <Form.Item
-        label='Password'
-        name='password'
-        rules={[{ required: true, message: 'Please input your password!' }]}
-      >
-        <Input.Password />
-      </Form.Item>
+				<Form.Item
+					label='Password'
+					name='password'
+					rules={[{ required: true, message: 'Please input your password!' }]}
+				>
+					<Input.Password />
+				</Form.Item>
 
-      <Form.Item {...tailLayout} name='remember' valuePropName='checked'>
-        <Checkbox>Remember me</Checkbox>
-      </Form.Item>
-
-      <Form.Item {...tailLayout}>
-        <Button type='primary' htmlType='submit' loading={isSigningIn}>
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
+				<Form.Item {...tailLayout}>
+					<Button type='primary' htmlType='submit' loading={doSignInInfo.isLoading}>
+						Submit
+					</Button>
+				</Form.Item>
+			</Form>
+		</Card>
   )
 }
 

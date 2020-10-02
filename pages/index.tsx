@@ -3,10 +3,10 @@ import '../less/antd-custom.less'
 import MainLayout from '../layouts/main'
 
 const Home: React.FunctionComponent<React.ReactNode> = (): JSX.Element => {
+	
   return (
     <>
       <MainLayout>
-        <p>Index</p>
       </MainLayout>
     </>
   )

@@ -2,7 +2,8 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: [
-    '@typescript-eslint'
+		'@typescript-eslint',
+		'react-hooks'
   ],
   rules: {
     'no-unused-vars': 'error',
@@ -17,7 +18,7 @@ module.exports = {
     'semi': ['error', 'never'],
     '@typescript-eslint/semi': ['error', 'never'],
     // disable the rule for all files
-    '@typescript-eslint/explicit-function-return-type': 'off',
+    // '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/adjacent-overload-signatures': 'error',
     '@typescript-eslint/ban-types': 'error',
     'camelcase': 'off',
@@ -50,14 +51,16 @@ module.exports = {
     'no-trailing-spaces': 'error',
     'eol-last': ['error', 'always'],
     'line-comment-position': ['error', { 'position': 'above' }],
-    'spaced-comment': ['error', 'always', { 'block': { 'exceptions': ['*'] } }]
+		'spaced-comment': ['error', 'always', { 'block': { 'exceptions': ['*'] } }],
+		'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn' // Checks effect dependencies
   },
   overrides: [
     {
       // enable the rule specifically for TypeScript files
       'files': ['*.ts', '*.tsx'],
       'rules': {
-        '@typescript-eslint/explicit-function-return-type': 'error'
+        // '@typescript-eslint/explicit-function-return-type': 'error'
       }
     }
   ]

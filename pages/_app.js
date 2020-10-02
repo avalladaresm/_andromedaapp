@@ -2,103 +2,100 @@
 import '../less/antd-custom.less'
 import { useEffect, useState } from 'react'
 import { createWrapper } from 'next-redux-wrapper'
-import { Provider, useDispatch, useSelector } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
-import { GetSignedInUserFromCookie, GetWantedPath } from '../services/auth'
-import Cookies from 'js-cookie'
 import store from '../store'
-import { SignInStatus } from '../models/SignInStatus'
 import { LangProvider } from '../utils/LangContext'
-import { CreateRouteChangeLog } from '../services/logs'
 import moment from 'moment'
-import { IsPageLoading } from '../services/global'
 import { ReactQueryDevtools } from 'react-query-devtools'
+import { useCreateLog } from '../services/logs'
+import { useGetCookieAuth } from '../services/auth'
+import { queryCache } from 'react-query'
+import { CookiesProvider } from 'react-cookie';
+import { useCookies } from 'react-cookie';
+import { useIsPageLoading } from '../services/global'
+import { LogTypes } from '../models/LogTypes'
 
 const Start = ({ Component, pageProps }) => {
-  const dispatch = useDispatch()
-  const router = useRouter()
-  const [currentPath, setCurrentPath] = useState(router.pathname)
-  const [newPath, setNewPath] = useState(router.pathname)
-  const signInStatus = useSelector(state => state.auth.signInStatus)
-  const wantedPath = useSelector(state => state.auth.wantedPath)
-  const loggedInUser = useSelector(state => state.auth.loggedInUser.userName && state.auth.loggedInUser.userName)
-  const isPageLoading = useSelector(state => state.global.isPageLoading)
+	const [getCookieAuth] = useGetCookieAuth()
+	const router = useRouter()
+	const [changingRoute, setChangingRoute] = useState('false')
+	const [currentPath, setCurrentPath] = useState(router.pathname)
+	const [newPath, setNewPath] = useState(router.pathname)
+	const [createLog] = useCreateLog()
+	const [cookies] = useCookies(['currentUser']);
+	const [isPageLoading] = useIsPageLoading()
 
+	useEffect(() => {
+		getCookieAuth(cookies,
+		{
+			onSuccess: (data) => {
+				queryCache.setQueryData('Auth', data)
+			}
+		})
+		const cookieSize = Object.keys(cookies).length
+		if (!cookieSize) {
+			router.push('/auth/login')
+		} else {
+			if (router.pathname === '/auth/login') {
+				router.push('/dashboard')
+			} else {
+				if (router.pathname === '/') {
+					router.push('/dashboard')
+				}
+			}
+			createLog({
+				userName: cookies.currentUser && cookies.currentUser.userName,
+				date: moment(),
+				type: LogTypes.COOKIE_SIGNIN,
+				description: 'Signed in from cookie.',
+				data: JSON.stringify({})
+			})
+		}	
+	}, [cookies])
+
+	
   useEffect(() => {
     router.events.on('routeChangeStart', () => {
-      console.log('saving current path', router.pathname)
-      setCurrentPath(router.pathname)
-      dispatch(IsPageLoading(true))
+			console.log('yo wtf1')
+			isPageLoading(true,{
+				onSuccess: (data) => {
+					queryCache.setQueryData('GlobalSettings', {isPageLoading: data})
+				}
+			})
+			createLog({
+				userName: cookies.currentUser && cookies.currentUser.userName,
+				date: moment(),
+				type: LogTypes.ROUTE_CHANGE,
+				description: `Page changing from ${router.pathname}`,
+				data: JSON.stringify({})
+			})
     })
 
     router.events.on('routeChangeComplete', () => {
-      console.log('saving new path', router.pathname)
-      setNewPath(router.pathname)
-      dispatch(IsPageLoading(false))
-    })
-
-    const paths = {
-      fromPath: currentPath,
-      newPath: newPath
-    }
-
-    if (!loggedInUser) {
-      try {
-        const userDataInCookie = JSON.parse(Cookies.get('currentUser'))
-        console.log(userDataInCookie)
-        dispatch(CreateRouteChangeLog({
-          userName: userDataInCookie.userName,
-          date: moment(),
-          type: 'logged in from cookie',
-          description: 'changing route',
-          data: JSON.stringify(paths)
-        }))
-      } catch (e) {
-        console.log(e.message)
-      }
-    } else {
-      dispatch(CreateRouteChangeLog({
-        userName: loggedInUser,
-        date: moment(),
-        type: 'logged in from redux',
-        description: 'changing route',
-        data: JSON.stringify(paths)
-      }))
-    }
-  }, [loggedInUser, isPageLoading])
-
-  useEffect(() => {
-    const userDataInCookie = Cookies.get('currentUser')
-    if (userDataInCookie === 'undefined') {
-      console.log('whay')
-    } else {
-      if (userDataInCookie && signInStatus !== SignInStatus.SIGN_IN_SUCCESS) {
-        dispatch(GetSignedInUserFromCookie(userDataInCookie))
-        if (router.pathname === '/auth/login') {
-          router.push('/dashboard')
-        } else {
-          if (router.pathname === '/') {
-            router.push('/dashboard')
-          }
-        }
-      } else if (signInStatus === SignInStatus.SIGN_IN_SUCCESS) {
-        if (wantedPath) {
-          router.push(wantedPath)
-        } else {
-          router.push('/dashboard')
-        }
-      } else {
-        dispatch(GetWantedPath(router.pathname))
-        router.push('/auth/login')
-      }
-    }
-  }, [signInStatus])
+			console.log('yo wtf2', router)
+			isPageLoading(false,{
+				onSuccess: (data) => {
+					queryCache.setQueryData('GlobalSettings', {isPageLoading: data})
+				}
+			})
+			createLog({
+				userName: cookies.currentUser && cookies.currentUser.userName,
+				date: moment(),
+				type: LogTypes.ROUTE_CHANGE,
+				description: `Page changed to ${router.pathname}`,
+				data: JSON.stringify({})
+			})
+		})
+  }, [router.pathname])
 
   return (
     <LangProvider>
       <Provider store={store}>
-        <Component {...pageProps} />
-        <ReactQueryDevtools initialIsOpen />
+				<CookiesProvider>
+					<Component {...pageProps} />
+					<ReactQueryDevtools initialIsOpen />
+				</CookiesProvider>				
       </Provider>
     </LangProvider>
   )

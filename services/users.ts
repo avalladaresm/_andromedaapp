@@ -1,8 +1,13 @@
 import axios from 'axios'
+import { useQuery } from 'react-query'
 import { SEARCHED_USERS, JUST_CREATED } from '../actionTypes/users'
 
 export const GetAllUsers = () => {
   return axios.get('http://localhost:8080/docs/users')
+}
+
+export const useUsers = () => {
+	return useQuery('Users', GetAllUsers)
 }
 
 export const GetSearchedUsers = (filteredUsers) => async (dispatch) => {
@@ -13,7 +18,6 @@ export const CreateNewUser = (data) => (dispatch) => {
   axios.post('http://localhost:8080/docs/users', { data: data })
     .then((res) => {
       if (res.status === 200) {
-        console.log('dispatching', res)
         dispatch(GetAllUsers())
         dispatch({ type: JUST_CREATED, payload: true })
         // dispatch({ type: CREATE_NEW_USER, payload: data })

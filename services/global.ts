@@ -1,7 +1,14 @@
-import { IS_PAGE_CHANGING, CURRENT_LANGUAGE, IS_SIDER_COLLAPSED } from '../actionTypes/global'
+import { useMutation, useQuery } from 'react-query'
+import { CURRENT_LANGUAGE, IS_SIDER_COLLAPSED } from '../actionTypes/global'
 
-export const IsPageLoading = (isPageLoading) => (dispatch) => {
-  dispatch({ type: IS_PAGE_CHANGING, payload: isPageLoading })
+export const useIsPageLoading = () => {
+	return useMutation((value) => {
+		return value
+	})
+}
+
+export const usePageLoading = () => {
+	return useQuery('GlobalSettings')
 }
 
 export const SetCurrentLang = (lang) => (dispatch) => {

@@ -2,42 +2,37 @@ import React, { useEffect, useState } from 'react'
 import MainLayout from '../../layouts/main'
 import { Button, PageHeader, Result, Table } from 'antd'
 import moment from 'moment'
-import { useDispatch, useSelector } from 'react-redux'
 import { useIntl } from 'react-intl'
-import { CreateUnauthorizedAccessLog, GetLogs } from '../../services/logs'
 import { useRouter } from 'next/router'
 import { LogTypes } from '../../models/LogTypes'
+import orderBy from 'lodash/orderBy'
+import { useLogs } from '../../services/logs'
+import { useAuth } from '../../services/auth'
+import { useCreateLog } from '../../services/logs'
 
 const Logs: React.FC<React.ReactNode> = () => {
   const [isAuthorized, setIsAuthorized] = useState(true)
-  const dispatch = useDispatch()
   const intl = useIntl()
-  const logs = useSelector(state => state.logs.logs)
-  const loggedInUser = useSelector(state => state.auth.loggedInUser)
-  const router = useRouter()
+	const router = useRouter()
+	const logs = useLogs()
+	const auth = useAuth()
+  const [createLog] = useCreateLog()
 
   useEffect(() => {
-    dispatch(GetLogs())
-  }, [])
-
-  useEffect(() => {
-    if (loggedInUser.roles && loggedInUser.roles.includes('ROLE_ADMIN')) {
-      console.log('is authorized')
+    if (auth.data && auth.data.currentUser && auth.data.currentUser.roles.includes('ROLE_ADMIN')) {
       setIsAuthorized(true)
     }
     else {
-      if (loggedInUser.userName) {
-        dispatch(CreateUnauthorizedAccessLog({
-          userName: loggedInUser.userName,
-          date: moment(),
-          type:`${LogTypes.UNAUTHORIZED_ACCESS}`,
-          description: `User ${loggedInUser.userName} attempting to access ${router.pathname}`,
-          data: JSON.stringify({path: router.pathname})
-        }))
-      }
+			createLog({
+				userName: auth.data && auth.data.currentUser && auth.data.currentUser.userName,
+				date: moment(),
+				type: LogTypes.UNAUTHORIZED_ACCESS,
+				description: `User ${auth.data && auth.data.currentUser && auth.data.currentUser.userName} attempting to access ${router.pathname}`,
+				data: JSON.stringify({path: router.pathname})
+			})
       setIsAuthorized(false)
     }
-  }, [isAuthorized])
+  }, [auth.data])
 
   const Unauthorized = () => {
     return (
@@ -95,8 +90,8 @@ const Logs: React.FC<React.ReactNode> = () => {
       responsive: ['lg'],
       isShowing: true
     }
-  ]
-
+	]
+	
   return (
     <MainLayout>
       {isAuthorized ?
@@ -110,12 +105,13 @@ const Logs: React.FC<React.ReactNode> = () => {
             size='small'
             style={{overflowX:'auto'}}
             columns={columns}
-            dataSource={logs && logs.length > 0 ? logs : []}
+						dataSource={logs.data && logs.data.data.length > 0 ? orderBy(logs.data.data, 'date', 'desc') : []}
+
             pagination={{
               pageSize: 100,
               position:[ 'topRight', 'bottomRight']
             }}
-            // loading={loading}
+            loading={logs.isLoading}
           />
         </> :
         <Unauthorized />

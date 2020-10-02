@@ -3,14 +3,22 @@ import { CREATE_ERROR_LOG, CREATE_ROUTE_CHANGE_LOG, GET_LOGS, CREATE_LOGIN_LOG, 
 import moment from 'moment'
 import { LogTypes } from '../models/LogTypes'
 import { message } from 'antd'
+import { queryCache, useMutation, useQueryCache } from 'react-query'
+import { useQuery } from 'react-query';
+import { ILog } from '../models'
 
 export const GetLogs = () => async (dispatch) => {
   const res = await axios.get('http://localhost:8080/docs/logs')
   dispatch({ type: GET_LOGS, payload: res.data })
 }
 
-export const CreateRouteChangeLog = (logData) => (dispatch) => {
-  axios.post('http://localhost:8080/docs/logs', { data: logData })
+export const useLogs = () => {
+	return useQuery('Logs', GetLogs)
+}
+
+export const CreateRouteChangeLog = (logData) => {
+	return axios.post('http://localhost:8080/docs/logs', { data: logData });
+  /* axios.post('http://localhost:8080/docs/logs', { data: logData })
     .then((res) => {
       if (res.status === 200) {
         dispatch({ type: CREATE_ROUTE_CHANGE_LOG, payload: logData })
@@ -26,8 +34,22 @@ export const CreateRouteChangeLog = (logData) => (dispatch) => {
         data: JSON.stringify(logData)
       }))
       throw e.data
-    })
+    }) */
 }
+
+export const useCreateLog = () => {
+	return useMutation((values: ILog) => {
+		return axios.post('http://localhost:8080/docs/logs', { data: values })
+	}, {	
+		onSuccess: () => {
+			queryCache.invalidateQueries('Logs')
+		},
+		onError: () => {
+			console.log('what happened creating the log?')
+		}
+	})
+}
+
 
 export const CreateLoginLog = (logData) => (dispatch) => {
   axios.post('http://localhost:8080/docs/logs', { data: logData })

@@ -6,15 +6,13 @@ import { EditTwoTone, DeleteTwoTone, PlusOutlined, CloseOutlined } from '@ant-de
 import moment from 'moment'
 import { SearchInTable } from '../../components/SearchInTable'
 import { useDispatch, useSelector } from 'react-redux'
-import { GetAllUsers } from '../../services/users'
 import size from 'lodash/size'
 import CreateForm from './components/CreateForm'
 import { GetSearchedUsers, CreateNewUser } from '../../services/users'
 import { useIntl } from 'react-intl'
-// import { useQuery } from 'react-query'
+import { useUsers } from '../../services/users'
 
-const Users: React.FC<{}> = ({ props }) => {
-  const [users, setUsers] = useState([])
+const Users: React.FC<{}> = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [createUserLoading, setCreateUserLoading] = useState(false)
   const [addNewModalLoading, setAddNewModalLoading] = useState<boolean>(false)
@@ -23,7 +21,7 @@ const Users: React.FC<{}> = ({ props }) => {
   const searchedUsers = useSelector(state => state.users.searchedUsers)
   const justCreated = useSelector(state => state.users.justCreated)
   const intl = useIntl()
-  // const { isLoading, isError, data, error } = useQuery('Users', GetAllUsers)
+  const users = useUsers()
 
   const userNotFound = () => {
     message.error('User was not found!')
@@ -49,7 +47,7 @@ const Users: React.FC<{}> = ({ props }) => {
   }
 
   useEffect(() => {
-    console.log('INITIAL', props)
+    //console.log('INITIAL', props)
     if (size(users) === 0){
       setLoading(true)
       // dispatch(GetAllUsers())
@@ -68,7 +66,7 @@ const Users: React.FC<{}> = ({ props }) => {
 
   useEffect(() => {
     if (searchedUsers && searchedUsers.data.length > 0){
-      setUsers(searchedUsers.data)
+      //setUsers(searchedUsers.data)
       console.log(searchedUsers.length)
     } else if (searchedUsers.status === 'NotFound') {
       userNotFound()
@@ -241,10 +239,12 @@ const Users: React.FC<{}> = ({ props }) => {
       ),
       isShowing: true
     }
-  ]
+	]
+	
+	if (users.isError) message.error('Something bad happened in users index: ')
 
-  return (
-    <MainLayout >
+	return (
+    <MainLayout>
       <PageHeader
         title={intl.formatMessage({id:'users'})}
         extra={
@@ -264,8 +264,8 @@ const Users: React.FC<{}> = ({ props }) => {
       <Table
         style={{overflowX:'auto'}}
         columns={columns}
-        dataSource={users && users.length > 0 ? users : []}
-        loading={loading}
+        dataSource={users.data && users.data.data.length > 0 ? users.data.data : []}
+        loading={users.isLoading}
         pagination={{
           pageSize: 20,
           position:[ 'topRight', 'bottomRight']

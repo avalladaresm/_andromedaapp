@@ -5,12 +5,15 @@ import { MenuDataItem } from '@ant-design/pro-layout/lib/typings'
 import { SiderMenuProps } from '@ant-design/pro-layout/lib/SiderMenu/SiderMenu'
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../components/Loading'
-import { Dropdown, Menu, Avatar, Space } from 'antd'
+import { Dropdown, Menu, Avatar, Space, Spin } from 'antd'
 import { SettingFilled, UnorderedListOutlined, UserOutlined, DashboardOutlined } from '@ant-design/icons'
 import { DoSignOut } from '../services/auth'
 import { useIntl } from 'react-intl'
 import LangMenu from '../components/LangMenu'
 import { Logout } from '../components/Icons'
+import { useIsFetching } from 'react-query'
+import { useAuth } from '../services/auth'
+import { usePageLoading } from '../services/global'
 
 const ProLayout = dynamic(() => import('@ant-design/pro-layout/'), {
   ssr: false,
@@ -33,16 +36,14 @@ const menuHeaderRender = (
 const MainLayout: React.FC<ReactNode> = ({ children }) => {
   const dispatch = useDispatch()
   const intl = useIntl()
-  const isPageLoading = useSelector(state => state.global.isPageLoading)
-  const loggedInUser = useSelector(state => state.auth.loggedInUser.userName)
-  const loggedInUserAuthority = useSelector(state => state.auth.loggedInUser.roles && state.auth.loggedInUser.roles)
-
+	const isFetching = useIsFetching()
+  const auth = useAuth()
+	const pageLoading = usePageLoading()
   const menuItemRender: React.ElementType = (options: MenuDataItem, element: ReactNode) => (
     <Link href={options.path}>
       <a>{element}</a>
     </Link>
   )
-
   const routes = {
     route: {
       path: '/',
@@ -71,7 +72,7 @@ const MainLayout: React.FC<ReactNode> = ({ children }) => {
           name: 'Logs',
           icon: <UnorderedListOutlined />,
           authority: ['ROLE_ADMIN'],
-          hideInMenu: loggedInUserAuthority && !loggedInUserAuthority.includes('ROLE_ADMIN')
+          hideInMenu: auth.data && auth.data.currentUser && !auth.data.currentUser.roles.includes('ROLE_ADMIN')
         }
       ]
     }
@@ -81,12 +82,13 @@ const MainLayout: React.FC<ReactNode> = ({ children }) => {
     return (
       <>
         <Space>
-          <p style={{ textAlign: 'left' }}>Hello {loggedInUser}</p>
+					{isFetching ? <Spin /> : ''}
+          <p style={{ textAlign: 'left' }}>Hello {auth.data && auth.data.currentUser && auth.data.currentUser.userName}</p>
           <Dropdown
             trigger={['click']}
             overlay={
               <Menu>
-                <Menu.Item key='0' onClick={() => dispatch(DoSignOut(loggedInUser))}>
+                <Menu.Item key='0' onClick={() => dispatch(DoSignOut(auth.data.currentUser.userName))}>
                   <Logout /> {intl.formatMessage({ id: 'logout' })}
                 </Menu.Item>
               </Menu>
@@ -109,7 +111,7 @@ const MainLayout: React.FC<ReactNode> = ({ children }) => {
         menuHeaderRender={menuHeaderRender}
         fixedHeader
         rightContentRender={() => (<LoginOptions />)}
-        loading={isPageLoading}
+        loading={pageLoading.data && pageLoading.data.isPageLoading}
         navTheme='dark'
       >
         {children}
