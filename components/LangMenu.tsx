@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import { useUpdateLanguageSetting, useUserSettings } from '../services/userSettings'
 import { queryCache } from 'react-query'
 import { ReactNode } from 'react'
+import { useIsPageLoading } from '../services/global'
 
 const LangMenu: React.FC<ReactNode> = (props) => {
   const lang = useLang()
@@ -17,11 +18,19 @@ const LangMenu: React.FC<ReactNode> = (props) => {
 	const [updateLanguageSetting] = useUpdateLanguageSetting()
   const [createLog] = useCreateLog()
 	const userSettings = useUserSettings()
+	const [isPageLoading] = useIsPageLoading()
 
   const changeLanguage = () => {
 		toggleLang()
 		const userId = userSettings.data?.userId
 		const language = userSettings.data?.language
+
+		isPageLoading(true, {
+			onSuccess: (data) => {
+				queryCache.setQueryData('GlobalSettings', {isPageLoading: data})
+			}
+		})
+		
 		updateLanguageSetting({userId: userId, language: language === 'es' ? 'en' : 'es'}, {	
 			onSuccess: (data) => {
 				queryCache.invalidateQueries('UserSettings', { language: language === 'es' ? 'en' : 'es', refetchActive: false })
@@ -30,9 +39,12 @@ const LangMenu: React.FC<ReactNode> = (props) => {
 					date: moment(),
 					type: LogTypes.LANGUAGE_CHANGE,
 					description: `Language changed from ${lang} to ${lang === 'es' ? 'en' : 'es'}`,
-					data: JSON.stringify({})
+					data: JSON.stringify({result: data.res})
+				}, {
+					onSuccess: () => {
+						router.reload()
+					}
 				})
-				router.reload()
 			},
 			onError: () => {
 				message.error('Error changing the language')

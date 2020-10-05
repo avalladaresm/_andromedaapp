@@ -96,7 +96,7 @@ const MainLayout: React.FC<ReactNode> = ({ children }) => {
           >
             <Avatar icon={<SettingFilled />}>Options</Avatar>
           </Dropdown>
-          <LangMenu />
+          <LangMenu currentUser={auth.data?.currentUser?.userName}/>
         </Space>
       </>
     )
