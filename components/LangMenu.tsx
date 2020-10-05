@@ -1,32 +1,43 @@
 import Icon from '@ant-design/icons'
-import { Dropdown, Menu } from 'antd'
+import { Dropdown, Menu, message } from 'antd'
 import { EnFlag, EsFlag, Translate } from './Icons'
 import { useLangUpdate, useLang } from '../utils/LangContext'
-import { useDispatch, useSelector } from 'react-redux'
-import { CreateLanguageChangeLog } from '../services/logs'
+import { useCreateLog } from '../services/logs'
 import moment from 'moment'
 import { LogTypes } from '../models/LogTypes'
-import { SetCurrentLang } from '../services/global'
 import { useRouter } from 'next/router'
+import { useUpdateLanguageSetting, useUserSettings } from '../services/userSettings'
+import { queryCache } from 'react-query'
+import { ReactNode } from 'react'
 
-const LangMenu: React.FC<unknown> = () => {
+const LangMenu: React.FC<ReactNode> = (props) => {
   const lang = useLang()
   const toggleLang = useLangUpdate()
-  const loggedInUser = useSelector(state => state.auth.loggedInUser.userName)
-  const dispatch = useDispatch()
   const router = useRouter()
+	const [updateLanguageSetting] = useUpdateLanguageSetting()
+  const [createLog] = useCreateLog()
+	const userSettings = useUserSettings()
 
-  const createLog = () => {
-    router.reload()
-    toggleLang()
-    dispatch(SetCurrentLang(lang === 'es' ? 'en' : 'es'))
-    dispatch(CreateLanguageChangeLog({
-      userName: loggedInUser,
-      date: moment(),
-      type: `${LogTypes.LANGUAGE_CHANGE}`,
-      description: `Language changed from ${lang} to ${lang === 'es' ? 'en' : 'es'}`,
-      data: JSON.stringify({})
-    }))
+  const changeLanguage = () => {
+		toggleLang()
+		const userId = userSettings.data?.userId
+		const language = userSettings.data?.language
+		updateLanguageSetting({userId: userId, language: language === 'es' ? 'en' : 'es'}, {	
+			onSuccess: (data) => {
+				queryCache.invalidateQueries('UserSettings', { language: language === 'es' ? 'en' : 'es', refetchActive: false })
+				createLog({
+					userName: props.currentUser,
+					date: moment(),
+					type: LogTypes.LANGUAGE_CHANGE,
+					description: `Language changed from ${lang} to ${lang === 'es' ? 'en' : 'es'}`,
+					data: JSON.stringify({})
+				})
+				router.reload()
+			},
+			onError: () => {
+				message.error('Error changing the language')
+			}
+		})
   }
 
   return (
@@ -35,7 +46,7 @@ const LangMenu: React.FC<unknown> = () => {
         <Menu>
           <Menu.Item
             key='0'
-            onClick={() => { createLog() }}
+            onClick={() => { changeLanguage() }}
             disabled={lang && lang === 'en'}
             style={{ backgroundColor: lang === 'en' ? 'lightgreen' : '' }}
           >
@@ -45,7 +56,7 @@ const LangMenu: React.FC<unknown> = () => {
           </Menu.Item>
           <Menu.Item
             key='1'
-            onClick={() => { createLog() }}
+            onClick={() => { changeLanguage() }}
             disabled={lang && lang === 'es'}
             style={{ backgroundColor: lang === 'es' ? 'lightgreen' : '' }}
           >

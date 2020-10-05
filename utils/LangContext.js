@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import { IntlProvider } from 'react-intl'
 import { en } from '../locales/en'
 import { es } from '../locales/es'
@@ -24,20 +24,20 @@ const enconfig = {
   messages: en
 }
 
-export function LangProvider ({ children }) {
-  const [lang, setLang] = useState('en')
-  const [localeConfig, setLocaleConfig] = useState(enconfig)
+export function LangProvider (props) {
+	const [lang, setLang] = useState(props.data.language)
+	const [localeConfig, setLocaleConfig] = useState(props.data.language === 'es' ? esconfig : enconfig)
 
   function toggleLang () {
-    setLang(lang === 'es' ? 'en' : 'es')
-    setLocaleConfig(lang === 'es' ? enconfig : esconfig)
-  }
+    setLang(props.data.language === 'es' ? 'en' : 'es')
+		setLocaleConfig(props.data.language === 'es' ? enconfig : esconfig)
+	}
 
   return (
     <IntlProvider locale={localeConfig.locale} defaultLocale={localeConfig.locale} messages={localeConfig.messages}>
       <LangContext.Provider value={lang}>
         <LangUpdateContext.Provider value={toggleLang}>
-          {children}
+          {props.children}
         </LangUpdateContext.Provider>
       </LangContext.Provider>
     </IntlProvider>

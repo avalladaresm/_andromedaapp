@@ -29,6 +29,11 @@ export const CreateNewUser = (data) => (dispatch) => {
     })
 }
 
+export const GetUserByUsername = async (username) => {
+	const res = await axios.get(`http://localhost:8080/docs/users/${username}/details`)
+	return res
+}
+
 /* export const CreateNewUser = (userData) => (dispatch) => {
   return axios.post('http://localhost:8080/docs/users/', userData)
   .then()

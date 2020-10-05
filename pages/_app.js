@@ -1,38 +1,29 @@
 // includes antd style and our customization
 import '../less/antd-custom.less'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { createWrapper } from 'next-redux-wrapper'
-import { Provider, useDispatch } from 'react-redux'
+import { Provider } from 'react-redux'
 import { useRouter } from 'next/router'
 import store from '../store'
-import { LangProvider } from '../utils/LangContext'
 import moment from 'moment'
 import { ReactQueryDevtools } from 'react-query-devtools'
 import { useCreateLog } from '../services/logs'
-import { useGetCookieAuth } from '../services/auth'
+import { GetCookieAuth } from '../services/auth'
 import { queryCache } from 'react-query'
 import { CookiesProvider } from 'react-cookie';
 import { useCookies } from 'react-cookie';
 import { useIsPageLoading } from '../services/global'
 import { LogTypes } from '../models/LogTypes'
+import { UserSettingsProvider } from '../utils/UserSettingsContext'
 
 const Start = ({ Component, pageProps }) => {
-	const [getCookieAuth] = useGetCookieAuth()
 	const router = useRouter()
-	const [changingRoute, setChangingRoute] = useState('false')
-	const [currentPath, setCurrentPath] = useState(router.pathname)
-	const [newPath, setNewPath] = useState(router.pathname)
 	const [createLog] = useCreateLog()
 	const [cookies] = useCookies(['currentUser']);
 	const [isPageLoading] = useIsPageLoading()
 
 	useEffect(() => {
-		getCookieAuth(cookies,
-		{
-			onSuccess: (data) => {
-				queryCache.setQueryData('Auth', data)
-			}
-		})
+		GetCookieAuth(cookies)
 		const cookieSize = Object.keys(cookies).length
 		if (!cookieSize) {
 			router.push('/auth/login')
@@ -54,7 +45,6 @@ const Start = ({ Component, pageProps }) => {
 		}	
 	}, [cookies])
 
-	
   useEffect(() => {
     router.events.on('routeChangeStart', () => {
 			console.log('yo wtf1')
@@ -90,14 +80,14 @@ const Start = ({ Component, pageProps }) => {
   }, [router.pathname])
 
   return (
-    <LangProvider>
-      <Provider store={store}>
-				<CookiesProvider>
+		<CookiesProvider>
+			<UserSettingsProvider currentUser={cookies.currentUser?.userName}>
+				<Provider store={store}>
 					<Component {...pageProps} />
 					<ReactQueryDevtools initialIsOpen />
-				</CookiesProvider>				
-      </Provider>
-    </LangProvider>
+				</Provider>
+			</UserSettingsProvider>
+		</CookiesProvider>
   )
 }
 
