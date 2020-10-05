@@ -36,7 +36,7 @@ const Start = ({ Component, pageProps }) => {
 				}
 			}
 			createLog({
-				userName: cookies.currentUser && cookies.currentUser.userName,
+				userName: cookies.currentUser?.userName,
 				date: moment(),
 				type: LogTypes.COOKIE_SIGNIN,
 				description: 'Signed in from cookie.',
@@ -54,7 +54,7 @@ const Start = ({ Component, pageProps }) => {
 				}
 			})
 			createLog({
-				userName: cookies.currentUser && cookies.currentUser.userName,
+				userName: cookies.currentUser?.userName,
 				date: moment(),
 				type: LogTypes.ROUTE_CHANGE,
 				description: `Page changing from ${router.pathname}`,
@@ -70,7 +70,7 @@ const Start = ({ Component, pageProps }) => {
 				}
 			})
 			createLog({
-				userName: cookies.currentUser && cookies.currentUser.userName,
+				userName: cookies.currentUser?.userName,
 				date: moment(),
 				type: LogTypes.ROUTE_CHANGE,
 				description: `Page changed to ${router.pathname}`,

@@ -65,7 +65,7 @@ const Users: React.FC<{}> = () => {
   }, [d, justCreated])
 
   useEffect(() => {
-    if (searchedUsers && searchedUsers.data.length > 0){
+    if (searchedUsers?.data.length > 0){
       //setUsers(searchedUsers.data)
       console.log(searchedUsers.length)
     } else if (searchedUsers.status === 'NotFound') {
@@ -250,7 +250,7 @@ const Users: React.FC<{}> = () => {
         extra={
           <Space>
             <TableHeader />
-            {searchedUsers && searchedUsers.status === 'Found' ?
+            {searchedUsers?.status === 'Found' ?
               <Button
                 type='link'
                 icon={<CloseOutlined />}
@@ -264,7 +264,7 @@ const Users: React.FC<{}> = () => {
       <Table
         style={{overflowX:'auto'}}
         columns={columns}
-        dataSource={users.data && users.data.data.length > 0 ? users.data.data : []}
+        dataSource={users.data?.data.length > 0 ? users.data.data : []}
         loading={users.isLoading}
         pagination={{
           pageSize: 20,

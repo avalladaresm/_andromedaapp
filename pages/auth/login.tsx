@@ -29,10 +29,10 @@ const Login = () => {
 				queryCache.setQueryData('Auth', data)
 				Cookies.set('currentUser', JSON.stringify(data.data), { expires: 7 })
 				createLog({
-					userName: variables && variables.username,
+					userName: variables?.username,
 					date: moment(),
 					type: LogTypes.SIGNIN,
-					description: `${SignInStatus.SIGN_IN_SUCCESS}: ${variables && variables.username} signed in successfully.`,
+					description: `${SignInStatus.SIGN_IN_SUCCESS}: ${variables?.username} signed in successfully.`,
 					data: JSON.stringify(`${SignInStatus.SIGN_IN_SUCCESS}`)
 				})
 				router.push('/dashboard')
@@ -40,7 +40,7 @@ const Login = () => {
 			onError: (error: AxiosError, variables) => {
 				message.error('Login failed!')
 				createLog({
-					userName: variables && variables.username,
+					userName: variables?.username,
 					date: moment(),
 					type: LogTypes.SIGNIN,
 					description: `${SignInStatus.SIGN_IN_ERROR}: ${variables.username} had an error logging in.`,

@@ -47,7 +47,7 @@ const LatestUsers = () => {
   return (
 		<Card title={intl.formatMessage({id:'latestUsers'})}>
 			<Table
-				dataSource={users.data && users.data.data.slice(users.data.data.length-5, users.data.data.length)}
+				dataSource={users.data?.data.slice(users.data.data.length-5, users.data.data.length)}
 				columns={columns}
 				pagination={false}
 				size='small'

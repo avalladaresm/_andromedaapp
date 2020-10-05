@@ -19,15 +19,15 @@ const Logs: React.FC<React.ReactNode> = () => {
   const [createLog] = useCreateLog()
 
   useEffect(() => {
-    if (auth.data && auth.data.currentUser && auth.data.currentUser.roles.includes('ROLE_ADMIN')) {
+    if (auth.data?.currentUser?.roles.includes('ROLE_ADMIN')) {
       setIsAuthorized(true)
     }
-    else {
+    else if(!auth.data?.currentUser?.roles.includes('ROLE_ADMIN')) {
 			createLog({
-				userName: auth.data && auth.data.currentUser && auth.data.currentUser.userName,
+				userName: auth.data?.currentUser?.userName,
 				date: moment(),
 				type: LogTypes.UNAUTHORIZED_ACCESS,
-				description: `User ${auth.data && auth.data.currentUser && auth.data.currentUser.userName} attempting to access ${router.pathname}`,
+				description: `User ${auth.data?.currentUser?.userName} attempting to access ${router.pathname}`,
 				data: JSON.stringify({path: router.pathname})
 			})
       setIsAuthorized(false)
@@ -105,7 +105,7 @@ const Logs: React.FC<React.ReactNode> = () => {
             size='small'
             style={{overflowX:'auto'}}
             columns={columns}
-						dataSource={logs.data && logs.data.data.length > 0 ? orderBy(logs.data.data, 'date', 'desc') : []}
+						dataSource={logs.data?.data.length > 0 ? orderBy(logs.data.data, 'date', 'desc') : []}
             pagination={{
               pageSize: 100,
               position:[ 'topRight', 'bottomRight']

@@ -72,7 +72,7 @@ const MainLayout: React.FC<ReactNode> = ({ children }) => {
           name: 'Logs',
           icon: <UnorderedListOutlined />,
           authority: ['ROLE_ADMIN'],
-          hideInMenu: auth.data && auth.data.currentUser && !auth.data.currentUser.roles.includes('ROLE_ADMIN')
+          hideInMenu: !auth.data?.currentUser?.roles.includes('ROLE_ADMIN')
         }
       ]
     }
@@ -83,7 +83,7 @@ const MainLayout: React.FC<ReactNode> = ({ children }) => {
       <>
         <Space>
 					{isFetching ? <Spin /> : ''}
-          <p style={{ textAlign: 'left' }}>Hello {auth.data && auth.data.currentUser && auth.data.currentUser.userName}</p>
+          <p style={{ textAlign: 'left' }}>Hello {auth.data?.currentUser?.userName}</p>
           <Dropdown
             trigger={['click']}
             overlay={
@@ -111,7 +111,7 @@ const MainLayout: React.FC<ReactNode> = ({ children }) => {
         menuHeaderRender={menuHeaderRender}
         fixedHeader
         rightContentRender={() => (<LoginOptions />)}
-        loading={pageLoading.data && pageLoading.data.isPageLoading}
+        loading={pageLoading.data?.isPageLoading}
         navTheme='dark'
       >
         {children}
