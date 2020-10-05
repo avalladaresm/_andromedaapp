@@ -8,6 +8,7 @@ import moment from 'moment'
 import { queryCache, useMutation, useQuery } from 'react-query'
 import { ILogIn } from '../models'
 import { message } from 'antd'
+import { GetUserSettings } from './userSettings'
 
 export const useDoSignIn = () => {
 	return useMutation((values: ILogIn) => {
@@ -17,10 +18,9 @@ export const useDoSignIn = () => {
 	})
 }
 
-export const useGetCookieAuth = () => {
-	return useMutation((values) => {
-		return values
-	})
+export const GetCookieAuth = (cookies) => {
+	queryCache.setQueryData('Auth', cookies)
+	GetUserSettings(cookies?.currentUser.userName)
 }
 
 export const useAuth = () => {

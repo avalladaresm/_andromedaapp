@@ -41,7 +41,7 @@ export const useCreateLog = () => {
 		return axios.post('http://localhost:8080/docs/logs', { data: values })
 	}, {	
 		onSuccess: () => {
-			queryCache.invalidateQueries('Logs')
+			queryCache.invalidateQueries('Logs', { refetchActive: false })
 		},
 		onError: () => {
 			console.log('what happened creating the log?')
