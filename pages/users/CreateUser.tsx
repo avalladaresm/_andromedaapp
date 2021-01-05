@@ -63,19 +63,32 @@ const CreateUser: FC<ModalSettings> = (props) => {
   const SignupSchema = object().shape({
     firstName: string()
       .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
+      .max(255, 'Too Long!')
       .required('Required'),
+    middleName: string()
+      .min(2, 'Too Short!')
+      .max(255, 'Too Long!'),
     lastName: string()
       .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
+      .max(255, 'Too Long!')
+      .required('Required'),
+    userName: string()
+      .min(2, 'Too Short!')
+      .max(25, 'Too Long!')
       .required('Required'),
     email: string().email('Invalid email').required('Required'),
+    cellphone: string()
+      .required('Required'),
+    gender: string()
+      .required('Required')
+
   });
 
   const initialValues: Partial<FormikValues> = {
     firstName: '',
     middleName: '',
     lastName: '',
+    userName: '',
     email: '',
     gender: '',
     cellphone: '',
@@ -101,7 +114,7 @@ const CreateUser: FC<ModalSettings> = (props) => {
           console.log(values);
         }}
       >
-        {({ errors, touched, initialValues, values, resetForm, dirty, setFieldValue, }) => (
+        {({ errors, touched, initialValues, values, resetForm, dirty, setFieldValue, setTouched }) => (
           <Form>
             <div className='space-y-6'>
 
@@ -121,8 +134,14 @@ const CreateUser: FC<ModalSettings> = (props) => {
                     </div>
                     <Field
                       name='firstName'
-                      placeholder='Pedro'
-                      className={`min-w-full ${(values.firstName === initialValues.firstName && !touched.firstName) ? '' : (errors.firstName ? 'ring-2 ring-red-600 ring-inset ring-opacity-50' : 'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500')} text-center shadow-sm rounded-sm h-10`}
+                      placeholder={!touched.firstName ? 'Pedro' : ''}
+                      className={`min-w-full ${(
+                        values.firstName === initialValues.firstName && !touched.firstName
+                      ) ? '' : (
+                          errors.firstName ?
+                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                        )} text-center shadow-sm rounded-sm h-10`}
                       style={{ outline: 'none' }}
                     />
                   </div>
@@ -140,8 +159,14 @@ const CreateUser: FC<ModalSettings> = (props) => {
                     </div>
                     <Field
                       name='middleName'
-                      placeholder='Ramirez'
-                      className={`min-w-full ${(values.middleName === initialValues.middleName && !touched.middleName) ? '' : (errors.middleName ? 'ring-2 ring-red-600 ring-inset ring-opacity-50' : 'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500')} text-center shadow-sm rounded-sm h-10`}
+                      placeholder={!touched.middleName ? 'Pablo' : ''}
+                      className={`min-w-full ${(
+                        values.middleName === initialValues.middleName && !touched.middleName
+                      ) ? '' : (
+                          errors.middleName ?
+                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                        )} text-center shadow-sm rounded-sm h-10`}
                       style={{ outline: 'none' }}
                     />
                   </div>
@@ -159,8 +184,14 @@ const CreateUser: FC<ModalSettings> = (props) => {
                     </div>
                     <Field
                       name='lastName'
-                      placeholder='Ramirez'
-                      className={`min-w-full ${(values.lastName === initialValues.lastName && !touched.lastName) ? '' : (errors.lastName ? 'ring-2 ring-red-600 ring-inset ring-opacity-50' : 'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500')} text-center shadow-sm rounded-sm h-10`}
+                      placeholder={!touched.lastName ? 'Ramirez' : ''}
+                      className={`min-w-full ${(
+                        values.lastName === initialValues.lastName && !touched.lastName
+                      ) ? '' : (
+                          errors.lastName ?
+                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                        )} text-center shadow-sm rounded-sm h-10`}
                       style={{ outline: 'none' }}
                     />
                   </div>
@@ -170,19 +201,25 @@ const CreateUser: FC<ModalSettings> = (props) => {
                   <div>
 
                     <div className='flex flex-row space-x-2'>
-                      <label htmlFor='email'><span className='text-red-600'>*</span>Email</label>
-                      {(values.email === initialValues.email && !touched.email) ?
+                      <label htmlFor='userName'><span className='text-red-600'>*</span>Username</label>
+                      {(values.userName === initialValues.userName && !touched.userName) ?
                         null :
-                        (errors.email ? (
-                          <div className='text-red-600'>{errors.email}</div>
+                        (errors.userName ? (
+                          <div className='text-red-600'>{errors.userName}</div>
                         ) :
                           <FcCheckmark />)
                       }
                     </div>
                     <Field
-                      name='email' type='email'
-                      placeholder='pedro@ejemplo.com'
-                      className={`min-w-full ${(values.email === initialValues.email && !touched.email) ? '' : (errors.email ? 'ring-2 ring-red-600 ring-inset ring-opacity-50' : 'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500')} text-center shadow-sm rounded-sm h-10`}
+                      name='userName'
+                      placeholder={!touched.userName ? 'p_ramirez1' : ''}
+                      className={`min-w-full ${(
+                        values.userName === initialValues.userName && !touched.userName
+                      ) ? '' : (
+                          errors.userName ?
+                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                        )} text-center shadow-sm rounded-sm h-10`}
                       style={{ outline: 'none' }}
                     />
                   </div>
@@ -200,22 +237,21 @@ const CreateUser: FC<ModalSettings> = (props) => {
                     </div>
                     <Field
                       name='email' type='email'
-                      placeholder='pedro@ejemplo.com'
-                      className={`min-w-full ${(values.email === initialValues.email && !touched.email) ? '' : (errors.email ? 'ring-2 ring-red-600 ring-inset ring-opacity-50' : 'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500')} text-center shadow-sm rounded-sm h-10`}
+                      placeholder={!touched.email ? 'pedro@ejemplo.com' : ''}
+                      className={`min-w-full ${(
+                        values.email === initialValues.email && !touched.email
+                      ) ? '' : (
+                          errors.email ?
+                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                        )} text-center shadow-sm rounded-sm h-10`}
                       style={{ outline: 'none' }}
-                    />
-                  </div>
-                  <div>
-                    <Field name='gender'
-                      children={({ field }) => (
-                        <Select {...field} value={values.gender} onChange={(v: string) => setFieldValue(field.name, v)} items={genderOptions} defaultValue='Select a gender' label='Gender' />
-                      )}
                     />
                   </div>
                   <div>
 
                     <div className='flex flex-row space-x-2'>
-                      <label htmlFor='cellphone'>Cellphone</label>
+                      <label htmlFor='cellphone'><span className='text-red-600'>*</span>Cellphone</label>
                       {(values.cellphone === initialValues.cellphone && !touched.cellphone) ?
                         null :
                         (errors.cellphone ? (
@@ -226,9 +262,41 @@ const CreateUser: FC<ModalSettings> = (props) => {
                     </div>
                     <Field
                       name='cellphone'
-                      placeholder='pedro@ejemplo.com'
-                      className={`min-w-full ${(values.cellphone === initialValues.cellphone && !touched.cellphone) ? '' : (errors.cellphone ? 'ring-2 ring-red-600 ring-inset ring-opacity-50' : 'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500')} text-center shadow-sm rounded-sm h-10`}
+                      placeholder={!touched.cellphone ? 'xxxx-xxxx' : ''}
+                      className={`min-w-full ${(
+                        values.cellphone === initialValues.cellphone && !touched.cellphone
+                      ) ? '' : (
+                          errors.cellphone ?
+                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                        )} text-center shadow-sm rounded-sm h-10`}
                       style={{ outline: 'none' }}
+                    />
+
+                  </div>
+                  <div>
+                    <div className='flex flex-row space-x-2'>
+                      <label htmlFor='gender'><span className='text-red-600'>*</span>Gender</label>
+                      {(values.gender === initialValues.gender && !touched.gender) ?
+                        null :
+                        (errors.gender ? (
+                          <div className='text-red-600'>{errors.gender}</div>
+                        ) :
+                          <FcCheckmark />)
+                      }
+                    </div>
+                    {console.log(errors, values, touched)}
+                    <Field name='gender'
+                      children={({ field }) => (
+                        <Select {...field} value={values.gender} isRequired
+                          onChange={(v: string) => {
+                            setFieldValue(field.name, v),
+
+                              console.log('v', v)
+                          }}
+                          items={genderOptions} defaultValue='Select a gender'
+                          onTouch={() => setTouched({ ...touched, gender: true })} />
+                      )}
                     />
                   </div>
                   {/* <button type='submit'>Submit</button> */}

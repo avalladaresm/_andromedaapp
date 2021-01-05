@@ -4,6 +4,7 @@ import { SelectSettings } from '../models/SelectSettings';
 
 const Select: FC<SelectSettings> = (props) => {
   const [displayingText, setDisplayingText] = useState<string>(undefined)
+  const [touchedError, setTouchedError] = useState<boolean>(false)
 
   useEffect(() => {
     const index = props.items.findIndex(x => x.value === props.value)
@@ -17,13 +18,18 @@ const Select: FC<SelectSettings> = (props) => {
           as='div'
           value={displayingText}
           onChange={props.onChange}
+          onBlur={() => { displayingText ? setTouchedError(false) : (setTouchedError(true), props.onTouch(), console.log('is touching lol')) }}
         >
           {({ open }) => (
             <>
-              <Listbox.Label>{props.label}</Listbox.Label>
               <div className='relative'>
                 <span className='inline-block w-full rounded-md shadow-sm'>
-                  <Listbox.Button className={`h-10 relative w-full rounded-md border border-gray-300 ${props.disabled ? 'bg-coolGray-200 pointer-events-none' : 'bg-white cursor-pointer'} pl-3 pr-10 py-2 text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm`}>
+                  <Listbox.Button
+                    className={`h-10 pl-3 pr-10 py-2 relative w-full rounded-md text-left transition ease-in-out duration-150 sm:text-sm
+                    ${props.isRequired && touchedError ? 'ring-2 ring-red-600 ring-inset ring-opacity-50' : 'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'}
+                    ${props.disabled ? 'bg-coolGray-200 pointer-events-none' : 'bg-white cursor-pointer'}`}
+                    style={{ outline: 'none' }}
+                  >
                     {displayingText ?
                       <span className='block truncate'>{displayingText}</span> :
                       <span className='block truncate text-coolGray-400'>{props.defaultValue}</span>

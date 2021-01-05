@@ -4,7 +4,9 @@ export interface SelectSettings {
   defaultValue?: string
   disabled?: boolean
   label?: string
+  isRequired?: boolean
   onChange?: () => void
+  onTouch?: () => void
 }
 
 interface Item {
