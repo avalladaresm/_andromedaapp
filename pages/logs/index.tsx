@@ -1,67 +1,55 @@
-import React, { useEffect, useState } from 'react'
-import MainLayout from '../../layouts/main'
-import { Button, PageHeader, Result, Table } from 'antd'
-import moment from 'moment'
-import { useIntl } from 'react-intl'
-import { useRouter } from 'next/router'
-import { LogTypes } from '../../models/LogTypes'
-import orderBy from 'lodash/orderBy'
-import { useLogs } from '../../services/logs'
-import { useAuth } from '../../services/auth'
-import { useCreateLog } from '../../services/logs'
+import Navigation from "../../components/navigation";
+import { notification, Table } from 'antd'
+import { FetchLogs, useLogs } from "../../services/log";
+import { useEffect, useState } from "react";
+import { useIsFetching, useQueryClient } from "react-query"
 
-const Logs: React.FC<React.ReactNode> = () => {
-  const [isAuthorized, setIsAuthorized] = useState(true)
-  const intl = useIntl()
-	const router = useRouter()
-	const logs = useLogs()
-	const auth = useAuth()
-  const [createLog] = useCreateLog()
+export default function Logs() {
+  const [allLogs, setAllLogs] = useState({ data: [] })
+  const queryClient = useQueryClient()
+  const logs = useLogs(queryClient)
+  const isFetching = useIsFetching()
 
   useEffect(() => {
-    if (auth.data?.currentUser?.roles.includes('ROLE_ADMIN')) {
-      setIsAuthorized(true)
+    const f = async () => {
+      setAllLogs(logs ?? await FetchLogs(queryClient))
     }
-    else if(!auth.data?.currentUser?.roles.includes('ROLE_ADMIN')) {
-			createLog({
-				userName: auth.data?.currentUser?.userName,
-				date: moment(),
-				type: LogTypes.UNAUTHORIZED_ACCESS,
-				description: `User ${auth.data?.currentUser?.userName} attempting to access ${router.pathname}`,
-				data: JSON.stringify({path: router.pathname})
-			})
-      setIsAuthorized(false)
+    f()
+  }, [])
+
+  useEffect(() => {
+    if ((logs?.data && logs.data.length !== 0 || allLogs.data.length !== 0) && isFetching === 0) {
+      const newRows = logs?.data.length - allLogs.data.length
+      openNotificationWithIcon(newRows)
+      newRows > 0 && setAllLogs(logs)
     }
-  }, [auth.data])
+  }, [isFetching])
 
-  const Unauthorized = () => {
-    return (
-      <Result
-        status='403'
-        title='403'
-        subTitle='Sorry, you are not authorized to access this page.'
-        extra={<Button type='primary' onClick={() => router.push('/dashboard')}>Back Home</Button>}
-      />
-    )
-  }
+  const openNotificationWithIcon = (rowsFetched: number) => {
+    notification.info({
+      message: 'Refetching complete',
+      description: `Refetching data complete, ${rowsFetched} new rows fetched.`,
+      duration: 10
+    });
+  };
 
-  const columns = [
+  const columns: any = [
     {
-      title: `${intl.formatMessage({id:'username', defaultMessage: 'userName tr?'})}`,
+      title: 'Username',
       dataIndex: 'userName',
       key: 'userName',
       responsive: ['sm'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'type', defaultMessage: 'type tr?'})}`,
+      title: 'Type',
       dataIndex: 'type',
       key: 'type',
       responsive: ['xxl'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'date', defaultMessage:'date tr?'})}`,
+      title: 'Date',
       dataIndex: 'date',
       key: 'date',
       valueType: 'dateTime',
@@ -77,46 +65,41 @@ const Logs: React.FC<React.ReactNode> = () => {
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'description', defaultMessage:'description tr?'})}`,
+      title: 'Description',
       dataIndex: 'description',
       key: 'description',
       responsive: ['md'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'data', defaultMessage:'data tr?'})}`,
+      title: 'Data',
       dataIndex: 'data',
       key: 'data',
       responsive: ['lg'],
       isShowing: true
     }
-	]
-	
+  ]
+
   return (
-    <MainLayout>
-      {isAuthorized ?
-        <>
-          <PageHeader
-            title={intl.formatMessage({id:'logs', defaultMessage:'logs tr?'})}
-            style={{backgroundColor:'white'}}
-          >
-          </PageHeader>
-          <Table
-            size='small'
-            style={{overflowX:'auto'}}
-            columns={columns}
-						dataSource={logs.data?.data.length > 0 ? orderBy(logs.data.data, 'date', 'desc') : []}
-            pagination={{
-              pageSize: 100,
-              position:[ 'topRight', 'bottomRight']
-            }}
-            loading={logs.isLoading}
-          />
-        </> :
-        <Unauthorized />
-      }
-    </MainLayout>
+    <Navigation
+      actionBar={{
+        pageTitle: 'Logs',
+        navItems: [{ title: 'Refresh', onClick: () => { queryClient.refetchQueries(['Logs']) } }],
+        isLoading: isFetching === 1
+      }}
+    >
+      <Table
+        rowKey='id'
+        size='small'
+        style={{ overflowX: 'auto' }}
+        columns={columns}
+        dataSource={allLogs?.data?.length > 0 ? allLogs?.data : []}
+        loading={isFetching === 1}
+        pagination={{
+          pageSize: 100,
+          position: ['topRight', 'bottomRight']
+        }}
+      />
+    </Navigation>
   )
 }
-
-export default Logs

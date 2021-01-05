@@ -1,13 +1,17 @@
-// includes antd style and our customization
-import '../less/antd-custom.less'
-import MainLayout from '../layouts/main'
+import React, { useContext } from 'react'
+import Login from '../pages/auth/login';
+import Navigation from '../components/navigation'
+import UserContext from '../context/UserContext';
 
-const Home: React.FunctionComponent<React.ReactNode> = (): JSX.Element => {
-	
+const Home = () => {
+  const { currentUser } = useContext(UserContext);
+
   return (
     <>
-      <MainLayout>
-      </MainLayout>
+      {currentUser === undefined ?
+        <Login /> :
+        <Navigation></Navigation>
+      }
     </>
   )
 }

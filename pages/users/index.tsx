@@ -1,135 +1,85 @@
-import React, { useEffect, useState } from 'react'
-import MainLayout from '../../layouts/main'
-import { Button, Divider, message, notification, PageHeader, Space, Table, Tooltip } from 'antd'
+import { Divider, notification, Table, Tooltip } from "antd";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { useQueryClient, useIsFetching } from "react-query";
+import Navigation from "../../components/navigation";
+import { FetchUsers, useUsers } from "../../services/user";
 import { FcOk, FcHighPriority } from 'react-icons/fc'
 import { EditTwoTone, DeleteTwoTone, PlusOutlined, CloseOutlined } from '@ant-design/icons'
-import moment from 'moment'
-import { SearchInTable } from '../../components/SearchInTable'
-import { useDispatch, useSelector } from 'react-redux'
-import size from 'lodash/size'
-import CreateForm from './components/CreateForm'
-import { GetSearchedUsers, CreateNewUser } from '../../services/users'
-import { useIntl } from 'react-intl'
-import { useUsers } from '../../services/users'
+import { IconType } from "antd/lib/notification";
+import CreateUser from "./CreateUser";
+import { object, string } from 'yup'
 
-const Users: React.FC<{}> = () => {
-  const [loading, setLoading] = useState<boolean>(false)
-  const [createUserLoading, setCreateUserLoading] = useState(false)
-  const [addNewModalLoading, setAddNewModalLoading] = useState<boolean>(false)
-  const dispatch = useDispatch()
-  const d = useSelector(state => state.users.users)
-  const searchedUsers = useSelector(state => state.users.searchedUsers)
-  const justCreated = useSelector(state => state.users.justCreated)
-  const intl = useIntl()
-  const users = useUsers()
+export default function Users() {
+  const [allUsers, setAllUsers] = useState({ data: [] })
+  const [showCreateUser, setShowCreateUser] = useState(false)
 
-  const userNotFound = () => {
-    message.error('User was not found!')
-  }
+  const queryClient = useQueryClient()
+  const users = useUsers(queryClient)
+  const isFetching = useIsFetching()
 
-  const handleAddErrorNotification = (type: string, title: string, description: string) => {
+  useEffect(() => {
+    const f = async () => {
+      setAllUsers(users ?? await FetchUsers(queryClient))
+    }
+    f()
+  }, [])
+
+  useEffect(() => {
+    if ((users?.data && users.data.length !== 0 || allUsers.data.length !== 0) && isFetching === 0) {
+      const newRows = users?.data.length - allUsers.data.length
+      openNotificationWithIcon('info', newRows)
+      newRows > 0 && setAllUsers(users)
+    }
+  }, [isFetching])
+
+  const openNotificationWithIcon = (type: IconType, rowsFetched: number) => {
     notification[type]({
-      message: title,
-      description: description
-    })
-  }
+      message: 'Refetching complete',
+      description: `Refetching data complete, ${rowsFetched} new rows fetched.`,
+      duration: 10
+    });
+  };
 
-  const handleAdd = (fields) => {
-    try {
-      dispatch(CreateNewUser(fields))
-      message.success('Added successfully')
-      return true
-    } catch (error) {
-      handleAddErrorNotification('error', 'Possible error', error.messagee)
-      message.error('Add failed, please try again!')
-      return false
-    }
-  }
+  // The native sort modifies the array in place. `_.orderBy` and `_.sortBy` do not, so we use `.concat()` to
+  // copy the array, then sort.
 
-  useEffect(() => {
-    //console.log('INITIAL', props)
-    if (size(users) === 0){
-      setLoading(true)
-      // dispatch(GetAllUsers())
-      setUsers(d)
-    }
-    else if (justCreated) {
-      setLoading(true)
-      setUsers(d)
-    }
-
-    return () => {
-      setLoading(false)
-    }
-
-  }, [d, justCreated])
-
-  useEffect(() => {
-    if (searchedUsers?.data.length > 0){
-      //setUsers(searchedUsers.data)
-      console.log(searchedUsers.length)
-    } else if (searchedUsers.status === 'NotFound') {
-      userNotFound()
-    }
-  }, [searchedUsers])
-
-  const AddNew: React.ReactNode = () => {
-    return (
-      <Button
-        type='primary'
-        icon={<PlusOutlined />}
-        onClick={() => setAddNewModalLoading(true)}
-      >
-        Add New
-      </Button>
-    )
-  }
-
-  const TableHeader = () => {
-    return (
-      <Space>
-        <AddNew />
-        <SearchInTable />
-      </Space>
-    )
-  }
-
-  const columns = [
+  const columns: any = [
     {
-      title: `${intl.formatMessage({id:'username'})}`,
+      title: 'username',
       dataIndex: 'userName',
       key: 'userName',
       responsive: ['sm'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'firstName'})}`,
+      title: 'firstName',
       dataIndex: 'firstName',
       key: 'firstName',
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'middleName'})}`,
+      title: 'middleName',
       dataIndex: 'middleName',
       key: 'middleName',
       responsive: ['lg'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'lastName'})}`,
+      title: 'lastName',
       dataIndex: 'lastName',
       key: 'lastName',
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'gender'})}`,
+      title: 'gender',
       dataIndex: 'gender',
       key: 'gender',
       responsive: ['xxl'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'dob'})}`,
+      title: 'dob',
       dataIndex: 'dob',
       key: 'dob',
       valueType: 'date',
@@ -137,62 +87,62 @@ const Users: React.FC<{}> = () => {
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'email'})}`,
+      title: 'email',
       dataIndex: 'email',
       key: 'email',
       responsive: ['md'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'verified'})}`,
+      title: 'verified',
       dataIndex: 'verified',
       key: 'verified',
       responsive: ['xxl'],
       render: (verified) => (
         <span>
           { (verified && verified) ?
-            <FcOk /> : <FcHighPriority /> }
+            <FcOk /> : <FcHighPriority />}
         </span>
       ),
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'cellphone'})}`,
+      title: 'cellphone',
       dataIndex: 'cellphone',
       key: 'cellphone',
       responsive: ['xxl'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'address'})}`,
+      title: 'address',
       dataIndex: 'address',
       key: 'address',
       responsive: ['xl'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'city'})}`,
+      title: 'city',
       dataIndex: 'city',
       key: 'city',
       responsive: ['xxl'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'state'})}`,
+      title: 'state',
       dataIndex: 'state',
       key: 'state',
       responsive: ['xxl'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'country'})}`,
+      title: 'country',
       dataIndex: 'country',
       key: 'country',
       responsive: ['xxl'],
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'createdAt'})}`,
+      title: 'createdAt',
       dataIndex: 'createdAt',
       key: 'createdAt',
       valueType: 'dateTime',
@@ -205,7 +155,7 @@ const Users: React.FC<{}> = () => {
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'lastLogin'})}`,
+      title: 'lastLogin',
       dataIndex: 'lastLogin',
       key: 'lastLogin',
       valueType: 'dateTime',
@@ -213,7 +163,7 @@ const Users: React.FC<{}> = () => {
       isShowing: true
     },
     {
-      title: `${intl.formatMessage({id:'actions'})}`,
+      title: 'actions',
       valueType: 'option',
       render: (_, record) => (
         <>
@@ -239,56 +189,48 @@ const Users: React.FC<{}> = () => {
       ),
       isShowing: true
     }
-	]
-	
-	if (users.isError) message.error('Something bad happened in users index: ')
+  ]
 
-	return (
-    <MainLayout>
-      <PageHeader
-        title={intl.formatMessage({id:'users'})}
-        extra={
-          <Space>
-            <TableHeader />
-            {searchedUsers?.status === 'Found' ?
-              <Button
-                type='link'
-                icon={<CloseOutlined />}
-                onClick={() => { dispatch(GetSearchedUsers({data: [], status: 'NotSearchedYet'})); setUsers(d) }}>{intl.formatMessage({id:'clearSearch'})}</Button> :
-              ''}
-          </Space>
-        }
-        style={{backgroundColor:'white'}}
-      >
-      </PageHeader>
+  const SignupSchema = object().shape({
+    firstName: string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    lastName: string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    email: string().email('Invalid email').required('Required'),
+  });
+
+  return (
+    <Navigation
+      actionBar={{
+        pageTitle: 'Users',
+        navItems: [{
+          title: 'Refresh', onClick: () => { queryClient.refetchQueries(['Users']) }
+        }, {
+          title: 'New User', onClick: () => { setShowCreateUser(true) }
+        }],
+        isLoading: isFetching === 1
+      }}
+    >
       <Table
-        style={{overflowX:'auto'}}
+        rowKey='id'
+        style={{ overflowX: 'auto' }}
         columns={columns}
-        dataSource={users.data?.data.length > 0 ? users.data.data : []}
-        loading={users.isLoading}
+        dataSource={allUsers?.data?.length > 0 ? allUsers?.data : []}
+        loading={isFetching === 1}
         pagination={{
           pageSize: 20,
-          position:[ 'topRight', 'bottomRight']
+          position: ['topRight', 'bottomRight']
         }}
       />
-      <CreateForm
-        onCreate={async (value) => {
-          setCreateUserLoading(true)
-          const success = await handleAdd(value)
-          if (success) {
-            setCreateUserLoading(false)
-            setAddNewModalLoading(false)
-          }
-          setCreateUserLoading(false)
-        }}
-        visible={addNewModalLoading}
-        onCancel={() => {
-          setAddNewModalLoading(false)
-        }}
-        loading={createUserLoading}
+      <CreateUser
+        isShowing={showCreateUser}
+        title='Create user'
+        onCancel={() => setShowCreateUser(false)}
       />
-    </MainLayout>
+    </Navigation>
   )
 }
-
-export default Users
