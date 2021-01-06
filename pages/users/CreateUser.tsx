@@ -4,7 +4,7 @@ import Modal from '../../components/Modal'
 import { ModalSettings } from '../../models/ModalSettings'
 import { object, string } from 'yup'
 import { FcCheckmark } from 'react-icons/fc';
-import { Tooltip } from 'antd'
+import { Tooltip, DatePicker } from 'antd'
 import Select from '../../components/Select'
 import { FetchCitiesByState, FetchCountries, FetchStatesByCountry } from '../../services/location'
 
@@ -80,6 +80,8 @@ const CreateUser: FC<ModalSettings> = (props) => {
     cellphone: string()
       .required('Required'),
     gender: string()
+      .required('Required'),
+    dob: string()
       .required('Required')
 
   });
@@ -91,6 +93,7 @@ const CreateUser: FC<ModalSettings> = (props) => {
     userName: '',
     email: '',
     gender: '',
+    dob: '',
     cellphone: '',
     address: '',
     cityId: '',
@@ -193,6 +196,32 @@ const CreateUser: FC<ModalSettings> = (props) => {
                             'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
                         )} text-center shadow-sm rounded-sm h-10`}
                       style={{ outline: 'none' }}
+                    />
+                  </div>
+
+                  <div className='flex-grow'>
+                    <div className='flex flex-row space-x-2'>
+                      <label htmlFor='dob'><span className='text-red-600'>*</span>Date of birth</label>
+                      {(values.dob === initialValues.dob && !touched.dob) ?
+                        null :
+                        (errors.dob ? (
+                          <div className='text-red-600'>{errors.dob}</div>
+                        ) :
+                          <FcCheckmark />)
+                      }
+                    </div>
+                    <DatePicker allowClear format='MM/DD/YYYY'
+                      onChange={(undefined, dateString) => {
+                        setFieldValue('dob', dateString)
+                      }}
+                      onClick={() => setTouched({ ...touched, dob: true })}
+                      className={`min-w-full ${(
+                        values.dob === initialValues.dob && !touched.dob
+                      ) ? '' : (
+                          errors.dob ?
+                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                        )} text-center shadow-sm rounded-sm h-10`}
                     />
                   </div>
                 </div>
