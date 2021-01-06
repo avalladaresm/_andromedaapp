@@ -326,7 +326,33 @@ const CreateUser: FC<ModalSettings> = (props) => {
                       )}
                     />
                   </div>
-                  {/* <button type='submit'>Submit</button> */}
+                </div>
+
+                <div className='flex flex-row space-x-2'>
+                  <div className='flex-grow'>
+                    <div className='flex flex-row space-x-2'>
+                      <label htmlFor='address'>Address</label>
+                      {(values.address === initialValues.address && !touched.address) ?
+                        null :
+                        (errors.address ? (
+                          <div className='text-red-600'>{errors.address}</div>
+                        ) :
+                          <FcCheckmark />)
+                      }
+                    </div>
+                    <Field
+                      name='address'
+                      placeholder={!touched.address ? 'Colonia Bonita, 1ra calle sur entre 7ma y 8va avenida' : ''}
+                      className={`min-w-full ${(
+                        values.address === initialValues.address && !touched.address
+                      ) ? '' : (
+                          errors.address ?
+                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                        )} text-center shadow-sm rounded-sm h-10`}
+                      style={{ outline: 'none' }}
+                    />
+                  </div>
                 </div>
 
                 <div className='flex flex-row space-x-2'>
@@ -378,7 +404,6 @@ const CreateUser: FC<ModalSettings> = (props) => {
                       )}
                     />
                   </div>
-                  {/* <button type='submit'>Submit</button> */}
                 </div>
 
               </div>
