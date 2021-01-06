@@ -14,7 +14,6 @@ const CreateUser: FC<ModalSettings> = (props) => {
   const [states, setStates] = useState([])
   const [selectedState, setSelectedState] = useState<number>(undefined)
   const [cities, setCities] = useState([])
-  const [selectedCity, setSelectedCity] = useState<string>('')
 
   const genderOptions = [{
     value: 'Male', displayValue: 'Male'
@@ -83,7 +82,6 @@ const CreateUser: FC<ModalSettings> = (props) => {
       .required('Required'),
     dob: string()
       .required('Required')
-
   });
 
   const initialValues: Partial<FormikValues> = {
@@ -99,9 +97,6 @@ const CreateUser: FC<ModalSettings> = (props) => {
     cityId: '',
     stateId: '',
     countryId: '',
-    city: '',
-    state: '',
-    country: '',
   }
 
   return (
@@ -357,49 +352,48 @@ const CreateUser: FC<ModalSettings> = (props) => {
 
                 <div className='flex flex-row space-x-2'>
                   <div className='flex-grow'>
-                    <label htmlFor='gender'>Country</label>
-                    <Field name='country' className='min-w-full'
+                    <label htmlFor='countryId'>Country</label>
+                    <Field name='countryId' className='min-w-full'
                       children={({ field }) => (
-                        <Select {...field} value={values.country}
+                        <Select {...field} value={values.countryId}
                           onChange={(v: string) => {
                             setFieldValue(field.name, v);
                             setSelectedCountry(v);
-                            setFieldValue('state', '');
-                            setFieldValue('city', '');
+                            setFieldValue('stateId', '');
+                            setFieldValue('cityId', '');
                           }}
                           items={countries ?? []} defaultValue='Select a country' label='Country'
-                          onTouch={() => setTouched({ ...touched, country: true })}
+                          onTouch={() => setTouched({ ...touched, countryId: true })}
                         />
                       )}
                     />
                   </div>
                   <div className='flex-grow'>
-                    <label htmlFor='gender'>State</label>
-                    <Field name='state'
+                    <label htmlFor='stateId'>State</label>
+                    <Field name='stateId'
                       children={({ field }) => (
-                        <Select {...field} disabled={!(selectedCountry.length > 0)} value={values.state}
+                        <Select {...field} disabled={!(selectedCountry.length > 0)} value={values.stateId}
                           onChange={(v: string) => {
                             setFieldValue(field.name, v);
                             setSelectedState(parseInt(v));
-                            setFieldValue('city', '');
+                            setFieldValue('cityId', '');
                           }}
                           items={states ?? []} defaultValue='Select a state' label='State'
-                          onTouch={() => setTouched({ ...touched, gender: true })}
+                          onTouch={() => setTouched({ ...touched, stateId: true })}
                         />
                       )}
                     />
                   </div>
                   <div className='flex-grow'>
-                    <label htmlFor='gender'>City</label>
-                    <Field name='city'
+                    <label htmlFor='cityId'>City</label>
+                    <Field name='cityId'
                       children={({ field }) => (
-                        <Select {...field} disabled={!(selectedState > 0)} value={values.city}
+                        <Select {...field} disabled={!(selectedState > 0)} value={values.cityId}
                           onChange={(v: string) => {
                             setFieldValue(field.name, v)
-                            setSelectedCity(v)
                           }}
                           items={cities ?? []} defaultValue='Select a city' label='City'
-                          onTouch={() => setTouched({ ...touched, gender: true })}
+                          onTouch={() => setTouched({ ...touched, cityId: true })}
                         />
                       )}
                     />
