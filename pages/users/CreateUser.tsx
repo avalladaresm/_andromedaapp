@@ -314,17 +314,15 @@ const CreateUser: FC<ModalSettings> = (props) => {
                           <FcCheckmark />)
                       }
                     </div>
-                    {console.log(errors, values, touched)}
                     <Field name='gender'
                       children={({ field }) => (
                         <Select {...field} value={values.gender} isRequired
                           onChange={(v: string) => {
-                            setFieldValue(field.name, v),
-
-                              console.log('v', v)
+                            setFieldValue(field.name, v)
                           }}
                           items={genderOptions} defaultValue='Select a gender'
-                          onTouch={() => setTouched({ ...touched, gender: true })} />
+                          onTouch={() => setTouched({ ...touched, gender: true })}
+                        />
                       )}
                     />
                   </div>
@@ -333,21 +331,24 @@ const CreateUser: FC<ModalSettings> = (props) => {
 
                 <div className='flex flex-row space-x-2'>
                   <div className='flex-grow'>
+                    <label htmlFor='gender'>Country</label>
                     <Field name='country' className='min-w-full'
                       children={({ field }) => (
                         <Select {...field} value={values.country}
                           onChange={(v: string) => {
                             setFieldValue(field.name, v);
-                            console.log('v', v);
                             setSelectedCountry(v);
                             setFieldValue('state', '');
                             setFieldValue('city', '');
                           }}
-                          items={countries ?? []} defaultValue='Select a country' label='Country' />
+                          items={countries ?? []} defaultValue='Select a country' label='Country'
+                          onTouch={() => setTouched({ ...touched, country: true })}
+                        />
                       )}
                     />
                   </div>
                   <div className='flex-grow'>
+                    <label htmlFor='gender'>State</label>
                     <Field name='state'
                       children={({ field }) => (
                         <Select {...field} disabled={!(selectedCountry.length > 0)} value={values.state}
@@ -356,11 +357,14 @@ const CreateUser: FC<ModalSettings> = (props) => {
                             setSelectedState(parseInt(v));
                             setFieldValue('city', '');
                           }}
-                          items={states ?? []} defaultValue='Select a state' label='State' />
+                          items={states ?? []} defaultValue='Select a state' label='State'
+                          onTouch={() => setTouched({ ...touched, gender: true })}
+                        />
                       )}
                     />
                   </div>
                   <div className='flex-grow'>
+                    <label htmlFor='gender'>City</label>
                     <Field name='city'
                       children={({ field }) => (
                         <Select {...field} disabled={!(selectedState > 0)} value={values.city}
@@ -368,7 +372,9 @@ const CreateUser: FC<ModalSettings> = (props) => {
                             setFieldValue(field.name, v)
                             setSelectedCity(v)
                           }}
-                          items={cities ?? []} defaultValue='Select a city' label='City' />
+                          items={cities ?? []} defaultValue='Select a city' label='City'
+                          onTouch={() => setTouched({ ...touched, gender: true })}
+                        />
                       )}
                     />
                   </div>

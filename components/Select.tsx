@@ -18,7 +18,7 @@ const Select: FC<SelectSettings> = (props) => {
           as='div'
           value={displayingText}
           onChange={props.onChange}
-          onBlur={() => { displayingText ? setTouchedError(false) : (setTouchedError(true), props.onTouch(), console.log('is touching lol')) }}
+          onBlur={() => { displayingText ? setTouchedError(false) : (setTouchedError(true), props.onTouch && props.onTouch()) }}
         >
           {({ open }) => (
             <>
