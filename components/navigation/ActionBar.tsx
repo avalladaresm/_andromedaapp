@@ -12,7 +12,7 @@ const ActionBar: FC<ActionBarSettings> = (props) => {
   }, [props.isLoading])
 
   return (
-    <NavigationBar className='grid grid-cols-12' backgroundColor='bg-lightBlue-800' height='h-12' spaceXItems='space-x-4' justifyContent='justify-center'>
+    <NavigationBar className='grid grid-cols-12' backgroundColor='bg-lightBlue-700' height='h-12' spaceXItems='space-x-4' justifyContent='justify-center'>
       <div className='col-start-3 col-span-1 flex items-center justify-center'>
         <p className='text-4xl align-middle text-blueGray-50 m-0'>{props.pageTitle}</p>
       </div>

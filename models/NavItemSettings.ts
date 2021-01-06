@@ -5,7 +5,7 @@ export interface NavItemSettings {
   title: string
   link?: string
   styles?: StyleProps
-  active?: boolean
+  activePage?: string
   className?: string
   onClick?: () => void
 }
