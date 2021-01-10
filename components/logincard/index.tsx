@@ -39,7 +39,7 @@ export const LoginCard: FC<LoginSettings> = () => {
   }
 
   return (
-    <div style={{height: '30rem'}} className='bg-gradient-to-br from-lightBlue-300 to-indigo-400 place-self-center rounded-2xl w-96 border-solid border-blueGray-700 shadow-2xl px-5 py-5 space-y-3'>
+    <div style={{ height: '30rem' }} className='bg-gradient-to-br from-lightBlue-300 to-indigo-400 place-self-center rounded-2xl w-96 border-solid border-blueGray-700 shadow-2xl px-5 py-5 space-y-3'>
       <div className='flex flex-col space-y-3'>
         <TempLogo className='self-center' />
         <p className='text-center font-sans font-semibold text-2xl text-blueGray-50'>
@@ -62,6 +62,9 @@ export const LoginCard: FC<LoginSettings> = () => {
           }
         </div>
       </form>
+      <div className='flex align-middle justify-center text-gray-50'>
+        Don't have an account yet? <a onClick={() => router.push('/auth/signup')} className='pl-1 text-blue-800 hover:text-blue-800 hover:underline'>Sign up</a>
+      </div>
     </div>
   )
 }
