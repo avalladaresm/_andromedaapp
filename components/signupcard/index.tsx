@@ -18,7 +18,6 @@ interface ILogin {
 
 export const SignupCard: FC<LoginSettings> = () => {
   const [loginData, setLoginData] = useState<ILogin>()
-  const [selectedAccountType, setSelectedAccountType] = useState<number>(0);
   const queryClient = useQueryClient()
   const doLogin = useDoLogin()
   const router = useRouter();
@@ -54,10 +53,6 @@ export const SignupCard: FC<LoginSettings> = () => {
     accountTypeId: ''
   }
 
-  const onChange = (e: any) => {
-    setSelectedAccountType(e.target.value)
-  }
-  console.log('e',selectedAccountType)
   return (
     <div style={{ height: '40rem' }} className='w-96 bg-blue-100 place-self-center rounded-2xl border-solid border-blueGray-700 shadow-2xl px-5 py-5 space-y-3'>
       <div className='flex flex-col space-y-3'>
@@ -74,8 +69,8 @@ export const SignupCard: FC<LoginSettings> = () => {
           console.log(values);
         }}
       >
-        {({ errors, touched, initialValues, values, resetForm, dirty, setFieldValue, setTouched }) => (
-          <Form>
+        {({ errors, touched, initialValues, values, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
             <div className='flex flex-col space-y-2'>
 
               <div className='flex flex-col self-center w-60'>
@@ -89,20 +84,16 @@ export const SignupCard: FC<LoginSettings> = () => {
                       <FcCheckmark />)
                   }
                 </div>
-                <div className='flex space-x-3'>
+                <div className='flex space-x-3' >
                   <div>
                     <label className='cursor-pointer'>
-                      <Field name='accountTypeId' type='radio' value={2} checked={selectedAccountType === 2 ? true : false}
-                        onChange={(e: any) => { setSelectedAccountType(e.target.value), setFieldValue('accountTypeId', e.target.value) }}
-                      />
+                      <Field name='accountTypeId' type='radio' value='2' />
                       Yes
                       </label>
                   </div>
                   <div>
                     <label className='cursor-pointer'>
-                      <Field name='accountTypeId' type='radio' value={1} checked={selectedAccountType === 1 ? true : false}
-                        onChange={(e: any) => { setSelectedAccountType(e.target.value), setFieldValue('accountTypeId', e.target.value) }}
-                      />
+                      <Field name='accountTypeId' type='radio' value='1' />
                        No
                        </label>
                   </div>
@@ -237,38 +228,21 @@ export const SignupCard: FC<LoginSettings> = () => {
 
               <div className='flex flex-col self-center w-6/12 space-y-3 pt-3'>
                 {doLogin.isLoading ?
-                  <button disabled type='button' className='h-10 rounded-md bg-blueGray-400 text-md font-semibold disabled:opacity-75 text-coolGray-50 flex flex-row justify-center items-center cursor-wait'>
+                  <button disabled type='button' className='h-8 rounded-md bg-blueGray-400 text-md font-semibold disabled:opacity-75 text-coolGray-50 flex flex-row justify-center items-center cursor-wait'>
                     <Spin /> signing up...
-						</button> :
-                  <button onClick={() => console.log('values', values)} type='button' className='h-10 rounded-md bg-lightBlue-500 hover:bg-lightBlue-700 hover:shadow-inner shadow-md text-md font-semibold text-coolGray-50 flex flex-row justify-center items-center'>
+      						</button> :
+                  <button type='submit' className='h-8 rounded-md bg-lightBlue-500 hover:bg-lightBlue-700 hover:shadow-inner shadow-md text-md font-semibold text-coolGray-50 flex flex-row justify-center items-center'>
                     Enter
-						</button>
+			      			</button>
                 }
               </div>
 
 
             </div>
-          </Form>
+          </form>
         )}
 
       </Formik>
-
-      {/* <form method='post' className='flex flex-col space-y-6'>
-        <div className='flex flex-col self-center w-9/12 space-y-1'>
-          <input style={{ outline: 'none' }} type='text' onChange={(e) => setLoginData({ ...loginData, username: e.target.value })} className='text-center shadow-xl rounded-t-md h-10 focus:ring-4 focus:ring-opacity-75 focus:ring-blue-500 ' placeholder='username' />
-          <input style={{ outline: 'none' }} type='password' onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} className='text-center shadow-xl rounded-b-md h-10 focus:ring-4 focus:ring-opacity-75 focus:ring-blue-500' placeholder='password' />
-        </div>
-        <div className='flex flex-col self-center w-6/12 space-y-3'>
-          {doLogin.isLoading ?
-            <button disabled type='button' className='h-10 rounded-md bg-blueGray-400 text-md font-semibold disabled:opacity-75 text-coolGray-50 flex flex-row justify-center items-center cursor-wait'>
-              <Spin /> logging in...
-						</button> :
-            <button onClick={() => onLogin()} type='button' className='h-10 rounded-md bg-lightBlue-500 hover:bg-lightBlue-700 hover:shadow-inner shadow-md text-md font-semibold text-coolGray-50 flex flex-row justify-center items-center'>
-              Enter
-						</button>
-          }
-        </div>
-      </form> */}
       <div className='flex align-middle justify-center'>
         Already have an account? <a onClick={() => router.push('/auth/login')} className='pl-1 text-blue-800 hover:text-blue-800 hover:underline'>Login</a>
       </div>
