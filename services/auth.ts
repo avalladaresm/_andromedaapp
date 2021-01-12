@@ -1,18 +1,25 @@
 import axios from "axios"
 import { QueryClient, useMutation } from "react-query"
-import { cookieNames, deleteCookie, documentCookieJsonify } from "../utils/utils"
-
-interface ILogin {
-  username: string
-  password: string
-}
+import { AccountLogIn, AccountSignUp } from "../models/Auth"
+import { cookieNames, deleteCookie } from "../utils/utils"
 
 export const useDoLogin = () => {
-  return useMutation((values: ILogin) => {
+  return useMutation((values: AccountLogIn) => {
     return axios.post('http://localhost:3000/auth/login', {
       username: values.username, password: values.password
     })
   })
+}
+
+export const signup = async (values: AccountSignUp) => {
+  const signup = await axios.post('http://localhost:3000/auth/signup', {
+    data: {
+      name: values.name, surname: values.username,
+      username: values.username, password: values.password,
+      email: values.email, accountTypeId: values.accountTypeId
+    }
+  })
+  return signup
 }
 
 export const useDoLogout = (queryClient: QueryClient, router, cookie: string) => {

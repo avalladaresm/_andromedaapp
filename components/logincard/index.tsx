@@ -7,14 +7,10 @@ import { message } from "antd"
 import { useRouter } from 'next/router'
 import { AxiosError } from "axios"
 import { useQueryClient } from "react-query"
-
-interface ILogin {
-  username: string
-  password: string
-}
+import { AccountLogIn } from "../../models/Auth"
 
 export const LoginCard: FC<LoginSettings> = () => {
-  const [loginData, setLoginData] = useState<ILogin>()
+  const [loginData, setLoginData] = useState<AccountLogIn>()
 
   const queryClient = useQueryClient()
   const doLogin = useDoLogin()

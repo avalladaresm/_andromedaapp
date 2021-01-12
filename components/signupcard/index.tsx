@@ -1,25 +1,16 @@
-import React, { FC, useState } from "react"
+import React, { FC } from "react"
 import { LoginSettings } from "../../models/LoginSettings"
 import Spin from "../Spin"
 import { TempLogo } from "../TempLogo"
-import { setAuth, useDoLogin } from '../../services/auth'
-import { DatePicker, Form, message } from "antd"
+import { signup } from '../../services/auth'
 import { useRouter } from 'next/router'
-import { AxiosError } from "axios"
-import { useQueryClient } from "react-query"
 import { object, string, number } from 'yup'
-import { Field, Formik, FormikValues } from "formik"
+import { Field, Formik } from "formik"
 import { FcCheckmark } from "react-icons/fc"
-
-interface ILogin {
-  username: string
-  password: string
-}
+import { AccountSignUp } from "../../models/Auth"
+import { message } from "antd"
 
 export const SignupCard: FC<LoginSettings> = () => {
-  const [loginData, setLoginData] = useState<ILogin>()
-  const queryClient = useQueryClient()
-  const doLogin = useDoLogin()
   const router = useRouter();
 
   const SignupSchema = object().shape({
@@ -44,13 +35,13 @@ export const SignupCard: FC<LoginSettings> = () => {
       .required('Required')
   });
 
-  const initialValues: Partial<FormikValues> = {
+  const initialValues: AccountSignUp = {
     name: '',
     surname: '',
     username: '',
     password: '',
     email: '',
-    accountTypeId: ''
+    accountTypeId: -1
   }
 
   return (
@@ -64,12 +55,17 @@ export const SignupCard: FC<LoginSettings> = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={SignupSchema}
-        onSubmit={values => {
-          // same shape as initial values
-          console.log(values);
+        onSubmit={async (values, { resetForm }) => {
+          const res = await signup(values)
+          if (res.status === 200)
+            message.success('Sign up success! Check your email to verify your account.')
+          else {
+            message.success('Sign up failed :(')
+          }
+          resetForm()
         }}
       >
-        {({ errors, touched, initialValues, values, handleSubmit }) => (
+        {({ errors, touched, initialValues, values, handleSubmit, isSubmitting }) => (
           <form onSubmit={handleSubmit}>
             <div className='flex flex-col space-y-2'>
 
@@ -227,7 +223,7 @@ export const SignupCard: FC<LoginSettings> = () => {
               </div>
 
               <div className='flex flex-col self-center w-6/12 space-y-3 pt-3'>
-                {doLogin.isLoading ?
+                {isSubmitting ?
                   <button disabled type='button' className='h-8 rounded-md bg-blueGray-400 text-md font-semibold disabled:opacity-75 text-coolGray-50 flex flex-row justify-center items-center cursor-wait'>
                     <Spin /> signing up...
       						</button> :
