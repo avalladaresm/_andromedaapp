@@ -56,13 +56,16 @@ export const SignupCard: FC<LoginSettings> = () => {
         initialValues={initialValues}
         validationSchema={SignupSchema}
         onSubmit={async (values, { resetForm }) => {
-          const res = await signup(values)
-          if (res.status === 200)
-            message.success('Sign up success! Check your email to verify your account.')
-          else {
-            message.success('Sign up failed :(')
+          try {
+            const res = await signup(values)
+            if (res.status === 200)
+              message.success('Sign up success! Check your email to verify your account.')
+            resetForm()
           }
-          resetForm()
+          catch (e) {
+            console.log(e)
+            message.error(`Sign up failed! ${e.response.data.message}`)
+          }
         }}
       >
         {({ errors, touched, initialValues, values, handleSubmit, isSubmitting }) => (

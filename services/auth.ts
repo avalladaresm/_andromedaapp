@@ -12,14 +12,19 @@ export const useDoLogin = () => {
 }
 
 export const signup = async (values: AccountSignUp) => {
-  const signup = await axios.post('http://localhost:3000/auth/signup', {
-    data: {
-      name: values.name, surname: values.username,
-      username: values.username, password: values.password,
-      email: values.email, accountTypeId: values.accountTypeId
-    }
-  })
-  return signup
+  try {
+    const signup = await axios.post('http://localhost:3000/auth/signup', {
+      data: {
+        name: values.name, surname: values.username,
+        username: values.username, password: values.password,
+        email: values.email, accountTypeId: values.accountTypeId
+      }
+    })
+
+    return signup
+  } catch (e) {
+    throw e
+  }
 }
 
 export const useDoLogout = (queryClient: QueryClient, router, cookie: string) => {
