@@ -6,7 +6,9 @@ import { cookieNames, deleteCookie } from "../utils/utils"
 export const useDoLogin = () => {
   return useMutation((values: AccountLogIn) => {
     return axios.post('http://localhost:3000/auth/login', {
-      username: values.username, password: values.password
+      data: {
+        username: values.username, password: values.password
+      }
     })
   })
 }

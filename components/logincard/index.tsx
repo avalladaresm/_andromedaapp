@@ -28,7 +28,7 @@ export const LoginCard: FC<LoginSettings> = () => {
         router.push('/')
       },
       onError: (error: AxiosError) => {
-        message.error('Login failed!')
+        message.error(`Login failed! ${error.response.data.message}`)
         console.log('erorrr', error)
       }
     })
