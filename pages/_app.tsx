@@ -83,16 +83,13 @@ function MyApp({ Component, pageProps }) {
   }, [])
 
   useEffect(() => {
-    const parsedCookie = {
-      uid: document.cookie.split(';')[0]?.split('=')[1],
-      a_token: document.cookie.split(';')[1]?.split('=')[1]
-    }
+    const parsedCookie: AuthCookie = documentCookieJsonify(document.cookie)
 
-    if (!parsedCookie.uid || !parsedCookie.a_token) router.push('/auth/login')
+    if ((!parsedCookie.uid || !parsedCookie.a_token) && router.pathname !== '/auth/signup') router.push('/auth/login')
   }, [])
 
   useEffect(() => {
-    if (currentUser === undefined) router.push('/auth/login')
+    if (currentUser === undefined && router.pathname !== '/auth/signup') router.push('/auth/login')
   }, [router.pathname])
 
   return (
