@@ -1,15 +1,20 @@
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import UserContext from "../context/UserContext";
 import { useDoLogout } from "../services/auth";
 
 export default function ProfileMenu() {
+  const [curUser, setCurUser] = useState<string>(undefined)
   const { currentUser } = useContext(UserContext);
 
   const queryClient = useQueryClient()
   const router = useRouter()
+
+  useEffect(() => {
+    setCurUser(currentUser)
+  }, [currentUser])
 
   return (
     <div className='flex items-center justify-center'>
@@ -19,7 +24,7 @@ export default function ProfileMenu() {
             <div className='bg-white'>
               <span className='rounded-md shadow-sm'>
                 <Menu.Button className='bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'>
-                  <div className='h-10 w-10 border-orange-600 rounded-full'/>
+                  <div className='h-10 w-10 border-orange-600 rounded-full' />
                 </Menu.Button>
               </span>
 
@@ -37,7 +42,7 @@ export default function ProfileMenu() {
                 >
                   <div className='px-4 py-3'>
                     <p className='text-sm leading-5'>Signed in as</p>
-                    <p className='text-sm font-medium leading-5 text-gray-900 truncate'>{currentUser}</p>
+                    <p className='text-sm font-medium leading-5 text-gray-900 truncate'>{curUser}</p>
                   </div>
 
                   <div className='py-1'>
