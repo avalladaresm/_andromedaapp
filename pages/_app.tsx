@@ -8,6 +8,8 @@ import { message } from 'antd';
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { setAuth, useAuth } from '../services/auth';
 import UserContext from '../context/UserContext';
+import { cookieNames, cookieValues, documentCookieJsonify } from '../utils/utils';
+import { AuthCookie } from '../models/AuthCookie';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,10 +27,7 @@ function MyApp({ Component, pageProps }) {
   const auth = useAuth(queryClient)
 
   useEffect(() => {
-    const parsedCookie = {
-      uid: document.cookie.split(';')[1]?.split('=')[1],
-      a_token: document.cookie.split(';')[0]?.split('=')[1]
-    }
+    const parsedCookie: AuthCookie = documentCookieJsonify(document.cookie)
 
     const isParsedCookieUnd = Object.values(parsedCookie).includes(undefined)
 
