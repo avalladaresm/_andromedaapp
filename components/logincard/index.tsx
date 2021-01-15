@@ -20,7 +20,7 @@ export const LoginCard: FC<LoginSettings> = () => {
     doLogin.mutate(loginData, {
       onSuccess: (data, variables) => {
         const cookie = data.data.split('|')
-        const authData = { uid: cookie[0], a_token: cookie[1] }
+        const authData = { uid: cookie[0], a_token: cookie[1], role: cookie[2] }
         setAuth(queryClient, authData)
         document.cookie = 'uid=' + authData.uid
         document.cookie = 'a_token=' + authData.a_token

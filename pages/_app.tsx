@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { useRouter } from 'next/router';
 import { message } from 'antd';
 import { ReactQueryDevtools } from 'react-query/devtools'
-import { setAuth, useAuth } from '../services/auth';
+import { getAccountRole, setAuth, useAuth } from '../services/auth';
 import UserContext from '../context/UserContext';
 import { cookieNames, cookieValues, documentCookieJsonify } from '../utils/utils';
 import { AuthCookie } from '../models/AuthCookie';
@@ -22,9 +22,24 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }) {
   const [currentUser, setCurrentUser] = useState<string>('undefined')
-
+  const [currentUserRole, setCurrentUserRole] = useState<string>('undefined')
   const router = useRouter()
-  const auth = useAuth(queryClient)
+  const auth: AuthCookie = useAuth(queryClient)
+
+  useEffect(() => {
+    const f = async () => {
+      try {
+        const accountRole = currentUser ?? await getAccountRole(currentUser)
+        setCurrentUserRole(accountRole?.role)
+        const additionalAuthData = { ...auth, role: accountRole }
+        setAuth(queryClient, additionalAuthData)
+      }
+      catch (e) {
+        throw e
+      }
+    }
+    f()
+  }, [currentUser])
 
   useEffect(() => {
     const parsedCookie: AuthCookie = documentCookieJsonify(document.cookie)
@@ -61,7 +76,7 @@ function MyApp({ Component, pageProps }) {
     }
 
     listenCookieChange(() => {
-      message.error('Session not found.')
+      message.error('You are not logged in!')
       router.push('/auth/login')
     }, 3000);
 
@@ -82,7 +97,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UserContext.Provider value={{ currentUser: currentUser }}>
+      <UserContext.Provider value={{ currentUser: currentUser, currentUserRole: currentUserRole }}>
         <Component {...pageProps} />
         <ReactQueryDevtools initialIsOpen={false} />
       </UserContext.Provider>

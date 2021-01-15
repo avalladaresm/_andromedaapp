@@ -1,6 +1,7 @@
 import axios from "axios"
 import { QueryClient, useMutation } from "react-query"
 import { AccountLogIn, AccountSignUp } from "../models/Auth"
+import { AuthCookie } from "../models/AuthCookie"
 import { cookieNames, deleteCookie } from "../utils/utils"
 
 export const useDoLogin = () => {
@@ -37,10 +38,21 @@ export const useDoLogout = (queryClient: QueryClient, router, cookie: string) =>
   })
 }
 
-export const setAuth = (queryClient: QueryClient, authData) => {
+export const getAccountRole = async (username: string) => {
+  try {
+    const role = await axios.get(`http://localhost:3000/auth/${username}/account-role`)
+    return role.data
+  }
+  catch (e) {
+    throw e
+  }
+}
+
+export const setAuth = (queryClient: QueryClient, authData: AuthCookie) => {
   queryClient.setQueryData('Auth', authData)
 }
 
 export const useAuth = (queryClient: QueryClient) => {
-  return queryClient.getQueryData('Auth')
+  const res: AuthCookie = queryClient.getQueryData('Auth')
+  return res
 }
