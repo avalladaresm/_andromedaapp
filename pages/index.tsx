@@ -1,14 +1,17 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import Login from '../pages/auth/login';
 import Navigation from '../components/navigation'
-import UserContext from '../context/UserContext';
+import { AuthCookie } from '../models/AuthCookie';
+import { useAuth } from '../services/auth';
+import { useQueryClient } from 'react-query';
 
 const Home = () => {
-  const { currentUser } = useContext(UserContext);
+  const queryClient = useQueryClient()
+  const auth: AuthCookie = useAuth(queryClient)
 
   return (
     <>
-      {currentUser === undefined ?
+      {auth.uid === undefined ?
         <Login /> :
         <Navigation></Navigation>
       }

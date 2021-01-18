@@ -1,20 +1,15 @@
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { useQueryClient } from "react-query";
-import UserContext from "../context/UserContext";
-import { useDoLogout } from "../services/auth";
+import { AuthCookie } from "../models/AuthCookie";
+import { useAuth, useDoLogout } from "../services/auth";
 
 export default function ProfileMenu() {
-  const [curUser, setCurUser] = useState<string>(undefined)
-  const { currentUser } = useContext(UserContext);
-
   const queryClient = useQueryClient()
   const router = useRouter()
 
-  useEffect(() => {
-    setCurUser(currentUser)
-  }, [currentUser])
+  const auth: AuthCookie = useAuth(queryClient)
 
   return (
     <div className='flex items-center justify-center'>
@@ -42,7 +37,7 @@ export default function ProfileMenu() {
                 >
                   <div className='px-4 py-3'>
                     <p className='text-sm leading-5'>Signed in as</p>
-                    <p className='text-sm font-medium leading-5 text-gray-900 truncate'>{curUser}</p>
+                    <p className='text-sm font-medium leading-5 text-gray-900 truncate'>{auth.uid}</p>
                   </div>
 
                   <div className='py-1'>

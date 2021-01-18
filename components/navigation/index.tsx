@@ -6,17 +6,24 @@ import { useRouter } from 'next/router'
 import ProfileMenu from '../ProfileMenu'
 import ActionBar from '../../components/navigation/ActionBar'
 import { NavigationSettings } from '../../models/NavigationSettings'
+import { AuthCookie } from '../../models/AuthCookie'
+import { useAuth } from '../../services/auth'
+import { useQueryClient } from 'react-query'
 
 const Navigation: FC<NavigationSettings> = (props) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [showNotification, setShowNotification] = useState<boolean>(false)
   const [activePage, setActivePage] = useState<string>('')
 
+  const queryClient = useQueryClient()
+  const auth: AuthCookie = useAuth(queryClient)
   const router = useRouter()
 
   useEffect(() => {
-    setActivePage(router.pathname === '/' ? 'Dashboard' : router.pathname.slice(1,router.pathname.length))
+    setActivePage(router.pathname === '/' ? 'Dashboard' : router.pathname.slice(1, router.pathname.length))
   }, [])
+
+  if (auth.role === undefined) return (<div>Still loading...</div>)
 
   return (
     <>
@@ -25,12 +32,14 @@ const Navigation: FC<NavigationSettings> = (props) => {
           <div className='col-start-3 col-span-6 inline-flex space-x-4'>
             <TempLogo onClick={() => router.push('/')} />
             <NavigationItem title='Dashboard' activePage={activePage} onClick={() => router.push('/')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
-            <NavigationItem title='Users' activePage={activePage} onClick={() => router.push('/users')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
-            <NavigationItem title='Logs' activePage={activePage} onClick={() => router.push('/logs')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
-            <NavigationItem title='Inventory' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
-            <NavigationItem title='Projects' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
-            <NavigationItem title='Notification' activePage={activePage} onClick={() => setShowNotification(!showNotification)} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
-            <NavigationItem title='Triggerload' activePage={activePage} onClick={() => setLoading(!loading)} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
+            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Users' activePage={activePage} onClick={() => router.push('/users')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Logs' activePage={activePage} onClick={() => router.push('/logs')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Products' activePage={activePage} onClick={() => router.push('/products')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Inventory' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Projects' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Notification' activePage={activePage} onClick={() => setShowNotification(!showNotification)} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Triggerload' activePage={activePage} onClick={() => setLoading(!loading)} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+
           </div>
           <div className='invisible md:visible col-start-10 col-span-6 inline-flex space-x-4'>
             <ProfileMenu />
