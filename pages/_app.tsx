@@ -87,12 +87,6 @@ function MyApp({ Component, pageProps }) {
     if ((!parsedCookie.uid || !parsedCookie.a_token) && router.pathname !== '/auth/signup') router.push('/auth/login')
   }, [])
 
-  useEffect(() => {
-    if (currentUser === undefined && router.pathname !== '/auth/signup') router.push('/auth/login')
-  }, [router.pathname])
-
-  if (currentUser === undefined) return (<div>Loading...</div>)
-
   return (
     <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />

@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <>
-      {auth.uid === undefined ?
+      {auth?.uid === undefined ?
         <Login /> :
         <Navigation></Navigation>
       }
