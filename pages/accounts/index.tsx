@@ -2,36 +2,47 @@ import { notification } from "antd";
 import React, { useEffect, useState } from "react";
 import { useQueryClient, useIsFetching } from "react-query";
 import Navigation from "../../components/navigation";
-import { useAccounts } from "../../services/account";
+import { FetchBusinessAccounts, useBusinessAccounts, usePersonAccounts } from "../../services/account";
 import { FcOk, FcHighPriority } from 'react-icons/fc'
 import { IconType } from "antd/lib/notification";
 import CreateAccount from "./CreateAccount";
-import { useTable } from 'react-table'
-import { FetchAccounts } from "../../services/account";
+import Table from '../../components/Table'
+import { FetchPersonAccounts } from "../../services/account";
 
 export default function Accounts() {
-  const [allAccounts, setAllAccounts] = useState([])
+  const [allPersonAccounts, setAllPersonAccounts] = useState([])
+  const [allBusinessAccounts, setAllBusinessAccounts] = useState([])
   const [showCreateAccount, setShowCreateAccount] = useState(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const queryClient = useQueryClient()
-  const accounts = useAccounts(queryClient)
+  const personAccounts = usePersonAccounts(queryClient)
+  const businessAccounts = useBusinessAccounts(queryClient)
   const isFetching = useIsFetching()
 
   useEffect(() => {
     const f = async () => {
       setIsLoading(true)
-      setAllAccounts(accounts ?? await FetchAccounts(queryClient))
+      setAllPersonAccounts(personAccounts ?? await FetchPersonAccounts(queryClient))
+      setAllBusinessAccounts(businessAccounts ?? await FetchBusinessAccounts(queryClient))
       setIsLoading(false)
     }
     f()
   }, [isLoading])
 
   useEffect(() => {
-    if ((accounts && accounts.length !== 0 || allAccounts.length !== 0) && isFetching === 0) {
-      const newRows = accounts?.length - allAccounts.length
+    if ((personAccounts && personAccounts.length !== 0 || allPersonAccounts.length !== 0) && isFetching === 0) {
+      const newRows = personAccounts?.length - allPersonAccounts.length
       openNotificationWithIcon('info', newRows)
-      newRows > 0 && setAllAccounts(accounts)
+      newRows > 0 && setAllPersonAccounts(personAccounts)
+    }
+  }, [isFetching])
+  
+  useEffect(() => {
+    if ((businessAccounts && businessAccounts.length !== 0 || allBusinessAccounts.length !== 0) && isFetching === 0) {
+      const newRows = businessAccounts?.length - allBusinessAccounts.length
+      openNotificationWithIcon('info', newRows)
+      newRows > 0 && setAllBusinessAccounts(businessAccounts)
     }
   }, [isFetching])
 
@@ -43,7 +54,7 @@ export default function Accounts() {
     });
   };
 
-  const columns = React.useMemo(
+  const personColumns = React.useMemo(
     () => [
       {
         Header: 'id',
@@ -85,58 +96,55 @@ export default function Accounts() {
     []
   )
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({ columns, data: allAccounts })
+  const businessColumns = React.useMemo(
+    () => [
+      {
+        Header: 'id',
+        accessor: 'id'
+      },
+      {
+        Header: 'Username',
+        accessor: 'username',
+      },
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Email',
+        accessor: 'email',
+      },
+      {
+        Header: 'Is verified',
+        accessor: 'isVerified',
+      },
+      {
+        Header: 'Is active',
+        accessor: 'isActive',
+      },
+    ],
+    []
+  )
 
   return (
     <Navigation
       actionBar={{
         pageTitle: 'Accounts',
         navItems: [{
-          title: 'Refresh', onClick: () => { queryClient.refetchQueries(['Accounts']) }
+          title: 'Refresh', onClick: () => { queryClient.refetchQueries(['PersonAccounts', 'BusinessAccounts']) }
         }, {
           title: 'New Account', onClick: () => { setShowCreateAccount(true) }
         }],
         isLoading: isFetching === 1
       }}
     >
-      {allAccounts.length > 0 && 
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()} >
-                  {column.render('Header')}
-                </th>
-              ))} 
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row)
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return ( 
-                    <td {...cell.getCellProps()} >
-                      {cell.value === false ? <FcHighPriority /> :
-                        cell.value === true ? <FcOk /> : cell.value}
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>}
-{/*       <CreateAccount
+      {allPersonAccounts.length > 0 &&
+        <Table columns={personColumns} data={allPersonAccounts} />
+      }
+      {allBusinessAccounts.length > 0 &&
+        <Table columns={businessColumns} data={allBusinessAccounts} />
+      }
+      {/*       <CreateAccount
         isShowing={showCreateAccount}
         title='Create user'
         onCancel={() => setShowCreateAccount(false)}
