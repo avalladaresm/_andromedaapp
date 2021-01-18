@@ -32,7 +32,7 @@ const Navigation: FC<NavigationSettings> = (props) => {
           <div className='col-start-3 col-span-6 inline-flex space-x-4'>
             <TempLogo onClick={() => router.push('/')} />
             <NavigationItem title='Dashboard' activePage={activePage} onClick={() => router.push('/')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
-            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Users' activePage={activePage} onClick={() => router.push('/users')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Accounts' activePage={activePage} onClick={() => router.push('/accounts')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
             {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Logs' activePage={activePage} onClick={() => router.push('/logs')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
             {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Products' activePage={activePage} onClick={() => router.push('/products')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
             {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Inventory' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}

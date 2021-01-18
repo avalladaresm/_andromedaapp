@@ -8,7 +8,7 @@ import { Tooltip, DatePicker } from 'antd'
 import Select from '../../components/Select'
 import { FetchCitiesByState, FetchCountries, FetchStatesByCountry } from '../../services/location'
 
-const CreateUser: FC<ModalSettings> = (props) => {
+const CreateAccount: FC<ModalSettings> = (props) => {
   const [countries, setCoutries] = useState([])
   const [selectedCountry, setSelectedCountry] = useState<string>('')
   const [states, setStates] = useState([])
@@ -102,7 +102,7 @@ const CreateUser: FC<ModalSettings> = (props) => {
   return (
     <Modal
       isShowing={props.isShowing}
-      title='Create user'
+      title='Create account'
     >
       <Formik
         initialValues={initialValues}
@@ -450,4 +450,4 @@ const CreateUser: FC<ModalSettings> = (props) => {
   )
 }
 
-export default CreateUser
+export default CreateAccount
