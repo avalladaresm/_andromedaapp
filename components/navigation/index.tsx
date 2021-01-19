@@ -23,7 +23,7 @@ const Navigation: FC<NavigationSettings> = (props) => {
     setActivePage(router.pathname === '/' ? 'Dashboard' : router.pathname.slice(1, router.pathname.length))
   }, [])
 
-  if (auth.role === undefined) return (<div>Still loading...</div>)
+  if (auth?.role === undefined) return (<div>Still loading...</div>)
 
   return (
     <>
@@ -47,7 +47,7 @@ const Navigation: FC<NavigationSettings> = (props) => {
         </NavigationBar>
         <ActionBar {...props.actionBar} />
       </div>
-      <div className='relative top-28 mx-6 border-solid border-coolGray-900 border-2'>
+      <div className='p-5 relative top-28 mx-6 border-solid border-coolGray-900 border-2'>
         {props.children}
       </div>
     </>

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useQueryClient, useIsFetching } from "react-query";
 import Navigation from "../../components/navigation";
 import { FetchBusinessAccounts, useBusinessAccounts, usePersonAccounts } from "../../services/account";
-import { FcOk, FcHighPriority } from 'react-icons/fc'
 import { IconType } from "antd/lib/notification";
 import CreateAccount from "./CreateAccount";
 import Table from '../../components/Table'
@@ -37,7 +36,7 @@ export default function Accounts() {
       newRows > 0 && setAllPersonAccounts(personAccounts)
     }
   }, [isFetching])
-  
+
   useEffect(() => {
     if ((businessAccounts && businessAccounts.length !== 0 || allBusinessAccounts.length !== 0) && isFetching === 0) {
       const newRows = businessAccounts?.length - allBusinessAccounts.length
@@ -62,35 +61,35 @@ export default function Accounts() {
       },
       {
         Header: 'Username',
-        accessor: 'username',
+        accessor: 'username'
       },
       {
         Header: 'Name',
-        accessor: 'name',
+        accessor: 'name'
       },
       {
         Header: 'Surname',
-        accessor: 'surname',
+        accessor: 'surname'
       },
       {
         Header: 'Email',
-        accessor: 'email',
+        accessor: 'email'
       },
       {
         Header: 'Gender',
-        accessor: 'gender',
+        accessor: 'gender'
       },
       {
         Header: 'Dob',
-        accessor: 'dob',
+        accessor: 'dob'
       },
       {
         Header: 'Is verified',
-        accessor: 'isVerified',
+        accessor: 'isVerified'
       },
       {
         Header: 'Is active',
-        accessor: 'isActive',
+        accessor: 'isActive'
       },
     ],
     []
