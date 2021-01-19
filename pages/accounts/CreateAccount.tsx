@@ -10,7 +10,7 @@ import { FetchCitiesByState, FetchCountries, FetchStatesByCountry } from '../../
 
 const CreateAccount: FC<ModalSettings> = (props) => {
   const [countries, setCoutries] = useState([])
-  const [selectedCountry, setSelectedCountry] = useState<string>('')
+  const [selectedCountry, setSelectedCountry] = useState<number>()
   const [states, setStates] = useState([])
   const [selectedState, setSelectedState] = useState<number>(undefined)
   const [cities, setCities] = useState([])
@@ -356,7 +356,7 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                     <Field name='countryId' className='min-w-full'
                       children={({ field }) => (
                         <Select {...field} value={values.countryId}
-                          onChange={(v: string) => {
+                          onChange={(v: number) => {
                             setFieldValue(field.name, v);
                             setSelectedCountry(v);
                             setFieldValue('stateId', '');
@@ -372,7 +372,7 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                     <label htmlFor='stateId'>State</label>
                     <Field name='stateId'
                       children={({ field }) => (
-                        <Select {...field} disabled={!(selectedCountry.length > 0)} value={values.stateId}
+                        <Select {...field} disabled={!(selectedCountry > 0)} value={values.stateId}
                           onChange={(v: string) => {
                             setFieldValue(field.name, v);
                             setSelectedState(parseInt(v));
@@ -406,7 +406,7 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                   className='px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-coolGray-500 hover:bg-coolGray-600 active:bg-coolGray-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
                   type='button'
                   style={{ transition: 'all .15s ease', outline: 'none' }}
-                  onClick={() => { resetForm(initialValues), setSelectedCountry(''), setSelectedState(undefined) }}
+                  onClick={() => { resetForm(initialValues), setSelectedCountry(0), setSelectedState(undefined) }}
                 >
                   Reset
                   </button>

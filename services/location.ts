@@ -4,7 +4,7 @@ export const FetchCountries = () => {
   return axios.get('http://localhost:3000/location/countries')
 }
 
-export const FetchStatesByCountry = (countryId: string) => {
+export const FetchStatesByCountry = (countryId: number) => {
   return axios.get(`http://localhost:3000/location/country/${countryId}/states`)
 }
 

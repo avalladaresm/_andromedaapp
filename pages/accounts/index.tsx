@@ -76,11 +76,11 @@ export default function Accounts() {
       {allBusinessAccounts.length > 0 &&
         <Table columns={businessColumns} data={allBusinessAccounts} />
       }
-      {/*       <CreateAccount
+      <CreateAccount
         isShowing={showCreateAccount}
-        title='Create user'
+        title='Create account'
         onCancel={() => setShowCreateAccount(false)}
-      /> */}
+      />
     </Navigation>
   )
 }
