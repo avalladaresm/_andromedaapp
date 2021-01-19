@@ -1,5 +1,5 @@
 import { notification } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQueryClient, useIsFetching } from "react-query";
 import Navigation from "../../components/navigation";
 import { FetchBusinessAccounts, useBusinessAccounts, usePersonAccounts } from "../../services/account";
@@ -7,6 +7,8 @@ import { IconType } from "antd/lib/notification";
 import CreateAccount from "./CreateAccount";
 import Table from '../../components/Table'
 import { FetchPersonAccounts } from "../../services/account";
+import { PersonColumns } from './PersonColumns'
+import { BusinessColumns } from "./BusinessColumns";
 
 export default function Accounts() {
   const [allPersonAccounts, setAllPersonAccounts] = useState([])
@@ -53,77 +55,8 @@ export default function Accounts() {
     });
   };
 
-  const personColumns = React.useMemo(
-    () => [
-      {
-        Header: 'id',
-        accessor: 'id'
-      },
-      {
-        Header: 'Username',
-        accessor: 'username'
-      },
-      {
-        Header: 'Name',
-        accessor: 'name'
-      },
-      {
-        Header: 'Surname',
-        accessor: 'surname'
-      },
-      {
-        Header: 'Email',
-        accessor: 'email'
-      },
-      {
-        Header: 'Gender',
-        accessor: 'gender'
-      },
-      {
-        Header: 'Dob',
-        accessor: 'dob'
-      },
-      {
-        Header: 'Is verified',
-        accessor: 'isVerified'
-      },
-      {
-        Header: 'Is active',
-        accessor: 'isActive'
-      },
-    ],
-    []
-  )
-
-  const businessColumns = React.useMemo(
-    () => [
-      {
-        Header: 'id',
-        accessor: 'id'
-      },
-      {
-        Header: 'Username',
-        accessor: 'username',
-      },
-      {
-        Header: 'Name',
-        accessor: 'name',
-      },
-      {
-        Header: 'Email',
-        accessor: 'email',
-      },
-      {
-        Header: 'Is verified',
-        accessor: 'isVerified',
-      },
-      {
-        Header: 'Is active',
-        accessor: 'isActive',
-      },
-    ],
-    []
-  )
+  const personColumns = useMemo(() => PersonColumns, [])
+  const businessColumns = useMemo(() => BusinessColumns, [])
 
   return (
     <Navigation
