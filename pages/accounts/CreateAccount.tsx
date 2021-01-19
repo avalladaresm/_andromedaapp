@@ -8,7 +8,7 @@ import { Tooltip, DatePicker, message } from 'antd'
 import Select from '../../components/Select'
 import { FetchCitiesByState, FetchCountries, FetchStatesByCountry } from '../../services/location'
 import { number } from 'yup'
-import { createBusinessAccount } from '../../services/account'
+import { createBusinessAccount, createPersonAccount } from '../../services/account'
 import Spin from '../../components/Spin'
 
 const CreateAccount: FC<ModalSettings> = (props) => {
@@ -114,7 +114,11 @@ const CreateAccount: FC<ModalSettings> = (props) => {
         onSubmit={async (values, { resetForm }) => {
           try {
             values.accountTypeId = accountTypeId
-            const res = await createBusinessAccount(values)
+            let res;
+            if (accountTypeId === '1')
+              res = await createPersonAccount(values)
+            else if (accountTypeId === '2')
+              res = await createBusinessAccount(values)
             if (res.status === 200)
               message.success('Sign up success! Check your email to verify your account.')
             resetForm()
