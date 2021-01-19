@@ -4,9 +4,12 @@ import Modal from '../../components/Modal'
 import { ModalSettings } from '../../models/ModalSettings'
 import { object, string } from 'yup'
 import { FcCheckmark } from 'react-icons/fc';
-import { Tooltip, DatePicker } from 'antd'
+import { Tooltip, DatePicker, message } from 'antd'
 import Select from '../../components/Select'
 import { FetchCitiesByState, FetchCountries, FetchStatesByCountry } from '../../services/location'
+import { number } from 'yup'
+import { createBusinessAccount } from '../../services/account'
+import Spin from '../../components/Spin'
 
 const CreateAccount: FC<ModalSettings> = (props) => {
   const [countries, setCoutries] = useState([])
@@ -14,6 +17,7 @@ const CreateAccount: FC<ModalSettings> = (props) => {
   const [states, setStates] = useState([])
   const [selectedState, setSelectedState] = useState<number>(undefined)
   const [cities, setCities] = useState([])
+  const [accountTypeId, setAccountTypeId] = useState<string>()
 
   const genderOptions = [{
     value: 'Male', displayValue: 'Male'
@@ -66,8 +70,7 @@ const CreateAccount: FC<ModalSettings> = (props) => {
       .required('Required'),
     surname: string()
       .min(2, 'Too Short!')
-      .max(255, 'Too Long!')
-      .required('Required'),
+      .max(255, 'Too Long!'),
     username: string()
       .min(2, 'Too Short!')
       .max(25, 'Too Long!')
@@ -75,9 +78,9 @@ const CreateAccount: FC<ModalSettings> = (props) => {
     email: string().email('Invalid email').required('Required'),
     phoneNumber: string()
       .required('Required'),
-    gender: string()
-      .required('Required'),
-    dob: string()
+    gender: string(),
+    dob: string(),
+    accountTypeId: number()
       .required('Required')
   });
 
@@ -89,10 +92,15 @@ const CreateAccount: FC<ModalSettings> = (props) => {
     gender: '',
     dob: '',
     phoneNumber: '',
-    address: '',
+    streetAddress1: '',
     cityId: '',
     stateId: '',
     countryId: '',
+    accountTypeId: -1
+  }
+
+  const onChange = (e) => {
+    setAccountTypeId(e.target.value)
   }
 
   return (
@@ -103,17 +111,51 @@ const CreateAccount: FC<ModalSettings> = (props) => {
       <Formik
         initialValues={initialValues}
         validationSchema={SignupSchema}
-        onSubmit={values => {
-          // same shape as initial values
-          console.log(values);
+        onSubmit={async (values, { resetForm }) => {
+          try {
+            values.accountTypeId = accountTypeId
+            const res = await createBusinessAccount(values)
+            if (res.status === 200)
+              message.success('Sign up success! Check your email to verify your account.')
+            resetForm()
+          }
+          catch (e) {
+            message.error(`Sign up failed! ${e.response.data.message}`)
+          }
         }}
       >
-        {({ errors, touched, initialValues, values, resetForm, dirty, setFieldValue, setTouched }) => (
-          <Form>
+        {({ errors, touched, initialValues, values, resetForm, dirty, setFieldValue, setTouched, handleSubmit, isSubmitting }) => (
+          <Form onSubmit={handleSubmit}>
             <div className='space-y-6'>
 
               <div className='flex flex-col space-y-4'>
                 <div className='flex justify-between space-x-2'>
+                  <div className='flex-grow'>
+                    <div className='flex flex-row space-x-2'>
+                      <label htmlFor='accountTypeId'><span className='text-red-600'>*</span>Is this a business account?</label>
+                      {(values.accountTypeId === initialValues.accountTypeId && !touched.accountTypeId) ?
+                        null :
+                        (errors.accountTypeId ? (
+                          <div className='text-red-600'>{errors.accountTypeId}</div>
+                        ) :
+                          <FcCheckmark />)
+                      }
+                    </div>
+                    <div className='flex space-x-3' >
+                      <div>
+                        <label className='cursor-pointer'>
+                          <Field name='accountTypeId' type='radio' value='2' checked={accountTypeId === (2).toString()} onChange={onChange} />
+                      Yes
+                      </label>
+                      </div>
+                      <div>
+                        <label className='cursor-pointer'>
+                          <Field name='accountTypeId' type='radio' value='1' checked={accountTypeId === (1).toString()} onChange={onChange} />
+                       No
+                       </label>
+                      </div>
+                    </div>
+                  </div>
                   <div className='flex-grow'>
 
                     <div className='flex flex-row space-x-2'>
@@ -139,7 +181,7 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                       style={{ outline: 'none' }}
                     />
                   </div>
-                  <div className='flex-grow'>
+                  {accountTypeId === '1' && <div className='flex-grow'>
 
                     <div className='flex flex-row space-x-2'>
                       <label htmlFor='surname'><span className='text-red-600'>*</span>Surname</label>
@@ -163,9 +205,9 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                         )} text-center shadow-sm rounded-sm h-10`}
                       style={{ outline: 'none' }}
                     />
-                  </div>
+                  </div>}
 
-                  <div className='flex-grow'>
+                  {accountTypeId === '1' && <div className='flex-grow'>
                     <div className='flex flex-row space-x-2'>
                       <label htmlFor='dob'><span className='text-red-600'>*</span>Date of birth</label>
                       {(values.dob === initialValues.dob && !touched.dob) ?
@@ -189,7 +231,7 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                             'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
                         )} text-center shadow-sm rounded-sm h-10`}
                     />
-                  </div>
+                  </div>}
                 </div>
 
                 <div className='flex flex-row justify-between space-x-2'>
@@ -269,7 +311,7 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                     />
 
                   </div>
-                  <div>
+                  {accountTypeId === '1' && <div>
                     <div className='flex flex-row space-x-2'>
                       <label htmlFor='gender'><span className='text-red-600'>*</span>Gender</label>
                       {(values.gender === initialValues.gender && !touched.gender) ?
@@ -291,28 +333,28 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                         />
                       )}
                     />
-                  </div>
+                  </div>}
                 </div>
 
                 <div className='flex flex-row space-x-2'>
                   <div className='flex-grow'>
                     <div className='flex flex-row space-x-2'>
-                      <label htmlFor='address'>Address</label>
-                      {(values.address === initialValues.address && !touched.address) ?
+                      <label htmlFor='streetAddress1'>Address</label>
+                      {(values.streetAddress1 === initialValues.streetAddress1 && !touched.streetAddress1) ?
                         null :
-                        (errors.address ? (
-                          <div className='text-red-600'>{errors.address}</div>
+                        (errors.streetAddress1 ? (
+                          <div className='text-red-600'>{errors.streetAddress1}</div>
                         ) :
                           <FcCheckmark />)
                       }
                     </div>
                     <Field
-                      name='address'
-                      placeholder={!touched.address ? 'Colonia Bonita, 1ra calle sur entre 7ma y 8va avenida' : ''}
+                      name='streetAddress1'
+                      placeholder={!touched.streetAddress1 ? 'Colonia Bonita, 1ra calle sur entre 7ma y 8va avenida' : ''}
                       className={`min-w-full ${(
-                        values.address === initialValues.address && !touched.address
+                        values.streetAddress1 === initialValues.streetAddress1 && !touched.streetAddress1
                       ) ? '' : (
-                          errors.address ?
+                          errors.streetAddress1 ?
                             'ring-2 ring-red-600 ring-inset ring-opacity-50' :
                             'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
                         )} text-center shadow-sm rounded-sm h-10`}
@@ -402,14 +444,20 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                   </button>
                 }
 
-                <button
-                  className='px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-lightBlue-500 hover:bg-lightBlue-600 active:bg-lightBlue-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
-                  type='button'
-                  style={{ transition: 'all .15s ease', outline: 'none' }}
-                  onClick={() => console.log('values', values)}
-                >
-                  Save
-                </button>
+                {isSubmitting ?
+                  <button
+                    className='px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-lightBlue-500 hover:bg-lightBlue-600 active:bg-lightBlue-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
+                    type='submit'
+                    style={{ transition: 'all .15s ease', outline: 'none' }}
+                  >
+                    <Spin /> Creating account...
+                </button> :
+                  <button
+                    className='px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-lightBlue-500 hover:bg-lightBlue-600 active:bg-lightBlue-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
+                    type='submit'
+                  >
+                    Save
+                </button>}
               </div>
 
             </div>
