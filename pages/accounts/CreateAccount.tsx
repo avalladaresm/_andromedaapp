@@ -60,23 +60,20 @@ const CreateAccount: FC<ModalSettings> = (props) => {
   }, [selectedState])
 
   const SignupSchema = object().shape({
-    firstName: string()
+    name: string()
       .min(2, 'Too Short!')
       .max(255, 'Too Long!')
       .required('Required'),
-    middleName: string()
-      .min(2, 'Too Short!')
-      .max(255, 'Too Long!'),
-    lastName: string()
+    surname: string()
       .min(2, 'Too Short!')
       .max(255, 'Too Long!')
       .required('Required'),
-    userName: string()
+    username: string()
       .min(2, 'Too Short!')
       .max(25, 'Too Long!')
       .required('Required'),
     email: string().email('Invalid email').required('Required'),
-    cellphone: string()
+    phoneNumber: string()
       .required('Required'),
     gender: string()
       .required('Required'),
@@ -85,14 +82,13 @@ const CreateAccount: FC<ModalSettings> = (props) => {
   });
 
   const initialValues: Partial<FormikValues> = {
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    userName: '',
+    name: '',
+    surname: '',
+    username: '',
     email: '',
     gender: '',
     dob: '',
-    cellphone: '',
+    phoneNumber: '',
     address: '',
     cityId: '',
     stateId: '',
@@ -121,22 +117,22 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                   <div className='flex-grow'>
 
                     <div className='flex flex-row space-x-2'>
-                      <label htmlFor='firstName'><span className='text-red-600'>*</span>First name</label>
-                      {(values.firstName === initialValues.firstName && !touched.firstName) ?
+                      <label htmlFor='name'><span className='text-red-600'>*</span>Name</label>
+                      {(values.name === initialValues.name && !touched.name) ?
                         null :
-                        (errors.firstName ? (
-                          <div className='text-red-600'>{errors.firstName}</div>
+                        (errors.name ? (
+                          <div className='text-red-600'>{errors.name}</div>
                         ) :
                           <FcCheckmark />)
                       }
                     </div>
                     <Field
-                      name='firstName'
-                      placeholder={!touched.firstName ? 'Pedro' : ''}
+                      name='name'
+                      placeholder={!touched.name ? 'Pedro' : ''}
                       className={`min-w-full ${(
-                        values.firstName === initialValues.firstName && !touched.firstName
+                        values.name === initialValues.name && !touched.name
                       ) ? '' : (
-                          errors.firstName ?
+                          errors.name ?
                             'ring-2 ring-red-600 ring-inset ring-opacity-50' :
                             'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
                         )} text-center shadow-sm rounded-sm h-10`}
@@ -146,47 +142,22 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                   <div className='flex-grow'>
 
                     <div className='flex flex-row space-x-2'>
-                      <label htmlFor='middleName'>Middle name</label>
-                      {(values.middleName === initialValues.middleName && !touched.middleName) ?
+                      <label htmlFor='surname'><span className='text-red-600'>*</span>Surname</label>
+                      {(values.surname === initialValues.surname && !touched.surname) ?
                         null :
-                        (errors.middleName ? (
-                          <div className='text-red-600'>{errors.middleName}</div>
+                        (errors.surname ? (
+                          <div className='text-red-600'>{errors.surname}</div>
                         ) :
                           <FcCheckmark />)
                       }
                     </div>
                     <Field
-                      name='middleName'
-                      placeholder={!touched.middleName ? 'Pablo' : ''}
+                      name='surname'
+                      placeholder={!touched.surname ? 'Ramirez' : ''}
                       className={`min-w-full ${(
-                        values.middleName === initialValues.middleName && !touched.middleName
+                        values.surname === initialValues.surname && !touched.surname
                       ) ? '' : (
-                          errors.middleName ?
-                            'ring-2 ring-red-600 ring-inset ring-opacity-50' :
-                            'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
-                        )} text-center shadow-sm rounded-sm h-10`}
-                      style={{ outline: 'none' }}
-                    />
-                  </div>
-                  <div className='flex-grow'>
-
-                    <div className='flex flex-row space-x-2'>
-                      <label htmlFor='lastName'><span className='text-red-600'>*</span>Last name</label>
-                      {(values.lastName === initialValues.lastName && !touched.lastName) ?
-                        null :
-                        (errors.lastName ? (
-                          <div className='text-red-600'>{errors.lastName}</div>
-                        ) :
-                          <FcCheckmark />)
-                      }
-                    </div>
-                    <Field
-                      name='lastName'
-                      placeholder={!touched.lastName ? 'Ramirez' : ''}
-                      className={`min-w-full ${(
-                        values.lastName === initialValues.lastName && !touched.lastName
-                      ) ? '' : (
-                          errors.lastName ?
+                          errors.surname ?
                             'ring-2 ring-red-600 ring-inset ring-opacity-50' :
                             'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
                         )} text-center shadow-sm rounded-sm h-10`}
@@ -225,22 +196,22 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                   <div>
 
                     <div className='flex flex-row space-x-2'>
-                      <label htmlFor='userName'><span className='text-red-600'>*</span>Username</label>
-                      {(values.userName === initialValues.userName && !touched.userName) ?
+                      <label htmlFor='username'><span className='text-red-600'>*</span>Username</label>
+                      {(values.username === initialValues.username && !touched.username) ?
                         null :
-                        (errors.userName ? (
-                          <div className='text-red-600'>{errors.userName}</div>
+                        (errors.username ? (
+                          <div className='text-red-600'>{errors.username}</div>
                         ) :
                           <FcCheckmark />)
                       }
                     </div>
                     <Field
-                      name='userName'
-                      placeholder={!touched.userName ? 'p_ramirez1' : ''}
+                      name='username'
+                      placeholder={!touched.username ? 'p_ramirez1' : ''}
                       className={`min-w-full ${(
-                        values.userName === initialValues.userName && !touched.userName
+                        values.username === initialValues.username && !touched.username
                       ) ? '' : (
-                          errors.userName ?
+                          errors.username ?
                             'ring-2 ring-red-600 ring-inset ring-opacity-50' :
                             'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
                         )} text-center shadow-sm rounded-sm h-10`}
@@ -275,22 +246,22 @@ const CreateAccount: FC<ModalSettings> = (props) => {
                   <div>
 
                     <div className='flex flex-row space-x-2'>
-                      <label htmlFor='cellphone'><span className='text-red-600'>*</span>Cellphone</label>
-                      {(values.cellphone === initialValues.cellphone && !touched.cellphone) ?
+                      <label htmlFor='phoneNumber'><span className='text-red-600'>*</span>Phone number</label>
+                      {(values.phoneNumber === initialValues.phoneNumber && !touched.phoneNumber) ?
                         null :
-                        (errors.cellphone ? (
-                          <div className='text-red-600'>{errors.cellphone}</div>
+                        (errors.phoneNumber ? (
+                          <div className='text-red-600'>{errors.phoneNumber}</div>
                         ) :
                           <FcCheckmark />)
                       }
                     </div>
                     <Field
-                      name='cellphone'
-                      placeholder={!touched.cellphone ? 'xxxx-xxxx' : ''}
+                      name='phoneNumber'
+                      placeholder={!touched.phoneNumber ? 'xxxx-xxxx' : ''}
                       className={`min-w-full ${(
-                        values.cellphone === initialValues.cellphone && !touched.cellphone
+                        values.phoneNumber === initialValues.phoneNumber && !touched.phoneNumber
                       ) ? '' : (
-                          errors.cellphone ?
+                          errors.phoneNumber ?
                             'ring-2 ring-red-600 ring-inset ring-opacity-50' :
                             'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
                         )} text-center shadow-sm rounded-sm h-10`}
