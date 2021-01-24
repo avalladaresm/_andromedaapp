@@ -20,25 +20,21 @@ const queryClient = new QueryClient({
 })
 
 function MyApp({ Component, pageProps }) {
-  const [currentUser, setCurrentUser] = useState<string>(undefined)
-  const [currentUserRole, setCurrentUserRole] = useState<string>(undefined)
+  const [currentAuth, setCurrentAuth] = useState<AuthCookie>(undefined)
   const router = useRouter()
   const auth: AuthCookie = useAuth(queryClient)
 
   useEffect(() => {
     const f = async () => {
       try {
-        const accountRole = currentUserRole ?? await getAccountRole(currentUser)
-        setCurrentUserRole(accountRole)
-        const additionalAuthData = { ...auth, role: accountRole }
-        setAuth(queryClient, additionalAuthData)
+        await getAccountRole(queryClient, currentAuth)
       }
       catch (e) {
         throw e
       }
     }
-    currentUser && f()
-  }, [currentUser])
+    currentAuth && f()
+  }, [currentAuth])
 
   useEffect(() => {
     const parsedCookie: AuthCookie = documentCookieJsonify(document.cookie)
@@ -49,7 +45,7 @@ function MyApp({ Component, pageProps }) {
 
     auth ?? isParsedCookieUnd ? undefined : (
       setAuth(queryClient, parsedCookie),
-      setCurrentUser(parsedCookie.uid)
+      setCurrentAuth(parsedCookie)
     )
 
     const listenCookieChange = (callback, interval) => {
@@ -89,7 +85,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Component {...pageProps} currentUserRole={currentUserRole} />
+      <Component {...pageProps} />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )

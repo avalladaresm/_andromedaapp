@@ -38,10 +38,13 @@ export const useDoLogout = (queryClient: QueryClient, router, cookie: string) =>
   })
 }
 
-export const getAccountRole = async (username: string) => {
+export const getAccountRole = async (queryClient: QueryClient, cookieData: AuthCookie) => {
   try {
-    const role = await axios.get(`http://localhost:3000/auth/${username}/account-role`)
-    return role.data
+    const completeAuthData = await queryClient.fetchQuery('Auth', async () => {
+      const accountRole = await axios.get(`http://localhost:3000/auth/${cookieData.uid}/account-role`)
+      return {...cookieData, role: accountRole.data}
+    })
+    return completeAuthData
   }
   catch (e) {
     throw e
