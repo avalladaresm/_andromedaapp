@@ -89,7 +89,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Component {...pageProps} />
+      <Component {...pageProps} currentUserRole={currentUserRole} />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )

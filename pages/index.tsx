@@ -5,7 +5,7 @@ import { AuthCookie } from '../models/AuthCookie';
 import { useAuth } from '../services/auth';
 import { useQueryClient } from 'react-query';
 
-const Home = () => {
+const Home = (props) => {
   const queryClient = useQueryClient()
   const auth: AuthCookie = useAuth(queryClient)
 
@@ -13,7 +13,7 @@ const Home = () => {
     <>
       {auth?.uid === undefined ?
         <Login /> :
-        <Navigation></Navigation>
+        <Navigation currentUserRole={props.currentUserRole}></Navigation>
       }
     </>
   )
