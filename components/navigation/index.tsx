@@ -14,7 +14,7 @@ const Navigation: FC<NavigationSettings> = (props) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [showNotification, setShowNotification] = useState<boolean>(false)
   const [activePage, setActivePage] = useState<string>('')
-  
+
   const queryClient = useQueryClient()
   const auth: AuthCookie = useAuth(queryClient)
   const router = useRouter()
@@ -24,7 +24,6 @@ const Navigation: FC<NavigationSettings> = (props) => {
   }, [])
 
   if (auth?.role === undefined) return (<div>Still loading...</div>)
-
   return (
     <>
       <div className='fixed flex flex-col w-full z-10'>
@@ -33,12 +32,13 @@ const Navigation: FC<NavigationSettings> = (props) => {
             <TempLogo onClick={() => router.push('/')} />
             <NavigationItem title='Dashboard' activePage={activePage} onClick={() => router.push('/')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
             {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Accounts' activePage={activePage} onClick={() => router.push('/accounts')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
-            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Logs' activePage={activePage} onClick={() => router.push('/logs')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
-            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Products' activePage={activePage} onClick={() => router.push('/products')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
-            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Inventory' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
-            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Projects' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
-            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Notification' activePage={activePage} onClick={() => setShowNotification(!showNotification)} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
-            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Triggerload' activePage={activePage} onClick={() => setLoading(!loading)} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Accounts' activePage={activePage} onClick={() => router.push('/accounts')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Logs' activePage={activePage} onClick={() => router.push('/logs')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Products' activePage={activePage} onClick={() => router.push('/products')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Inventory' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Projects' activePage={activePage} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Notification' activePage={activePage} onClick={() => setShowNotification(!showNotification)} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Triggerload' activePage={activePage} onClick={() => setLoading(!loading)} link='#' styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
           </div>
           <div className='invisible md:visible col-start-10 col-span-6 inline-flex space-x-4'>
             <ProfileMenu />

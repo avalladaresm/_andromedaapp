@@ -21,6 +21,7 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }) {
   const [currentAuth, setCurrentAuth] = useState<AuthCookie>(undefined)
+  const [resolved, setResolved] = useState<boolean>(false)
   const router = useRouter()
   const auth: AuthCookie = useAuth(queryClient)
 
@@ -28,6 +29,7 @@ function MyApp({ Component, pageProps }) {
     const f = async () => {
       try {
         await getAccountRole(queryClient, currentAuth)
+        setResolved(true)
       }
       catch (e) {
         throw e
@@ -41,15 +43,12 @@ function MyApp({ Component, pageProps }) {
 
     const isParsedCookieUnd = Object.values(parsedCookie).includes(undefined)
 
-    const authData = auth ?? { data: parsedCookie }
+    const authData = auth ?? parsedCookie
 
-    auth ?? isParsedCookieUnd ? undefined : (
-      setAuth(queryClient, parsedCookie),
-      setCurrentAuth(parsedCookie)
-    )
+    auth ?? isParsedCookieUnd ? undefined : setCurrentAuth(parsedCookie)
 
     const listenCookieChange = (callback, interval) => {
-      let cookieInQuery = authData?.data?.uid
+      let cookieInQuery = authData?.uid
 
       if (cookieInQuery) {
         let timer = setInterval(() => {
@@ -60,7 +59,7 @@ function MyApp({ Component, pageProps }) {
               clearInterval(timer)
               queryClient.clear()
             } finally {
-              cookieInQuery = authData?.data?.uid
+              cookieInQuery = authData?.uid
             }
           }
         }, interval);
@@ -82,6 +81,8 @@ function MyApp({ Component, pageProps }) {
 
     if ((!parsedCookie.uid || !parsedCookie.a_token) && router.pathname !== '/auth/signup') router.push('/auth/login')
   }, [])
+
+  useEffect(() => { }, [resolved])
 
   return (
     <QueryClientProvider client={queryClient}>
