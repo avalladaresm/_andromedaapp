@@ -37,6 +37,16 @@ module.exports = {
       minWidth: {
         'xxs': '10rem',
       },
+      maxHeight: {
+        'xxs': '10rem',
+      },
+      minHeight: {
+        'xxs': '10rem',
+      },
+      spacing: {
+        '128': '32rem',
+        '144': '36rem',
+      }
     },
   },
   variants: {

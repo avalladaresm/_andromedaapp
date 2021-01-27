@@ -23,15 +23,14 @@ const Navigation: FC<NavigationSettings> = (props) => {
     setActivePage(router.pathname === '/' ? 'Dashboard' : router.pathname.slice(1, router.pathname.length))
   }, [])
 
-  if (auth?.role === undefined) return (<div>Still loading...</div>)
   return (
     <>
       <div className='fixed flex flex-col w-full z-10'>
         <NavigationBar className='grid grid-cols-12 gap-4' backgroundColor='bg-lightBlue-800' height='h-14' spaceXItems='space-x-4' justifyContent='justify-center'>
-          <div className='col-start-3 col-span-6 inline-flex space-x-4'>
+          <div className='col-start-3 col-span-7 inline-flex space-x-4'>
             <TempLogo onClick={() => router.push('/')} />
             <NavigationItem title='Dashboard' activePage={activePage} onClick={() => router.push('/')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
-            {auth.role === 'SUPREME_LEADER' && <NavigationItem title='Accounts' activePage={activePage} onClick={() => router.push('/accounts')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
+            <NavigationItem title='Employees' activePage={activePage} onClick={() => router.push('/employees')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />
             {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Accounts' activePage={activePage} onClick={() => router.push('/accounts')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
             {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Logs' activePage={activePage} onClick={() => router.push('/logs')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
             {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Products' activePage={activePage} onClick={() => router.push('/products')} styles={{ textColor: 'text-gray-50', hoverBgColor: 'hover:bg-lightBlue-700' }} />}
