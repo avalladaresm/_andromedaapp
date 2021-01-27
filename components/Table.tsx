@@ -46,7 +46,7 @@ export default function Table(props) {
     <div className='flex flex-col space-y-3'>
       <div className='self-end'>
         <label>Visible Columns</label>
-        <Select clos className='min-w-xxs max-w-max' options={options} onChange={onChange}
+        <Select menuPlacement='auto' className='min-w-xxs max-w-max' options={options} onChange={onChange}
           isMulti isClearable defaultValue={props.columns.map(c => {
             const temp = { value: '', label: '' }
             temp.value = c.accessor
