@@ -42,7 +42,7 @@ export const getAccountRole = async (queryClient: QueryClient, cookieData: AuthC
   try {
     const completeAuthData = await queryClient.fetchQuery('Auth', async () => {
       const accountRole = await axios.get(`http://localhost:3000/auth/${cookieData.uid}/account-role`)
-      return {...cookieData, role: accountRole.data}
+      return {...cookieData, role: accountRole.data.role, accountId: accountRole.data.accountId}
     })
     return completeAuthData
   }
