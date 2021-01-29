@@ -1,16 +1,30 @@
-import axios from "axios"
+import { message } from "antd"
+import axios, { AxiosError } from "axios"
 import { QueryClient, useMutation } from "react-query"
 import { AccountLogIn, AccountSignUp } from "../models/Auth"
 import { AuthCookie } from "../models/AuthCookie"
 import { cookieNames, deleteCookie } from "../utils/utils"
 
-export const useDoLogin = () => {
+export const useDoLogin = (queryClient: QueryClient, router) => {
   return useMutation((values: AccountLogIn) => {
     return axios.post('http://localhost:3000/auth/login', {
       data: {
         username: values.username, password: values.password
       }
     })
+  }, {
+    onSuccess: (data, variables) => {
+      const loginRes = data.data.split('|')
+      const authData = { uid: loginRes[0], a_token: loginRes[1], role: loginRes[2], accountId: loginRes[3] }
+      setAuth(queryClient, authData)
+      document.cookie = 'uid=' + authData.uid
+      document.cookie = 'a_token=' + authData.a_token
+      message.success(`Login success, whoo! Welcome ${variables.username}`)
+      router.push('/')
+    }, onError: (error: AxiosError) => {
+      message.error(`Login failed! ${error.response.data.message}`)
+      console.log('erorrr', error)
+    }
   })
 }
 
@@ -42,7 +56,7 @@ export const getAccountRole = async (queryClient: QueryClient, cookieData: AuthC
   try {
     const completeAuthData = await queryClient.fetchQuery('Auth', async () => {
       const accountRole = await axios.get(`http://localhost:3000/auth/${cookieData.uid}/account-role`)
-      return {...cookieData, role: accountRole.data.role, accountId: accountRole.data.accountId}
+      return { ...cookieData, role: accountRole.data.role, accountId: accountRole.data.accountId }
     })
     return completeAuthData
   }

@@ -2,10 +2,8 @@ import { FC, useState } from "react"
 import { LoginSettings } from "../../models/LoginSettings"
 import Spin from "../Spin"
 import { TempLogo } from "../TempLogo"
-import { setAuth, useDoLogin } from '../../services/auth'
-import { message } from "antd"
+import { useDoLogin } from '../../services/auth'
 import { useRouter } from 'next/router'
-import { AxiosError } from "axios"
 import { useQueryClient } from "react-query"
 import { AccountLogIn } from "../../models/Auth"
 
@@ -13,25 +11,11 @@ export const LoginCard: FC<LoginSettings> = () => {
   const [loginData, setLoginData] = useState<AccountLogIn>()
 
   const queryClient = useQueryClient()
-  const doLogin = useDoLogin()
   const router = useRouter();
+  const doLogin = useDoLogin(queryClient, router)
 
   const onLogin = () => {
-    doLogin.mutate(loginData, {
-      onSuccess: (data, variables) => {
-        const cookie = data.data.split('|')
-        const authData = { uid: cookie[0], a_token: cookie[1], role: cookie[2] }
-        setAuth(queryClient, authData)
-        document.cookie = 'uid=' + authData.uid
-        document.cookie = 'a_token=' + authData.a_token
-        message.success(`Login success, whoo! Welcome ${variables.username}`)
-        router.push('/')
-      },
-      onError: (error: AxiosError) => {
-        message.error(`Login failed! ${error.response.data.message}`)
-        console.log('erorrr', error)
-      }
-    })
+    doLogin.mutate(loginData)
   }
 
   return (
