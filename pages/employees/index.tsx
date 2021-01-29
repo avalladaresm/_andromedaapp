@@ -41,7 +41,11 @@ export default function Employees() {
           when={!auth?.role}
         />
       }
-      when={auth?.role === 'SUPREME_LEADER'}
+      when={
+        auth?.role === 'SUPREME_LEADER' ||
+        auth?.role === 'PERSON_ADMIN' ||
+        auth?.role === 'BUSINESS_ADMIN'
+      }
     />
   )
 }

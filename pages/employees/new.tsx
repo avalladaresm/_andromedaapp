@@ -8,16 +8,15 @@ import { useAuth } from '../../services/auth';
 import { message } from 'antd';
 import { FormikValues, Formik, Form, Field } from 'formik';
 import { object, string, number, date } from 'yup';
-import { createPersonAccount, createBusinessAccount } from '../../services/account';
 import { FetchCountries, FetchStatesByCountry, FetchCitiesByState } from '../../services/location';
 import { FcCheckmark } from 'react-icons/fc';
-//import Select from '../../components/Select';
 import Select from 'react-select'
 import { CityOptionType, CountryOptionType, OptionType, StateOptionType } from '../../models/OptionType';
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, subDays, subYears } from 'date-fns'
 import Spin from '../../components/Spin';
+import { createEmployeeAccount } from '../../services/employee';
 
 export default function NewEmployee() {
   const [countries, setCoutries] = useState([])
@@ -25,7 +24,6 @@ export default function NewEmployee() {
   const [states, setStates] = useState([])
   const [selectedState, setSelectedState] = useState<number>(undefined)
   const [cities, setCities] = useState([])
-  const [accountTypeId, setAccountTypeId] = useState<string>(undefined)
   const [selectedDob, setSelectedDob] = useState<Date>();
   const [selectedHiredOn, setSelectedHiredOn] = useState<Date>();
 
@@ -40,6 +38,30 @@ export default function NewEmployee() {
     value: 'Female', label: 'Female'
   }, {
     value: 'Other', label: 'Other'
+  }]
+
+  const determineManagerialRoleId = (employerRole: string): number => {
+    switch (employerRole) {
+      case 'PERSON_ADMIN':
+        return 4
+      case 'BUSINESS_ADMIN':
+        return 5
+    }
+  }
+
+  const determineEmployeeRoleId = (employerRole: string): number => {
+    switch (employerRole) {
+      case 'PERSON_ADMIN':
+        return 6
+      case 'BUSINESS_ADMIN':
+        return 7
+    }
+  }
+
+  const employeeRoleOptions = [{
+    value: determineManagerialRoleId(auth?.role), label: 'Managerial'
+  }, {
+    value: determineEmployeeRoleId(auth?.role), label: 'Employee'
   }]
 
   useEffect(() => {
@@ -87,7 +109,7 @@ export default function NewEmployee() {
       .min(2, 'Too Short!')
       .max(255, 'Too Long!')
       .required('Required'),
-    gender: string()
+    gender: object()
       .required('Required!'),
     username: string()
       .min(2, 'Too Short!')
@@ -110,6 +132,8 @@ export default function NewEmployee() {
       .required('Required'),
     salary: number()
       .required('Required'),
+    roleId: object()
+      .required('Requied'),
     hiredOn: date()
       .max(
         subDays(new Date(), 10), selectedHiredOn > new Date() &&
@@ -127,26 +151,25 @@ export default function NewEmployee() {
       .required('Required'),
     streetAddress1: string()
       .required('Required'),
-    cityId: number()
+    cityId: object()
       .required('Required'),
-    stateId: number()
+    stateId: object()
       .required('Required'),
-    countryId: number()
-      .required('Required'),
-    accountTypeId: number()
+    countryId: object()
       .required('Required')
   });
 
   const initialValues: Partial<FormikValues> = {
     name: '',
     surname: '',
-    gender: '',
+    gender: undefined,
     username: '',
     password: '',
     dob: '',
     position: '',
     contractType: '',
     salary: '',
+    roleId: undefined,
     hiredOn: '',
     email: '',
     emailType: '',
@@ -157,7 +180,6 @@ export default function NewEmployee() {
     cityId: '',
     stateId: '',
     countryId: '',
-    accountTypeId: -1
   }
 
   return (
@@ -172,19 +194,26 @@ export default function NewEmployee() {
           <Formik
             initialValues={initialValues}
             validationSchema={NewEmployeeSchema}
-            onSubmit={values => {
-              console.log('vaaa', values)
+            onSubmit={async (values, { resetForm }) => {
+              console.log('v', values)
               try {
-                values.accountTypeId = accountTypeId
-                let res;
-                //resetForm()
+                values.employerId = auth?.accountId
+                values.gender = values.gender.value
+                values.cityId = values.cityId.value
+                values.stateId = values.stateId.value
+                values.countryId = values.countryId.value
+                values.roleId = values.roleId.value
+                let res = await createEmployeeAccount(values)
+                if (res.status === 200)
+                  message.success('Employee added successfully!')
+                resetForm()
               }
               catch (e) {
                 message.error(`Error adding employee! ${e.response.data.message}`)
               }
             }}
           >
-            {({ errors, touched, initialValues, values, resetForm, dirty, setFieldValue, setTouched, handleSubmit, isSubmitting }) => (
+            {({ errors, touched, initialValues, values, resetForm, setFieldValue, setTouched, handleSubmit, isSubmitting }) => (
               <Form onSubmit={handleSubmit}>
                 <div className='flex flex-col w-full'>
                   <div className='flex flex-col p-5 2xl:w-3/5 xl:w-4/6 lg:w-5/6 justify-self-center self-center rounded-md shadow-md bg-blueGray-100'>
@@ -284,8 +313,8 @@ export default function NewEmployee() {
                             <Field name='gender'
                               children={({ field }) => (
                                 <Select {...field} value={values.gender} menuPlacement='auto'
-                                  onChange={(v) => {
-                                    setFieldValue(field.name, v.value);
+                                  onChange={(v: OptionType) => {
+                                    setFieldValue(field.name, v);
                                   }}
                                   className={`min-w-full ${(
                                     values.gender === initialValues.gender && !touched.gender
@@ -380,7 +409,7 @@ export default function NewEmployee() {
                                   peekNextMonth
                                   showMonthDropdown
                                   showYearDropdown
-                                  dropdownMode='scroll'
+                                  dropdownMode='select'
                                   todayButton="Today"
                                   placeholderText={'Enter employee\'s date of birth'}
                                   onBlur={() => setTouched({ ...touched, dob: true })}
@@ -397,7 +426,7 @@ export default function NewEmployee() {
                     </div>
                     <div className='flex flex-row justify-center align-middle'>
                       <div className='flex space-x-3 justify-self-center self-center'>
-                        <div className='2xl:w-64 xl:w-52 lg:w-40 md:w-28'>
+                        <div className='2xl:w-52 xl:w-52 lg:w-40 md:w-28'>
                           <div className='flex flex-row space-x-2'>
                             <label htmlFor='position'><span className='text-red-600'>*</span>Position</label>
                             {(values.position === initialValues.position && !touched.position) ?
@@ -421,7 +450,7 @@ export default function NewEmployee() {
                             style={{ outline: 'none' }}
                           />
                         </div>
-                        <div className='2xl:w-64 xl:w-52 lg:w-40 md:w-28'>
+                        <div className='2xl:w-52 xl:w-52 lg:w-40 md:w-28'>
                           <div className='flex flex-row space-x-2'>
                             <label htmlFor='contractType'><span className='text-red-600'>*</span>Contract type</label>
                             {(values.contractType === initialValues.contractType && !touched.contractType) ?
@@ -445,7 +474,7 @@ export default function NewEmployee() {
                             style={{ outline: 'none' }}
                           />
                         </div>
-                        <div className='2xl:w-64 xl:w-52 lg:w-40 md:w-28'>
+                        <div className='2xl:w-48 xl:w-52 lg:w-40 md:w-28'>
                           <div className='flex flex-row space-x-2'>
                             <label htmlFor='salary'><span className='text-red-600'>*</span>Salary</label>
                             {(values.salary === initialValues.salary && !touched.salary) ?
@@ -469,7 +498,37 @@ export default function NewEmployee() {
                             style={{ outline: 'none' }}
                           />
                         </div>
-                        <div className='2xl:w-64 xl:w-52 lg:w-40 md:w-28'>
+                        <div className='2xl:w-48 xl:w-52 lg:w-40 md:w-28'>
+                          <div className='flex flex-row space-x-2'>
+                            <label htmlFor='roleId'><span className='text-red-600'>*</span>Role</label>
+                            {(values.roleId === initialValues.roleId && !touched.roleId) ?
+                              null :
+                              (errors.roleId ? (
+                                <div className='text-red-600'>{errors.roleId}</div>
+                              ) :
+                                <FcCheckmark />)
+                            }
+                          </div>
+                          <Field name='roleId'
+                            children={({ field }) => (
+                              <Select {...field} value={values.roleId} menuPlacement='auto'
+                                onChange={(v: OptionType) => {
+                                  setFieldValue(field.name, v);
+                                }}
+                                className={`min-w-full ${(
+                                  values.roleId === initialValues.roleId && !touched.roleId
+                                ) ? '' : (
+                                    errors.roleId ?
+                                      'ring-2 ring-red-600 ring-inset ring-opacity-50' :
+                                      'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
+                                  )} text-center shadow-sm rounded-sm h-10`}
+                                options={employeeRoleOptions} placeholder={'Select employee\'s role'}
+                                onBlur={() => setTouched({ ...touched, roleId: true })}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className='2xl:w-48 xl:w-52 lg:w-40 md:w-28'>
                           <div className='flex flex-row space-x-2'>
                             <label htmlFor='hiredOn'><span className='text-red-600'>*</span>Hired on</label>
                             {(values.hiredOn === initialValues.hiredOn && !touched.hiredOn) ?
@@ -727,7 +786,11 @@ export default function NewEmployee() {
           when={!auth?.role}
         />
       }
-      when={auth?.role === 'SUPREME_LEADER'}
+      when={
+        auth?.role === 'SUPREME_LEADER' ||
+        auth?.role === 'PERSON_ADMIN' ||
+        auth?.role === 'BUSINESS_ADMIN'
+      }
     />
   )
 }
