@@ -1,6 +1,8 @@
 import 'tailwindcss/tailwind.css';
 import 'antd/dist/antd.css';
 import '../styles/globals.css'
+import "nprogress/nprogress.css"
+
 import React, { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useRouter } from 'next/router';
@@ -9,6 +11,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { getAccountRole, setAuth, useAuth } from '../services/auth';
 import { documentCookieJsonify } from '../utils/utils';
 import { AuthCookie } from '../models/AuthCookie';
+import NProgress from 'nprogress'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,6 +25,7 @@ const queryClient = new QueryClient({
 function MyApp({ Component, pageProps }) {
   const [currentAuth, setCurrentAuth] = useState<AuthCookie>(undefined)
   const [resolved, setResolved] = useState<boolean>(false)
+
   const router = useRouter()
   const auth: AuthCookie = useAuth(queryClient)
 
@@ -83,6 +87,21 @@ function MyApp({ Component, pageProps }) {
   }, [])
 
   useEffect(() => { }, [resolved])
+
+  useEffect(() => {
+    NProgress.configure({showSpinner: true})
+    let routeChangeStart = () => NProgress.start();
+    let routeChangeComplete = () => NProgress.done();
+
+    router.events.on('routeChangeStart', routeChangeStart);
+    router.events.on('routeChangeComplete', routeChangeComplete);
+    router.events.on('routeChangeError', routeChangeComplete);
+    return () => {
+      router.events.off('routeChangeStart', routeChangeStart);
+      router.events.off('routeChangeComplete', routeChangeComplete);
+      router.events.off('routeChangeError', routeChangeComplete);
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
