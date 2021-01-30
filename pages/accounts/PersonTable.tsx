@@ -9,8 +9,7 @@ import Mayre from 'mayre';
 import { AxiosError } from 'axios';
 import { PersonAccountResult } from '../../models/Account';
 import { store } from 'react-notifications-component';
-
-type NotificationType = "success" | "danger" | "info" | "default" | "warning"
+import { NotificationType } from '../../models/NotificationType';
 
 export default function Accounts() {
 

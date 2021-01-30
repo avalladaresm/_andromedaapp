@@ -3,6 +3,8 @@ import { FcHighPriority, FcOk } from 'react-icons/fc'
 import { useTable, usePagination } from 'react-table'
 import Select from 'react-select'
 import { TextSkeleton } from '../components/Skeleton'
+import { store } from 'react-notifications-component';
+import { NotificationType } from '../models/NotificationType';
 
 export default function Table(props) {
   const tableData = useMemo(
@@ -52,6 +54,31 @@ export default function Table(props) {
   const onChange = (options, action) => {
     action.action === 'remove-value' && toggleHideColumn(action.removedValue.value)
     action.action === 'select-option' && toggleHideColumn(action.option.value)
+  }
+
+  const copiedNotificationWithIcon = (type: NotificationType, copiedText: string) => {
+    store.addNotification({
+      title: type === 'success' ? 'Text copied' : 'Error copying text',
+      message: type === 'success' ? `'${copiedText}' copied to clipboard!.` : copiedText,
+      type: type,
+      insert: 'bottom',
+      container: 'top-right',
+      animationIn: ['animate__animated', 'animate__fadeIn'],
+      animationOut: ['animate__animated', 'animate__fadeOut'],
+      dismiss: {
+        duration: 3000,
+        onScreen: true
+      }
+    });
+  };
+
+  const copyToClipboard = (e: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => {
+    const target = e.target as HTMLParagraphElement
+    navigator.clipboard.writeText(target.innerText).then(() =>
+      copiedNotificationWithIcon('success', target.innerText)
+    ).catch((e) => {
+      copiedNotificationWithIcon('danger', e.message)
+    })
   }
 
   return (
@@ -133,8 +160,13 @@ export default function Table(props) {
                   return (
                     <td {...cell.getCellProps()}
                       className={`border border-blue-900 p-1 bg-blue-100`} >
-                      {props.isLoading ? <TextSkeleton /> : (cell.value === false ? <FcHighPriority className='justify-self-center' /> :
-                        cell.value === true ? <FcOk /> : cell.value)}
+                      {props.isLoading ? <TextSkeleton /> :
+                        (cell.value === false ? <FcHighPriority className='justify-self-center' /> :
+                          cell.value === true ? <FcOk /> : (cell.column.id === 'email' ?
+                            <p onClick={(e) => copyToClipboard(e)}>
+                              {cell.value}
+                            </p>
+                            : cell.value))}
                     </td>
                   )
                 })}
