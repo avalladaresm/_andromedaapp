@@ -1,9 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FcHighPriority, FcOk } from 'react-icons/fc'
 import { useTable, usePagination } from 'react-table'
 import Select from 'react-select'
+import { TextSkeleton } from '../components/Skeleton'
 
 export default function Table(props) {
+  const tableData = useMemo(
+    () => (
+      props.isLoading ? Array(10).fill({}) : props.data),
+    [props.isLoading, props.data]
+  );
+
+  const tableColumns = useMemo(
+    () => props.columns,
+    []
+  )
+
   const [options, setOptions] = useState([])
   const {
     getTableProps,
@@ -22,7 +34,7 @@ export default function Table(props) {
     setPageSize,
     state: { pageIndex, pageSize },
   } = useTable({
-    columns: props.columns, data: props.data, initialState: { pageIndex: 0 },
+    columns: tableColumns, data: tableData, initialState: { pageIndex: 0 },
   }, usePagination)
 
   useEffect(() => {
@@ -121,8 +133,8 @@ export default function Table(props) {
                   return (
                     <td {...cell.getCellProps()}
                       className={`border-solid border border-black p-1`} >
-                      {cell.value === false ? <FcHighPriority className='justify-self-center' /> :
-                        cell.value === true ? <FcOk /> : cell.value}
+                      {props.isLoading ? <TextSkeleton /> : (cell.value === false ? <FcHighPriority className='justify-self-center' /> :
+                        cell.value === true ? <FcOk /> : cell.value)}
                     </td>
                   )
                 })}
