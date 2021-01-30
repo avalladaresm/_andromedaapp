@@ -34,14 +34,12 @@ export default function Accounts() {
     });
   };
 
-  const personColumns = useMemo(() => PersonColumns, [])
-
   return (
     <Mayre
-      of={<Table columns={personColumns} data={data} />}
+      of={<Table columns={PersonColumns} data={data} isLoading={isLoading} />}
       or={
         <Mayre
-          of={<div>Loading table data...</div>}
+          of={<Table columns={PersonColumns} data={data} isLoading={isLoading} />}
           or={<div>Error mate: {error?.response?.data?.message}</div>}
           when={!!isLoading}
         />
