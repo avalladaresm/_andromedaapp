@@ -24,7 +24,7 @@ const FetchPersonAccounts = async (accessToken: string): Promise<PersonAccountRe
 }
 
 export const useFetchPersonAccounts = (accessToken: string): QueryObserverResult<PersonAccountResult[], AxiosError> => {
-  return useQuery('PersonAccounts', async () => await FetchPersonAccounts(accessToken))
+  return useQuery('PersonAccounts', async () => await FetchPersonAccounts(accessToken), { refetchOnMount: false })
 }
 
 export const usePersonAccounts = (queryClient: QueryClient) => {
