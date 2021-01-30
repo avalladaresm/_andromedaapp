@@ -111,13 +111,13 @@ export default function Table(props) {
           ))}
         </select>
       </div>
-      <table {...getTableProps()}>
+      <table {...getTableProps()} className='table-auto border-collapse'>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
                 <th {...column.getHeaderProps()}
-                  className={`border-solid border border-black p-1`} >
+                  className={`border border-blue-900 p-1 bg-blue-300`} >
                   {column.render('Header')}
                 </th>
               ))}
@@ -132,7 +132,7 @@ export default function Table(props) {
                 {row.cells.map(cell => {
                   return (
                     <td {...cell.getCellProps()}
-                      className={`border-solid border border-black p-1`} >
+                      className={`border border-blue-900 p-1 bg-blue-100`} >
                       {props.isLoading ? <TextSkeleton /> : (cell.value === false ? <FcHighPriority className='justify-self-center' /> :
                         cell.value === true ? <FcOk /> : cell.value)}
                     </td>
