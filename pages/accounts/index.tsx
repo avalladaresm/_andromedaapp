@@ -2,42 +2,34 @@ import { notification } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { useQueryClient, useIsFetching } from "react-query";
 import Navigation from "../../components/navigation";
-import { FetchBusinessAccounts, useBusinessAccounts, usePersonAccounts } from "../../services/account";
+import { FetchBusinessAccounts, useBusinessAccounts } from "../../services/account";
 import { IconType } from "antd/lib/notification";
 import CreateAccount from "./CreateAccount";
 import Table from '../../components/Table'
-import { FetchPersonAccounts } from "../../services/account";
-import { PersonColumns } from './PersonColumns'
 import { BusinessColumns } from "./BusinessColumns";
+import PersonTable from "./PersonTable";
+import Mayre from "mayre";
+import { AuthCookie } from "../../models/AuthCookie";
+import { useAuth } from "../../services/auth";
 
 export default function Accounts() {
-  const [allPersonAccounts, setAllPersonAccounts] = useState([])
   const [allBusinessAccounts, setAllBusinessAccounts] = useState([])
   const [showCreateAccount, setShowCreateAccount] = useState(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const queryClient = useQueryClient()
-  const personAccounts = usePersonAccounts(queryClient)
   const businessAccounts = useBusinessAccounts(queryClient)
   const isFetching = useIsFetching()
+  const auth: AuthCookie = useAuth(queryClient)
 
   useEffect(() => {
     const f = async () => {
       setIsLoading(true)
-      setAllPersonAccounts(personAccounts ?? await FetchPersonAccounts(queryClient))
       setAllBusinessAccounts(businessAccounts ?? await FetchBusinessAccounts(queryClient))
       setIsLoading(false)
     }
     f()
   }, [isLoading])
-
-  useEffect(() => {
-    if ((personAccounts && personAccounts.length !== 0 || allPersonAccounts.length !== 0) && isFetching === 0) {
-      const newRows = personAccounts?.length - allPersonAccounts.length
-      openNotificationWithIcon('info', newRows)
-      newRows > 0 && setAllPersonAccounts(personAccounts)
-    }
-  }, [isFetching])
 
   useEffect(() => {
     if ((businessAccounts && businessAccounts.length !== 0 || allBusinessAccounts.length !== 0) && isFetching === 0) {
@@ -55,7 +47,6 @@ export default function Accounts() {
     });
   };
 
-  const personColumns = useMemo(() => PersonColumns, [])
   const businessColumns = useMemo(() => BusinessColumns, [])
 
   return (
@@ -70,9 +61,11 @@ export default function Accounts() {
         isLoading: isFetching === 1
       }}
     >
-      {allPersonAccounts.length > 0 &&
-        <Table columns={personColumns} data={allPersonAccounts} />
-      }
+      <Mayre
+        of={<div>Verifying your credentials...</div>}
+        or={<PersonTable />}
+        when={!auth?.a_token}
+      />
       {allBusinessAccounts.length > 0 &&
         <Table columns={businessColumns} data={allBusinessAccounts} />
       }
