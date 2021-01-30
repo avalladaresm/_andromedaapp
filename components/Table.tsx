@@ -72,7 +72,7 @@ export default function Table(props) {
     });
   };
 
-  const copyToClipboard = (e: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => {
+  const copyToClipboard = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const target = e.target as HTMLParagraphElement
     navigator.clipboard.writeText(target.innerText).then(() =>
       copiedNotificationWithIcon('success', target.innerText)
@@ -163,9 +163,9 @@ export default function Table(props) {
                       {props.isLoading ? <TextSkeleton /> :
                         (cell.value === false ? <FcHighPriority className='justify-self-center' /> :
                           cell.value === true ? <FcOk /> : (cell.column.id === 'email' ?
-                            <p onClick={(e) => copyToClipboard(e)}>
+                            <div onClick={(e) => copyToClipboard(e)}>
                               {cell.value}
-                            </p>
+                            </div>
                             : cell.value))}
                     </td>
                   )
