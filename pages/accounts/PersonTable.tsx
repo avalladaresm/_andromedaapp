@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useQueryClient, useIsFetching, QueryObserverResult } from 'react-query';
 import { useFetchPersonAccounts, usePersonAccounts } from '../../services/account';
 import { IconType } from 'antd/lib/notification';
@@ -9,21 +9,20 @@ import { AuthCookie } from '../../models/AuthCookie';
 import { useAuth } from '../../services/auth';
 import Mayre from 'mayre';
 import { AxiosError } from 'axios';
+import { PersonAccountResult } from '../../models/Account';
 
 export default function Accounts() {
-  const [allPersonAccounts, setAllPersonAccounts] = useState([])
 
   const queryClient = useQueryClient()
   const personAccounts = usePersonAccounts(queryClient)
   const isFetching = useIsFetching()
   const auth: AuthCookie = useAuth(queryClient)
-  const { isLoading, error }: QueryObserverResult<any, AxiosError> = useFetchPersonAccounts(auth.a_token)
+  const { data, isLoading, error }: QueryObserverResult<PersonAccountResult[], AxiosError> = useFetchPersonAccounts(auth.a_token)
 
   useEffect(() => {
-    if ((personAccounts && personAccounts.length !== 0 || allPersonAccounts.length !== 0) && isFetching === 0) {
-      const newRows = personAccounts?.length - allPersonAccounts.length
+    if ((personAccounts && personAccounts.length !== 0 || data?.length !== 0) && isFetching === 0) {
+      const newRows = personAccounts?.length - data?.length
       openNotificationWithIcon('info', newRows)
-      newRows > 0 && setAllPersonAccounts(personAccounts)
     }
   }, [isFetching])
 
@@ -39,7 +38,7 @@ export default function Accounts() {
 
   return (
     <Mayre
-      of={<Table columns={personColumns} data={allPersonAccounts} />}
+      of={<Table columns={personColumns} data={data} />}
       or={
         <Mayre
           of={<div>Loading table data...</div>}
@@ -47,7 +46,7 @@ export default function Accounts() {
           when={!!isLoading}
         />
       }
-      when={allPersonAccounts.length > 0}
+      when={data?.length > 0}
     />
   )
 }
