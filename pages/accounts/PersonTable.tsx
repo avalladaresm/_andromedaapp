@@ -1,8 +1,6 @@
-import { notification } from 'antd';
-import React, { useEffect, useMemo } from 'react';
-import { useQueryClient, useIsFetching, QueryObserverResult } from 'react-query';
-import { useFetchPersonAccounts, usePersonAccounts } from '../../services/account';
-import { IconType } from 'antd/lib/notification';
+import React, { useEffect } from 'react';
+import { useQueryClient, QueryObserverResult } from 'react-query';
+import { useFetchPersonAccounts } from '../../services/account';
 import Table from '../../components/Table'
 import { PersonColumns } from './PersonColumns'
 import { AuthCookie } from '../../models/AuthCookie';
@@ -10,27 +8,35 @@ import { useAuth } from '../../services/auth';
 import Mayre from 'mayre';
 import { AxiosError } from 'axios';
 import { PersonAccountResult } from '../../models/Account';
+import { store } from 'react-notifications-component';
+
+type NotificationType = "success" | "danger" | "info" | "default" | "warning"
 
 export default function Accounts() {
 
   const queryClient = useQueryClient()
-  const personAccounts = usePersonAccounts(queryClient)
-  const isFetching = useIsFetching()
   const auth: AuthCookie = useAuth(queryClient)
-  const { data, isLoading, error }: QueryObserverResult<PersonAccountResult[], AxiosError> = useFetchPersonAccounts(auth.a_token)
+  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<PersonAccountResult[], AxiosError> = useFetchPersonAccounts(auth.a_token)
 
   useEffect(() => {
-    if ((personAccounts && personAccounts.length !== 0 || data?.length !== 0) && isFetching === 0) {
-      const newRows = personAccounts?.length - data?.length
-      openNotificationWithIcon('info', newRows)
+    if (data && data.length !== 0) {
+      if (isFetchedAfterMount) openNotificationWithIcon('info', data.length)
     }
-  }, [isFetching])
+  }, [data?.length])
 
-  const openNotificationWithIcon = (type: IconType, rowsFetched: number) => {
-    notification[type]({
-      message: 'Refetching complete',
-      description: `Refetching data complete, ${rowsFetched} new rows fetched.`,
-      duration: 10
+  const openNotificationWithIcon = (type: NotificationType, rowsFetched: number) => {
+    store.addNotification({
+      title: 'Fetching complete',
+      message: `Person accounts, ${rowsFetched} rows fetched.`,
+      type: type,
+      insert: 'bottom',
+      container: 'top-right',
+      animationIn: ['animate__animated', 'animate__fadeIn'],
+      animationOut: ['animate__animated', 'animate__fadeOut'],
+      dismiss: {
+        duration: 10000,
+        onScreen: true
+      }
     });
   };
 

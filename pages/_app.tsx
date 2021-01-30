@@ -1,7 +1,8 @@
 import 'tailwindcss/tailwind.css';
 import 'antd/dist/antd.css';
 import '../styles/globals.css'
-import "nprogress/nprogress.css"
+import 'nprogress/nprogress.css'
+import 'react-notifications-component/dist/theme.css'
 
 import React, { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -12,6 +13,7 @@ import { getAccountRole, setAuth, useAuth } from '../services/auth';
 import { documentCookieJsonify } from '../utils/utils';
 import { AuthCookie } from '../models/AuthCookie';
 import NProgress from 'nprogress'
+import ReactNotification from 'react-notifications-component'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -105,6 +107,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactNotification />
       <Component {...pageProps} />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
