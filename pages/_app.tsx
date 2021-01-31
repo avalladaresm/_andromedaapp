@@ -9,7 +9,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { useRouter } from 'next/router';
 import { message } from 'antd';
 import { ReactQueryDevtools } from 'react-query/devtools'
-import { getAccountRole, setAuth, useAuth } from '../services/auth';
+import { useAuth } from '../services/auth';
+import { getAccountRole } from '../services/account';
 import { documentCookieJsonify } from '../utils/utils';
 import { AuthCookie } from '../models/AuthCookie';
 import NProgress from 'nprogress'

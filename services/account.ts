@@ -1,6 +1,20 @@
 import axios, { AxiosError } from 'axios'
 import { QueryClient, QueryObserverResult, useQuery } from 'react-query'
 import { CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account'
+import { AuthCookie } from '../models/AuthCookie'
+
+export const getAccountRole = async (queryClient: QueryClient, cookieData: AuthCookie) => {
+  try {
+    const completeAuthData = await queryClient.fetchQuery('Auth', async () => {
+      const accountRole = await axios.get(`http://localhost:3000/account/${cookieData.uid}/account-role`)
+      return { ...cookieData, role: accountRole.data.role, accountId: accountRole.data.accountId }
+    })
+    return completeAuthData
+  }
+  catch (e) {
+    throw e
+  }
+}
 
 export const FetchAccounts = async (queryClient: QueryClient) => {
   const accounts = await queryClient.fetchQuery('Accounts', async () => {
