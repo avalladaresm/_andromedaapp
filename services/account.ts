@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { QueryClient, QueryObserverResult, useQuery } from 'react-query'
-import { CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account'
+import { BusinessAccountResult, CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account'
 import { AuthCookie } from '../models/AuthCookie'
 
 export const getAccountRole = async (queryClient: QueryClient, cookieData: AuthCookie) => {
@@ -49,12 +49,17 @@ export const usePersonAccounts = (queryClient: QueryClient) => {
   return queryClient.getQueryData<PersonAccountResult[]>('PersonAccounts')
 }
 
-export const FetchBusinessAccounts = async (queryClient: QueryClient) => {
-  const accounts = await queryClient.fetchQuery('BusinessAccounts', async () => {
-    const r = await axios.get('http://localhost:3000/account/getAllBusinessAccounts')
-    return r.data
+const FetchBusinessAccounts = async (accessToken: string): Promise<BusinessAccountResult[]> => {
+  const businessAccounts = await axios.get('http://localhost:3000/account/getAllBusinessAccounts', {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
   })
-  return accounts
+  return businessAccounts.data
+}
+
+export const useFetchBusinessAccounts = (accessToken: string): QueryObserverResult<BusinessAccountResult[], AxiosError> => {
+  return useQuery('BusinessAccounts', async () => await FetchBusinessAccounts(accessToken), { refetchOnMount: false })
 }
 
 export const useBusinessAccounts = (queryClient: QueryClient) => {
