@@ -6,7 +6,11 @@ import { AuthCookie } from '../models/AuthCookie'
 export const getAccountRole = async (queryClient: QueryClient, cookieData: AuthCookie) => {
   try {
     const completeAuthData = await queryClient.fetchQuery('Auth', async () => {
-      const accountRole = await axios.get(`http://localhost:3000/account/${cookieData.uid}/account-role`)
+      const accountRole = await axios.get(`http://localhost:3000/account/${cookieData.uid}/account-role`, {
+        headers: {
+          'Authorization': `Bearer ${cookieData.a_token}`
+        }
+      })
       return { ...cookieData, role: accountRole.data.role, accountId: accountRole.data.accountId }
     })
     return completeAuthData
