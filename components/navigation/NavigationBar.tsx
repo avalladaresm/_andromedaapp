@@ -1,11 +1,10 @@
 import { FC } from "react"
 import { NavBarSettings } from "../../models/NavBarSettings"
-import { convertToClassNameAttributes } from "../../utils/utils"
 
 const NavigationBar: FC<NavBarSettings> = (props) => {
 
   return (
-    <nav className={`${convertToClassNameAttributes(props)} w-full flex items-center`}>
+    <nav className='w-full flex items-center bg-lightBlue-800 h-14 space-x-4 justify-center'>
       {props.children}
     </nav>
   )
