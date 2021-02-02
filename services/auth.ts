@@ -7,7 +7,7 @@ import { cookieNames, deleteCookie } from "../utils/utils"
 
 export const useDoLogin = (queryClient: QueryClient, router) => {
   return useMutation((values: AccountLogIn) => {
-    return axios.post('http://localhost:3000/auth/login', {
+    return axios.post(`${process.env.API_BASE_URL}/auth/login`, {
       data: {
         username: values.username, password: values.password
       }
@@ -30,7 +30,7 @@ export const useDoLogin = (queryClient: QueryClient, router) => {
 
 export const signup = async (values: AccountSignUp) => {
   try {
-    const signup = await axios.post('http://localhost:3000/auth/signup', {
+    const signup = await axios.post(`${process.env.API_BASE_URL}/auth/signup`, {
       data: {
         name: values.name, surname: values.username,
         username: values.username, password: values.password,

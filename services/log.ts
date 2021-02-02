@@ -3,7 +3,7 @@ import { QueryClient } from "react-query"
 
 export const FetchLogs = (queryClient: QueryClient) => {
   const logs = queryClient.fetchQuery('Logs', async () => {
-    return await axios.get('http://localhost:3000/logs')
+    return await axios.get(`${process.env.API_BASE_URL}/logs`)
   })
   return logs
 }

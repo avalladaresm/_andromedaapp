@@ -6,7 +6,7 @@ import { AuthCookie } from '../models/AuthCookie'
 export const getAccountRole = async (queryClient: QueryClient, cookieData: AuthCookie) => {
   try {
     const completeAuthData = await queryClient.fetchQuery('Auth', async () => {
-      const accountRole = await axios.get(`http://localhost:3000/account/${cookieData.uid}/account-role`, {
+      const accountRole = await axios.get(`${process.env.API_BASE_URL}/account/${cookieData.uid}/account-role`, {
         headers: {
           'Authorization': `Bearer ${cookieData.a_token}`
         }
@@ -22,7 +22,7 @@ export const getAccountRole = async (queryClient: QueryClient, cookieData: AuthC
 
 export const FetchAccounts = async (queryClient: QueryClient) => {
   const accounts = await queryClient.fetchQuery('Accounts', async () => {
-    const r = await axios.get('http://localhost:3000/account/getAllAccounts')
+    const r = await axios.get(`${process.env.API_BASE_URL}/account/getAllAccounts`)
     return r.data
   })
   return accounts
@@ -33,7 +33,7 @@ export const useAccounts = (queryClient: QueryClient) => {
 }
 
 const FetchPersonAccounts = async (accessToken: string): Promise<PersonAccountResult[]> => {
-  const personAccounts = await axios.get('http://localhost:3000/account/getAllPersonAccounts', {
+  const personAccounts = await axios.get(`${process.env.API_BASE_URL}/account/getAllPersonAccounts`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`
     }
@@ -50,7 +50,7 @@ export const usePersonAccounts = (queryClient: QueryClient) => {
 }
 
 const FetchBusinessAccounts = async (accessToken: string): Promise<BusinessAccountResult[]> => {
-  const businessAccounts = await axios.get('http://localhost:3000/account/getAllBusinessAccounts', {
+  const businessAccounts = await axios.get(`${process.env.API_BASE_URL}/account/getAllBusinessAccounts`, {
     headers: {
       'Authorization': `Bearer ${accessToken}`
     }
@@ -68,7 +68,7 @@ export const useBusinessAccounts = (queryClient: QueryClient) => {
 
 export const createBusinessAccount = async (values: CreateBusinessAccount) => {
   try {
-    const res = await axios.post('http://localhost:3000/account/createBusinessAccount', {
+    const res = await axios.post(`${process.env.API_BASE_URL}/account/createBusinessAccount`, {
       data: {
         name: values.name, username: values.username, password: 'defaultp',
         email: values.email, phoneNumber: values.phoneNumber,
@@ -86,7 +86,7 @@ export const createBusinessAccount = async (values: CreateBusinessAccount) => {
 
 export const createPersonAccount = async (values: CreatePersonAccount) => {
   try {
-    const res = await axios.post('http://localhost:3000/account/createPersonAccount', {
+    const res = await axios.post(`${process.env.API_BASE_URL}/account/createPersonAccount`, {
       data: {
         name: values.name, surname: values.surname, username: values.username, password: 'defaultp',
         email: values.email, phoneNumber: values.phoneNumber,

@@ -3,7 +3,7 @@ import { CreateEmployeeAccount } from "../models/Employee"
 
 export const createEmployeeAccount = async (values: CreateEmployeeAccount) => {
   try {
-    const res = await axios.post('http://localhost:3000/employee/createEmployeeAccount', {
+    const res = await axios.post(`${process.env.API_BASE_URL}/employee/createEmployeeAccount`, {
       data: {
         username: values.username, password: values.password, email: values.email, emailType: values.emailType, name: values.name, surname: values.surname, gender: values.gender, dob: values.dob,
         position: values.position, hiredOn: values.hiredOn, contractType: values.contractType, salary: values.salary, employerId: values.employerId, roleId: values.roleId, 
