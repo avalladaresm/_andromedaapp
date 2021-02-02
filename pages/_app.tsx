@@ -12,7 +12,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { useAuth } from '../services/auth';
 import { getAccountRole } from '../services/account';
 import { documentCookieJsonify } from '../utils/utils';
-import { AuthCookie } from '../models/AuthCookie';
+import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import NProgress from 'nprogress'
 import ReactNotification from 'react-notifications-component'
 
@@ -26,11 +26,11 @@ const queryClient = new QueryClient({
 })
 
 function MyApp({ Component, pageProps }) {
-  const [currentAuth, setCurrentAuth] = useState<AuthCookie>(undefined)
+  const [currentAuth, setCurrentAuth] = useState<CurrentUserAuthData>(undefined)
   const [resolved, setResolved] = useState<boolean>(false)
 
   const router = useRouter()
-  const auth: AuthCookie = useAuth(queryClient)
+  const auth: CurrentUserAuthData = useAuth(queryClient)
 
   useEffect(() => {
     const f = async () => {
@@ -46,7 +46,7 @@ function MyApp({ Component, pageProps }) {
   }, [currentAuth])
 
   useEffect(() => {
-    const parsedCookie: AuthCookie = documentCookieJsonify(document.cookie)
+    const parsedCookie: CurrentUserAuthData = documentCookieJsonify(document.cookie)
 
     const isParsedCookieUnd = Object.values(parsedCookie).includes(undefined)
 
@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps }) {
     auth ?? isParsedCookieUnd ? undefined : setCurrentAuth(parsedCookie)
 
     const listenCookieChange = (callback, interval) => {
-      let cookieInQuery = authData?.uid
+      let cookieInQuery = authData?.u
 
       if (cookieInQuery) {
         let timer = setInterval(() => {
@@ -66,7 +66,7 @@ function MyApp({ Component, pageProps }) {
               clearInterval(timer)
               queryClient.clear()
             } finally {
-              cookieInQuery = authData?.uid
+              cookieInQuery = authData?.u
             }
           }
         }, interval);
@@ -84,15 +84,15 @@ function MyApp({ Component, pageProps }) {
   }, [])
 
   useEffect(() => {
-    const parsedCookie: AuthCookie = documentCookieJsonify(document.cookie)
+    const parsedCookie: CurrentUserAuthData = documentCookieJsonify(document.cookie)
 
-    if ((!parsedCookie.uid || !parsedCookie.a_token) && router.pathname !== '/auth/signup') router.push('/auth/login')
+    if ((!parsedCookie.u || !parsedCookie.a_t) && router.pathname !== '/auth/signup') router.push('/auth/login')
   }, [])
 
   useEffect(() => { }, [resolved])
 
   useEffect(() => {
-    NProgress.configure({showSpinner: true})
+    NProgress.configure({ showSpinner: true })
     let routeChangeStart = () => NProgress.start();
     let routeChangeComplete = () => NProgress.done();
 

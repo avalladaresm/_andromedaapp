@@ -1,4 +1,4 @@
-import { AuthCookie } from "../models/AuthCookie";
+import { CurrentUserAuthData } from "../models/CurrentUserAuthData";
 
 /* 
 *   Converts props to tailwind class names
@@ -9,7 +9,7 @@ export const convertToClassNameAttributes = (object) => {
 }
 
 export const documentCookieJsonify = (documentCookie: string) => {
-  let obj: AuthCookie = { uid: '', a_token: '' };
+  let obj: CurrentUserAuthData = { u: '', a_t: '' };
   const cookies = documentCookie?.split(';')
   cookies.map(x => {
     const key = x.replace(/\s/g, "").split('=')[0]

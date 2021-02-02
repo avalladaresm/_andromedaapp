@@ -4,7 +4,7 @@ import Navigation from "../../components/navigation";
 import CreateAccount from "./CreateAccount";
 import PersonTable from "./PersonTable";
 import Mayre from "mayre";
-import { AuthCookie } from "../../models/AuthCookie";
+import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
 import BusinessTable from "./BusinessTable";
 
@@ -13,7 +13,7 @@ export default function Accounts() {
 
   const queryClient = useQueryClient()
   const isFetching = useIsFetching()
-  const auth: AuthCookie = useAuth(queryClient)
+  const auth: CurrentUserAuthData = useAuth(queryClient)
 
   return (
     <Navigation
@@ -30,12 +30,12 @@ export default function Accounts() {
       <Mayre
         of={<div>Verifying your credentials...</div>}
         or={<PersonTable />}
-        when={!auth?.a_token}
+        when={!auth?.a_t}
       />
       <Mayre
         of={<div>Verifying your credentials...</div>}
         or={<BusinessTable />}
-        when={!auth?.a_token}
+        when={!auth?.a_t}
       />
       <CreateAccount
         isShowing={showCreateAccount}

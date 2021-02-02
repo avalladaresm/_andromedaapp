@@ -1,14 +1,14 @@
 import React from 'react'
 import Login from '../pages/auth/login';
 import Navigation from '../components/navigation'
-import { AuthCookie } from '../models/AuthCookie';
+import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import { useAuth } from '../services/auth';
 import { useQueryClient } from 'react-query';
 import Mayre from 'mayre'
 
 const Home = () => {
   const queryClient = useQueryClient()
-  const auth: AuthCookie = useAuth(queryClient)
+  const auth: CurrentUserAuthData = useAuth(queryClient)
 
   return (
     <Mayre
@@ -19,10 +19,10 @@ const Home = () => {
         <Mayre
           of={<div>Signing you in...</div>}
           or={<Login />}
-          when={!auth?.role}
+          when={!auth?.r}
         />
       }
-      when={!!auth?.uid && !!auth?.role}
+      when={!!auth?.u && !!auth?.r}
     />
   )
 }

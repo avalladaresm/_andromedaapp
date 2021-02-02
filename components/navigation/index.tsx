@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import ProfileMenu from '../ProfileMenu'
 import ActionBar from '../../components/navigation/ActionBar'
 import { NavigationSettings } from '../../models/NavigationSettings'
-import { AuthCookie } from '../../models/AuthCookie'
+import { CurrentUserAuthData } from '../../models/CurrentUserAuthData'
 import { useAuth } from '../../services/auth'
 import { useQueryClient } from 'react-query'
 
@@ -16,7 +16,7 @@ const Navigation: FC<NavigationSettings> = (props) => {
   const [activePage, setActivePage] = useState<string>('')
 
   const queryClient = useQueryClient()
-  const auth: AuthCookie = useAuth(queryClient)
+  const auth: CurrentUserAuthData = useAuth(queryClient)
   const router = useRouter()
 
   useEffect(() => {
@@ -31,13 +31,13 @@ const Navigation: FC<NavigationSettings> = (props) => {
             <TempLogo onClick={() => router.push('/')} />
             <NavigationItem title='Dashboard' activePage={activePage} onClick={() => router.push('/')} />
             <NavigationItem title='Employees' activePage={activePage} onClick={() => router.push('/employees')} />
-            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Accounts' activePage={activePage} onClick={() => router.push('/accounts')} />}
-            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Logs' activePage={activePage} onClick={() => router.push('/logs')} />}
-            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Products' activePage={activePage} onClick={() => router.push('/products')} />}
-            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Inventory' activePage={activePage} link='#' />}
-            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Projects' activePage={activePage} link='#' />}
-            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Notification' activePage={activePage} onClick={() => setShowNotification(!showNotification)} />}
-            {auth?.role === 'SUPREME_LEADER' && <NavigationItem title='Triggerload' activePage={activePage} onClick={() => setLoading(!loading)} link='#' />}
+            {auth?.r === 'SUPREME_LEADER' && <NavigationItem title='Accounts' activePage={activePage} onClick={() => router.push('/accounts')} />}
+            {auth?.r === 'SUPREME_LEADER' && <NavigationItem title='Logs' activePage={activePage} onClick={() => router.push('/logs')} />}
+            {auth?.r === 'SUPREME_LEADER' && <NavigationItem title='Products' activePage={activePage} onClick={() => router.push('/products')} />}
+            {auth?.r === 'SUPREME_LEADER' && <NavigationItem title='Inventory' activePage={activePage} link='#' />}
+            {auth?.r === 'SUPREME_LEADER' && <NavigationItem title='Projects' activePage={activePage} link='#' />}
+            {auth?.r === 'SUPREME_LEADER' && <NavigationItem title='Notification' activePage={activePage} onClick={() => setShowNotification(!showNotification)} />}
+            {auth?.r === 'SUPREME_LEADER' && <NavigationItem title='Triggerload' activePage={activePage} onClick={() => setLoading(!loading)} link='#' />}
           </div>
           <div className='invisible md:visible col-start-10 col-span-6 inline-flex space-x-4'>
             <ProfileMenu />

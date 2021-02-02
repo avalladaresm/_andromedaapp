@@ -3,7 +3,7 @@ import { useIsFetching, useQueryClient } from 'react-query';
 import Navigation from '../../components/navigation';
 import Error from 'next/error'
 import Mayre from 'mayre'
-import { AuthCookie } from '../../models/AuthCookie';
+import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
 import { useAuth } from '../../services/auth';
 import { message } from 'antd';
 import { FormikValues, Formik, Form, Field } from 'formik';
@@ -30,7 +30,7 @@ export default function NewEmployee() {
   const isFetching = useIsFetching()
   const queryClient = useQueryClient()
 
-  const auth: AuthCookie = useAuth(queryClient)
+  const auth: CurrentUserAuthData = useAuth(queryClient)
 
   const genderOptions = [{
     value: 'Male', label: 'Male'
@@ -59,9 +59,9 @@ export default function NewEmployee() {
   }
 
   const employeeRoleOptions = [{
-    value: determineManagerialRoleId(auth?.role), label: 'Managerial'
+    value: determineManagerialRoleId(auth?.r), label: 'Managerial'
   }, {
-    value: determineEmployeeRoleId(auth?.role), label: 'Employee'
+    value: determineEmployeeRoleId(auth?.r), label: 'Employee'
   }]
 
   useEffect(() => {
@@ -783,13 +783,13 @@ export default function NewEmployee() {
         <Mayre
           of={<div>Loading buddy</div>}
           or={<Error statusCode={404} />}
-          when={!auth?.role}
+          when={!auth?.r}
         />
       }
       when={
-        auth?.role === 'SUPREME_LEADER' ||
-        auth?.role === 'PERSON_ADMIN' ||
-        auth?.role === 'BUSINESS_ADMIN'
+        auth?.r === 'SUPREME_LEADER' ||
+        auth?.r === 'PERSON_ADMIN' ||
+        auth?.r === 'BUSINESS_ADMIN'
       }
     />
   )

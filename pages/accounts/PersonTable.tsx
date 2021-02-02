@@ -3,7 +3,7 @@ import { useQueryClient, QueryObserverResult } from 'react-query';
 import { useFetchPersonAccounts } from '../../services/account';
 import Table from '../../components/Table'
 import { PersonColumns } from './PersonColumns'
-import { AuthCookie } from '../../models/AuthCookie';
+import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
 import { useAuth } from '../../services/auth';
 import Mayre from 'mayre';
 import { AxiosError } from 'axios';
@@ -14,8 +14,8 @@ import { NotificationType } from '../../models/NotificationType';
 export default function Accounts() {
 
   const queryClient = useQueryClient()
-  const auth: AuthCookie = useAuth(queryClient)
-  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<PersonAccountResult[], AxiosError> = useFetchPersonAccounts(auth.a_token)
+  const auth: CurrentUserAuthData = useAuth(queryClient)
+  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<PersonAccountResult[], AxiosError> = useFetchPersonAccounts(auth.a_t)
 
   useEffect(() => {
     if (data && data.length !== 0) {

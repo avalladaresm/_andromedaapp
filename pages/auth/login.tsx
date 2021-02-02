@@ -7,11 +7,11 @@ export default function Login() {
 
   useEffect(() => {
     const parsedCookie = {
-      uid: document.cookie.split(';')[0]?.split('=')[1],
-      a_token: document.cookie.split(';')[1]?.split('=')[1]
+      u: document.cookie.split(';')[0]?.split('=')[1],
+      a_t: document.cookie.split(';')[1]?.split('=')[1]
     }
 
-    if (parsedCookie.uid && parsedCookie.a_token) router.push('/')
+    if (parsedCookie.u && parsedCookie.a_t) router.push('/')
   }, [])
 
   return (

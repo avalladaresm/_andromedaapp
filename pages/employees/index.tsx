@@ -4,7 +4,7 @@ import Navigation from "../../components/navigation";
 import ProductItem from "../products/ProductItem";
 import Error from 'next/error'
 import Mayre from 'mayre'
-import { AuthCookie } from "../../models/AuthCookie";
+import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
 import router from "next/router";
 
@@ -12,7 +12,7 @@ export default function Employees() {
   const isFetching = useIsFetching()
   const queryClient = useQueryClient()
 
-  const auth: AuthCookie = useAuth(queryClient)
+  const auth: CurrentUserAuthData = useAuth(queryClient)
 
   return (
     <Mayre
@@ -38,13 +38,13 @@ export default function Employees() {
         <Mayre
           of={<div>Loading buddy</div>}
           or={<Error statusCode={404} />}
-          when={!auth?.role}
+          when={!auth?.r}
         />
       }
       when={
-        auth?.role === 'SUPREME_LEADER' ||
-        auth?.role === 'PERSON_ADMIN' ||
-        auth?.role === 'BUSINESS_ADMIN'
+        auth?.r === 'SUPREME_LEADER' ||
+        auth?.r === 'PERSON_ADMIN' ||
+        auth?.r === 'BUSINESS_ADMIN'
       }
     />
   )

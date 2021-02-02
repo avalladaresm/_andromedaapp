@@ -2,14 +2,14 @@ import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { useQueryClient } from "react-query";
-import { AuthCookie } from "../models/AuthCookie";
+import { CurrentUserAuthData } from "../models/CurrentUserAuthData";
 import { useAuth, useDoLogout } from "../services/auth";
 
 export default function ProfileMenu() {
   const queryClient = useQueryClient()
   const router = useRouter()
 
-  const auth: AuthCookie = useAuth(queryClient)
+  const auth: CurrentUserAuthData = useAuth(queryClient)
 
   return (
     <div className='flex items-center justify-center'>
@@ -37,7 +37,7 @@ export default function ProfileMenu() {
                 >
                   <div className='px-4 py-3'>
                     <p className='text-sm leading-5'>Signed in as</p>
-                    <p className='text-sm font-medium leading-5 text-gray-900 truncate'>{auth?.uid}</p>
+                    <p className='text-sm font-medium leading-5 text-gray-900 truncate'>{auth?.u}</p>
                   </div>
 
                   <div className='py-1'>

@@ -2,7 +2,7 @@ import { message } from "antd"
 import axios, { AxiosError } from "axios"
 import { QueryClient, useMutation } from "react-query"
 import { AccountLogIn, AccountSignUp } from "../models/Auth"
-import { AuthCookie } from "../models/AuthCookie"
+import { CurrentUserAuthData } from "../models/CurrentUserAuthData"
 import { cookieNames, deleteCookie } from "../utils/utils"
 
 export const useDoLogin = (queryClient: QueryClient, router) => {
@@ -14,11 +14,11 @@ export const useDoLogin = (queryClient: QueryClient, router) => {
     })
   }, {
     onSuccess: (data, variables) => {
-      const loginRes = data.data.split('|')
-      const authData = { uid: loginRes[0], a_token: loginRes[1], role: loginRes[2], accountId: loginRes[3] }
+      const loginRes: CurrentUserAuthData = data.data
+      const authData = { u: loginRes.u, a_t: loginRes.a_t, r: loginRes.r, aid: loginRes.aid }
       setAuth(queryClient, authData)
-      document.cookie = 'uid=' + authData.uid
-      document.cookie = 'a_token=' + authData.a_token
+      document.cookie = 'u=' + authData.u
+      document.cookie = 'a_t=' + authData.a_t
       message.success(`Login success, whoo! Welcome ${variables.username}`)
       router.push('/')
     }, onError: (error: AxiosError) => {
@@ -52,11 +52,11 @@ export const useDoLogout = (queryClient: QueryClient, router, cookie: string) =>
   })
 }
 
-export const setAuth = (queryClient: QueryClient, authData: AuthCookie) => {
+export const setAuth = (queryClient: QueryClient, authData: CurrentUserAuthData) => {
   queryClient.setQueryData('Auth', authData)
 }
 
 export const useAuth = (queryClient: QueryClient) => {
-  const res: AuthCookie = queryClient.getQueryData('Auth')
+  const res: CurrentUserAuthData = queryClient.getQueryData('Auth')
   return res
 }
