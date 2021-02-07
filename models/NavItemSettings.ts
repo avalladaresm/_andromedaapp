@@ -1,6 +1,7 @@
 export interface NavItemSettings {
   title: string
-  link?: string
+  route?: string
   activePage?: string
+  actions?: NavItemSettings[]
   onClick?: () => void
 }

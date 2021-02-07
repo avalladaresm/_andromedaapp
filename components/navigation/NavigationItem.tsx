@@ -1,18 +1,23 @@
-import { FC } from 'react'
+import React, { FC } from 'react'
 import { NavItemSettings } from '../../models/NavItemSettings'
+import { NavigationItemActions } from './NavigationItemActions'
 
 export const NavigationItem: FC<NavItemSettings> = (props) => {
 
   return (
-    <a
-      className={`
-        px-3 py-2 rounded-sm text-sm font-medium cursor-pointer hover:bg-lightBlue-700 text-gray-50
-        ${props.activePage?.toLowerCase().includes(props.title?.toLowerCase()) && 'bg-lightBlue-900 shadow-inner'}`
+    <div>
+      <li className="items-center">
+        <div
+          className={`px-3 py-2 rounded-sm text-sm font-medium hover:bg-cyan-800 cursor-pointer text-white 
+        ${props.activePage && 'bg-orange-800 shadow-inner'}`}
+          onClick={props.onClick}
+        >
+          {props.title}
+        </div>
+      </li>
+      {props.actions?.length > 0 && props.activePage &&
+        <NavigationItemActions {...props} />
       }
-      onClick={props.onClick}
-      href={props.link}
-    >
-      {props.title}
-    </a>
+    </div>
   )
 }

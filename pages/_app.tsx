@@ -92,6 +92,10 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => { }, [resolved])
 
   useEffect(() => {
+    router.pathname === '/' && router.push('/dashboard')
+  }, [])
+
+  useEffect(() => {
     NProgress.configure({ showSpinner: true })
     let routeChangeStart = () => NProgress.start();
     let routeChangeComplete = () => NProgress.done();

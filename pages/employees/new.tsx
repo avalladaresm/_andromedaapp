@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useIsFetching, useQueryClient } from 'react-query';
-import Navigation from '../../components/navigation';
+import MainContainer from "../../components/navigation";
 import Error from 'next/error'
 import Mayre from 'mayre'
 import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
@@ -185,19 +185,14 @@ export default function NewEmployee() {
   return (
     <Mayre
       of={
-        <Navigation
-          actionBar={{
-            pageTitle: 'New employee',
-            isLoading: isFetching === 1
-          }}
-        >
+        <MainContainer header='New employee'>
           <Formik
             initialValues={initialValues}
             validationSchema={NewEmployeeSchema}
             onSubmit={async (values, { resetForm }) => {
               console.log('v', values)
               try {
-                values.employerId = auth?.accountId
+                values.employerId = auth?.aid
                 values.gender = values.gender.value
                 values.cityId = values.cityId.value
                 values.stateId = values.stateId.value
@@ -777,7 +772,7 @@ export default function NewEmployee() {
               </Form>
             )}
           </Formik>
-        </Navigation>
+        </MainContainer>
       }
       or={
         <Mayre

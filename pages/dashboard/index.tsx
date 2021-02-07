@@ -6,7 +6,7 @@ import Mayre from 'mayre'
 import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
 
-export default function Employees() {
+export default function Dashboard() {
   const queryClient = useQueryClient()
 
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -14,9 +14,9 @@ export default function Employees() {
   return (
     <Mayre
       of={
-        <MainContainer header='Employees'>
+        <MainContainer header='Dashboard'>
           <div className='flex flex-wrap justify-between'>
-            Employees content
+            Dashboard content
           </div>
         </MainContainer>
       }

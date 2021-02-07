@@ -81,13 +81,7 @@ export default function Logs() {
   ]
 
   return (
-    <Navigation
-      actionBar={{
-        pageTitle: 'Logs',
-        navItems: [{ title: 'Refresh', onClick: () => { queryClient.refetchQueries(['Logs']) } }],
-        isLoading: isFetching === 1
-      }}
-    >
+    <Navigation>
       <Table
         rowKey='id'
         size='small'

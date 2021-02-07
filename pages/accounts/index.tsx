@@ -1,32 +1,21 @@
 import React, { useState } from "react";
-import { useQueryClient, useIsFetching } from "react-query";
-import Navigation from "../../components/navigation";
+import { useQueryClient } from "react-query";
 import CreateAccount from "./CreateAccount";
 import PersonTable from "./PersonTable";
 import Mayre from "mayre";
 import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
 import BusinessTable from "./BusinessTable";
+import MainContainer from "../../components/navigation";
 
 export default function Accounts() {
   const [showCreateAccount, setShowCreateAccount] = useState(false)
 
   const queryClient = useQueryClient()
-  const isFetching = useIsFetching()
   const auth: CurrentUserAuthData = useAuth(queryClient)
 
   return (
-    <Navigation
-      actionBar={{
-        pageTitle: 'Accounts',
-        navItems: [{
-          title: 'Refresh', onClick: () => { queryClient.refetchQueries(['PersonAccounts', 'BusinessAccounts']) }
-        }, {
-          title: 'New Account', onClick: () => { setShowCreateAccount(true) }
-        }],
-        isLoading: isFetching === 1
-      }}
-    >
+    <MainContainer header='Accounts'>
       <Mayre
         of={<div>Verifying your credentials...</div>}
         or={<PersonTable />}
@@ -42,6 +31,6 @@ export default function Accounts() {
         title='Create account'
         onCancel={() => setShowCreateAccount(false)}
       />
-    </Navigation>
+    </MainContainer >
   )
 }
