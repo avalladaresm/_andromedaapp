@@ -198,7 +198,7 @@ export default function NewEmployee() {
                 values.stateId = values.stateId.value
                 values.countryId = values.countryId.value
                 values.roleId = values.roleId.value
-                let res = await createEmployeeAccount(values)
+                let res = await createEmployeeAccount(auth.a_t, values)
                 if (res.status === 200)
                   message.success('Employee added successfully!')
                 resetForm()
