@@ -1,5 +1,6 @@
-import axios from "axios"
-import { CreateEmployeeAccount } from "../models/Employee"
+import axios, { AxiosError } from "axios"
+import { QueryObserverResult, useQuery } from "react-query"
+import { CreateEmployeeAccount, EmployeeAccountResult } from "../models/Employee"
 
 export const createEmployeeAccount = async (values: CreateEmployeeAccount) => {
   try {
@@ -16,4 +17,17 @@ export const createEmployeeAccount = async (values: CreateEmployeeAccount) => {
   } catch (e) {
     throw e
   }
+}
+
+const FetchEmployerEmployees = async (accessToken: string, employerId: number): Promise<EmployeeAccountResult[]> => {
+  const employerEmploees = await axios.get(`${process.env.API_BASE_URL}/employee/${employerId}/getCurrentEmployerEmployees`, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  })
+  return employerEmploees.data
+}
+
+export const useFetchEmployerEmployees = (accessToken: string, employerId: number): QueryObserverResult<EmployeeAccountResult[], AxiosError> => {
+  return useQuery('EmployerEmployees', async () => await FetchEmployerEmployees(accessToken, employerId), { refetchOnMount: false })
 }

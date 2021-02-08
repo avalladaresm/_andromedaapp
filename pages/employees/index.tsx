@@ -5,6 +5,7 @@ import Error from 'next/error'
 import Mayre from 'mayre'
 import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
+import EmployeeTable from "./EmployeeTable";
 
 export default function Employees() {
   const queryClient = useQueryClient()
@@ -18,6 +19,11 @@ export default function Employees() {
           <div className='flex flex-wrap justify-between'>
             Employees content
           </div>
+          <Mayre
+            of={<div>Verifying your credentials...</div>}
+            or={<EmployeeTable />}
+            when={!auth?.a_t}
+          />
         </MainContainer>
       }
       or={
