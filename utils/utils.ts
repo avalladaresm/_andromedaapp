@@ -36,10 +36,13 @@ export const cookieValues = (documentCookie) => {
   return names
 }
 
-
+export const deleteSpecificCookies = (cookieNames: string []) => {
+  cookieNames.forEach(c => {
+    document.cookie = deleteCookie(c)
+  });
+}
 
 export const deleteCookie = (name) => {
   const c = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-  console.log('ccc', c)
   return c
 }
