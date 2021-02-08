@@ -107,6 +107,10 @@ function MyApp({ Component, pageProps }) {
     };
   }, []);
 
+  useEffect(() => {
+    if(!!auth?.u && router.pathname === '/') router.push('/dashboard')
+  },[auth?.u])
+
   return (
     <QueryClientProvider client={queryClient}>
       <ReactNotification />
