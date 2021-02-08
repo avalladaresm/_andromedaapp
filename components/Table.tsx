@@ -138,43 +138,45 @@ export default function Table(props) {
           ))}
         </select>
       </div>
-      <table {...getTableProps()} className='table-auto border-collapse'>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}
-                  className={`border border-blue-900 p-1 bg-blue-300`} >
-                  {column.render('Header')}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map(row => {
-            prepareRow(row)
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return (
-                    <td {...cell.getCellProps()}
-                      className={`border border-blue-900 p-1 bg-blue-100`} >
-                      {props.isLoading ? <TextSkeleton /> :
-                        (cell.value === false ? <FcHighPriority className='justify-self-center' /> :
-                          cell.value === true ? <FcOk /> : (cell.column.id === 'email' ?
-                            <div onClick={(e) => copyToClipboard(e)}>
-                              {cell.value}
-                            </div>
-                            : cell.value))}
-                    </td>
-                  )
-                })}
+      <div className='overflow-x-auto'>
+        <table {...getTableProps()} className='table-auto border-collapse'>
+          <thead>
+            {headerGroups.map(headerGroup => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => (
+                  <th {...column.getHeaderProps()}
+                    className={`border border-blue-900 p-1 bg-blue-300`} >
+                    {column.render('Header')}
+                  </th>
+                ))}
               </tr>
-            )
-          })}
-        </tbody>
-      </table>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map(row => {
+              prepareRow(row)
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}
+                        className={`border border-blue-900 p-1 bg-blue-100`} >
+                        {props.isLoading ? <TextSkeleton /> :
+                          (cell.value === false ? <FcHighPriority className='justify-self-center' /> :
+                            cell.value === true ? <FcOk /> : (cell.column.id === 'email' ?
+                              <div onClick={(e) => copyToClipboard(e)}>
+                                {cell.value}
+                              </div>
+                              : cell.value))}
+                      </td>
+                    )
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
       <div className='pagination'>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
