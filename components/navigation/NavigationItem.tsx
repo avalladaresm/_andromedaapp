@@ -9,7 +9,7 @@ export const NavigationItem: FC<NavItemSettings> = (props) => {
       <li className="items-center">
         <div
           className={`px-3 py-2 rounded-sm text-sm font-medium hover:bg-cyan-800 cursor-pointer text-white 
-        ${props.activePage && 'bg-orange-800 shadow-inner'}`}
+        ${props.activePage && 'bg-blueGray-700 shadow-inner'}`}
           onClick={props.onClick}
         >
           {props.title}

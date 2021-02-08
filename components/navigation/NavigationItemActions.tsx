@@ -5,7 +5,7 @@ export const NavigationItemActions: FC<NavItemSettings> = (props) => {
 
   return (
     <div>
-      <ul className="flex flex-col bg-orange-500">
+      <ul className="flex flex-col bg-blueGray-500">
         {props.actions?.map((a, i) => (
           <li key={i} className="items-center">
             <div
