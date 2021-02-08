@@ -6,12 +6,12 @@ import { CurrentUserAuthData } from '../models/CurrentUserAuthData'
 export const FetchAccountRole = async (queryClient: QueryClient, cookieData: CurrentUserAuthData): Promise<CurrentUserAuthData> => {
   try {
     const completeAuthData = await queryClient.fetchQuery('Auth', async () => {
-      const accountRole = await axios.get(`${process.env.API_BASE_URL}/account/${cookieData.u}/account-role`, {
+      const accountRole = await axios.get(`${process.env.API_BASE_URL}/account/${cookieData.u}/account-roles`, {
         headers: {
           'Authorization': `Bearer ${cookieData.a_t}`
         }
       })
-      return { ...cookieData, r: accountRole.data.role, aid: accountRole.data.accountId }
+      return { ...cookieData, r: accountRole.data.roles, aid: accountRole.data.accountId }
     })
     return completeAuthData
   }

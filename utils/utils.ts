@@ -36,7 +36,7 @@ export const cookieValues = (documentCookie) => {
   return names
 }
 
-export const deleteSpecificCookies = (cookieNames: string []) => {
+export const deleteSpecificCookies = (cookieNames: string[]) => {
   cookieNames.forEach(c => {
     document.cookie = deleteCookie(c)
   });
@@ -45,4 +45,15 @@ export const deleteSpecificCookies = (cookieNames: string []) => {
 export const deleteCookie = (name) => {
   const c = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   return c
+}
+
+export const isUserAuthorizedToViewThisPage = (currentUserRoles: string[], authorizedRoles: string[]) => {
+  let res: boolean = false
+  authorizedRoles.forEach(ar => {
+    if (currentUserRoles.includes(ar)) {
+      res = true
+      return res
+    }
+  })
+  return res
 }
