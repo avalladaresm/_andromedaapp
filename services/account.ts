@@ -3,7 +3,7 @@ import { QueryClient, QueryObserverResult, useQuery } from 'react-query'
 import { BusinessAccountResult, CreateBusinessAccount, CreatePersonAccount, PersonAccountResult } from '../models/Account'
 import { CurrentUserAuthData } from '../models/CurrentUserAuthData'
 
-export const getAccountRole = async (queryClient: QueryClient, cookieData: CurrentUserAuthData) => {
+export const FetchAccountRole = async (queryClient: QueryClient, cookieData: CurrentUserAuthData): Promise<CurrentUserAuthData> => {
   try {
     const completeAuthData = await queryClient.fetchQuery('Auth', async () => {
       const accountRole = await axios.get(`${process.env.API_BASE_URL}/account/${cookieData.u}/account-role`, {
@@ -16,7 +16,8 @@ export const getAccountRole = async (queryClient: QueryClient, cookieData: Curre
     return completeAuthData
   }
   catch (e) {
-    throw e
+    const res: CurrentUserAuthData = { ...cookieData, error: e }
+    return res
   }
 }
 
