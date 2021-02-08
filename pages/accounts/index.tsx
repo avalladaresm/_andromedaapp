@@ -7,6 +7,7 @@ import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
 import BusinessTable from "./BusinessTable";
 import MainContainer from "../../components/navigation";
+import Error from 'next/error'
 
 export default function Accounts() {
   const [showCreateAccount, setShowCreateAccount] = useState(false)
@@ -15,22 +16,34 @@ export default function Accounts() {
   const auth: CurrentUserAuthData = useAuth(queryClient)
 
   return (
-    <MainContainer header='Accounts'>
-      <Mayre
-        of={<div>Verifying your credentials...</div>}
-        or={<PersonTable />}
-        when={!auth?.a_t}
-      />
-      <Mayre
-        of={<div>Verifying your credentials...</div>}
-        or={<BusinessTable />}
-        when={!auth?.a_t}
-      />
-      <CreateAccount
-        isShowing={showCreateAccount}
-        title='Create account'
-        onCancel={() => setShowCreateAccount(false)}
-      />
-    </MainContainer >
+    <Mayre
+      of={
+        <MainContainer header='Accounts'>
+          <Mayre
+            of={<div>Verifying your credentials...</div>}
+            or={<PersonTable />}
+            when={!auth?.a_t}
+          />
+          <Mayre
+            of={<div>Verifying your credentials...</div>}
+            or={<BusinessTable />}
+            when={!auth?.a_t}
+          />
+          <CreateAccount
+            isShowing={showCreateAccount}
+            title='Create account'
+            onCancel={() => setShowCreateAccount(false)}
+          />
+        </MainContainer >
+      }
+      or={
+        <Mayre
+          of={<div>Loading buddy</div>}
+          or={<Error statusCode={404} />}
+          when={!auth?.r}
+        />
+      }
+      when={auth?.r.includes('SUPREME_LEADER')}
+    />
   )
 }

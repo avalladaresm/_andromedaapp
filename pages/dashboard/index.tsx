@@ -28,9 +28,9 @@ export default function Dashboard() {
         />
       }
       when={
-        auth?.r === 'SUPREME_LEADER' ||
-        auth?.r === 'PERSON_ADMIN' ||
-        auth?.r === 'BUSINESS_ADMIN'
+        auth?.r.includes('SUPREME_LEADER') ||
+        auth?.r.includes('PERSON_ADMIN') ||
+        auth?.r.includes('BUSINESS_ADMIN')
       }
     />
   )
