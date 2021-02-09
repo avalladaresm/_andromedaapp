@@ -1,3 +1,6 @@
+import { format } from "date-fns"
+import { AuthLogResult } from "../../models/AuthLog"
+
 export const AuthLogColumns = [
   {
     Header: 'id',
@@ -8,8 +11,12 @@ export const AuthLogColumns = [
     accessor: 'type',
   },
   {
+    id: 'createdAt',
     Header: 'Date and time',
-    accessor: 'createdAt',
+    accessor: (row: AuthLogResult) => {
+      const formattedDate = row?.createdAt && format(new Date(row?.createdAt), 'PPPP pp')
+      return formattedDate
+    },
   },
   {
     Header: 'IP',
