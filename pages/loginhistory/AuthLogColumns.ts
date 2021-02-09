@@ -8,6 +8,10 @@ export const AuthLogColumns = [
     accessor: 'type',
   },
   {
+    Header: 'Date and time',
+    accessor: 'createdAt',
+  },
+  {
     Header: 'IP',
     accessor: 'ip',
   },

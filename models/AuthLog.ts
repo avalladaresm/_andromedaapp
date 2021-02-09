@@ -8,6 +8,7 @@ export interface AuthLog {
 export interface AuthLogResult {
   id:             number
   type:           string
+  createdAt:      string
   ip:             string
   osplatform:     string
   browsername:    string
