@@ -1,6 +1,9 @@
+import { AuthLog } from "./AuthLog";
+
 export interface AccountLogIn {
   username: string
   password: string
+  platform: AuthLog
 }
 
 export interface AccountSignUp {

@@ -2,6 +2,7 @@ import { message } from "antd"
 import axios, { AxiosError } from "axios"
 import { QueryClient, useMutation } from "react-query"
 import { AccountLogIn, AccountSignUp } from "../models/Auth"
+import { AuthLog } from "../models/AuthLog"
 import { CurrentUserAuthData } from "../models/CurrentUserAuthData"
 import { cookieNames, deleteCookie } from "../utils/utils"
 
@@ -9,7 +10,7 @@ export const useDoLogin = (queryClient: QueryClient, router) => {
   return useMutation((values: AccountLogIn) => {
     return axios.post(`${process.env.API_BASE_URL}/auth/login`, {
       data: {
-        username: values.username, password: values.password
+        username: values.username, password: values.password, platform: values.platform
       }
     })
   }, {
@@ -44,11 +45,17 @@ export const signup = async (values: AccountSignUp) => {
   }
 }
 
-export const useDoLogout = (queryClient: QueryClient, router, cookie: string) => {
+export const useDoLogout = (queryClient: QueryClient, router, cookie: string, username: string, platform: AuthLog) => {
   queryClient.clear()
   router.push('/auth/login')
   cookieNames(cookie).map(c => {
     document.cookie = deleteCookie(c)
+  })
+
+  return axios.post(`${process.env.API_BASE_URL}/auth/logout`, {
+    data: {
+      username: username, authlog: platform
+    }
   })
 }
 

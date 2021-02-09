@@ -2,7 +2,9 @@ import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { useQueryClient } from "react-query";
+import { AuthLog } from "../models/AuthLog";
 import { CurrentUserAuthData } from "../models/CurrentUserAuthData";
+import { usePlatformSettings } from "../services/appsettings";
 import { useAuth, useDoLogout } from "../services/auth";
 
 export default function ProfileMenu() {
@@ -10,6 +12,7 @@ export default function ProfileMenu() {
   const router = useRouter()
 
   const auth: CurrentUserAuthData = useAuth(queryClient)
+  const platform: AuthLog = usePlatformSettings(queryClient)
 
   return (
     <div className='relative inline-block'>
@@ -61,7 +64,7 @@ export default function ProfileMenu() {
                   <Menu.Item>
                     {({ active }) => (
                       <a
-                        onClick={() => useDoLogout(queryClient, router, document.cookie)}
+                        onClick={() => useDoLogout(queryClient, router, document.cookie, auth?.u, platform)}
                         className={`${active
                           ? 'bg-gray-100 text-gray-900'
                           : 'text-gray-700'

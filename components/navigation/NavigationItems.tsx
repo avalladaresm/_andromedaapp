@@ -47,6 +47,13 @@ export const NavigationItems = (props) => {
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
     },
     {
+      title: 'Login history',
+      route: '/loginhistory',
+      activePage: false,
+      authorization: ['SUPREME_LEADER'],
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+    },
+    {
       title: 'Logs',
       route: '/logs',
       activePage: false,

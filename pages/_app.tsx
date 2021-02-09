@@ -11,10 +11,13 @@ import { message } from 'antd';
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { useAuth } from '../services/auth';
 import { FetchAccountRole } from '../services/account';
-import { deleteSpecificCookies, documentCookieJsonify } from '../utils/utils';
+import { deleteSpecificCookies, documentCookieJsonify, getPlatformData } from '../utils/utils';
 import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import NProgress from 'nprogress'
 import ReactNotification from 'react-notifications-component'
+import IPData from 'ipdata';
+import { setPlatformSettings } from '../services/appsettings';
+const ipdata = new IPData(`${process.env.IPDATA_APIKEY}`);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -108,8 +111,17 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   useEffect(() => {
-    if(!!auth?.u && router.pathname === '/') router.push('/dashboard')
-  },[auth?.u])
+    if (!!auth?.u && router.pathname === '/') router.push('/dashboard')
+  }, [auth?.u])
+
+  useEffect(() => {
+    (async () => {
+      const ip = await ipdata.lookup()
+      let platform = getPlatformData()
+      platform = { ...platform, ip: ip.ip }
+      setPlatformSettings(queryClient, platform)
+    })()
+  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,4 +1,6 @@
 import { CurrentUserAuthData } from "../models/CurrentUserAuthData";
+import platform from "platform"
+import { AuthLog } from "../models/AuthLog";
 
 /* 
 *   Converts props to tailwind class names
@@ -56,4 +58,14 @@ export const isUserAuthorizedToViewThisPage = (currentUserRoles: string[], autho
     }
   })
   return res
+}
+
+export const getPlatformData = () => {
+  let p: AuthLog = { ip: null, osplatform: null, browsername: null, browserversion: null };
+  
+  p.osplatform = platform.os.toString()
+  p.browsername = platform.name
+  p.browserversion = platform.version
+  
+  return p
 }
