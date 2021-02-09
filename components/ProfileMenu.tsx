@@ -2,17 +2,24 @@ import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { useQueryClient } from "react-query";
-import { AuthLog } from "../models/AuthLog";
 import { CurrentUserAuthData } from "../models/CurrentUserAuthData";
-import { usePlatformSettings } from "../services/appsettings";
 import { useAuth, useDoLogout } from "../services/auth";
+import IPData from 'ipdata';
+import { getPlatformData } from "../utils/utils";
+const ipdata = new IPData(`${process.env.IPDATA_APIKEY}`);
 
 export default function ProfileMenu() {
   const queryClient = useQueryClient()
   const router = useRouter()
 
   const auth: CurrentUserAuthData = useAuth(queryClient)
-  const platform: AuthLog = usePlatformSettings(queryClient)
+
+  const onLogout = async () => {
+    const ip = await ipdata.lookup()
+    let platform = getPlatformData()
+    platform = { ...platform, ip: ip.ip }
+    useDoLogout(queryClient, router, document.cookie, auth?.u, platform)
+  }
 
   return (
     <div className='relative inline-block'>
@@ -64,7 +71,7 @@ export default function ProfileMenu() {
                   <Menu.Item>
                     {({ active }) => (
                       <a
-                        onClick={() => useDoLogout(queryClient, router, document.cookie, auth?.u, platform)}
+                        onClick={() => onLogout()}
                         className={`${active
                           ? 'bg-gray-100 text-gray-900'
                           : 'text-gray-700'

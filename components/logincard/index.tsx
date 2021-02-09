@@ -6,7 +6,9 @@ import { useDoLogin } from '../../services/auth'
 import { useRouter } from 'next/router'
 import { useQueryClient } from "react-query"
 import { AccountLogIn } from "../../models/Auth"
-import { usePlatformSettings } from "../../services/appsettings"
+import IPData from 'ipdata';
+import { getPlatformData } from "../../utils/utils"
+const ipdata = new IPData(`${process.env.IPDATA_APIKEY}`);
 
 export const LoginCard: FC<LoginSettings> = () => {
   const [loginData, setLoginData] = useState<AccountLogIn>()
@@ -14,11 +16,12 @@ export const LoginCard: FC<LoginSettings> = () => {
   const queryClient = useQueryClient()
   const router = useRouter();
   const doLogin = useDoLogin(queryClient, router)
-  const platform = usePlatformSettings(queryClient)
 
-  const onLogin = () => {
-    setLoginData({...loginData, platform: platform})
-    doLogin.mutate(loginData)
+  const onLogin = async () => {
+    const ip = await ipdata.lookup()
+    let platform = getPlatformData()
+    platform = { ...platform, ip: ip.ip }
+    doLogin.mutate({ ...loginData, platform: platform })
   }
 
   return (

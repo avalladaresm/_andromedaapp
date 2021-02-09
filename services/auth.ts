@@ -23,8 +23,8 @@ export const useDoLogin = (queryClient: QueryClient, router) => {
       message.success(`Login success, whoo! Welcome ${variables.username}`)
       router.push('/')
     }, onError: (error: AxiosError) => {
-      message.error(`Login failed! ${error.response.data.message}`)
-      console.log('erorrr', error)
+      message.error(`Login failed! ${error.response.data === 'InternalServerError' ? 'Please, try again in a few minutes.' : error.response.data.message}`)
+      console.log('erorrr', error.response.data)
     }
   })
 }
