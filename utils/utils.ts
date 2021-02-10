@@ -74,3 +74,7 @@ export const sortBy = (key, order: 'asc' | 'desc') => {
   if (order === 'asc') return (a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0);
   if (order === 'desc') return (a, b) => (a[key] < b[key]) ? 1 : ((b[key] < a[key]) ? -1 : 0);
 };
+
+export const isMobile = () => {
+  if (window.innerWidth < 640) return true
+}
