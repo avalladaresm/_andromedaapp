@@ -7,6 +7,10 @@ export const AuthLogColumns = [
     accessor: 'id'
   },
   {
+    Header: 'Username',
+    accessor: 'username'
+  },
+  {
     Header: 'Type',
     accessor: 'type',
   },
