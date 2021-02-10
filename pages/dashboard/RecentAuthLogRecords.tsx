@@ -18,7 +18,13 @@ export default function RecentAuthLogRecords() {
 
   return (
     <Mayre
-      of={<Table columns={RecentAuthLogRecordsColumns} data={data?.slice(data.length-10, data.length).concat().sort(sortBy('createdAt', 'desc'))} isLoading={isLoading} />}
+      of={
+        <Table
+          columns={RecentAuthLogRecordsColumns}
+          data={data?.slice(data.length - 10, data.length).concat().sort(sortBy('createdAt', 'desc'))}
+          isLoading={isLoading} showPagination={false} showVisibleColumnSelector={false}
+        />
+      }
       or={
         <Mayre
           of={<Table columns={RecentAuthLogRecordsColumns} data={data} isLoading={isLoading} />}
