@@ -22,8 +22,8 @@ export const Sidebar = (props) => {
         ${collapsed ? 'w-20 px-4' : 'w-56 px-6'
         }`}>
         <div className="flex-col items-stretch flex-no-wrap px-0 flex flex-wrap w-full mx-auto space-y-2">
-          <div>
-            <div className="w-full text-center text-white mr-0 whitespace-no-wrap text-sm font-bold p-2 px-0 rounded-md bg-lightBlue-300">
+          <div className='space-y-3'>
+            <div className="w-full text-center text-white mr-0 whitespace-no-wrap text-sm font-bold p-2 px-0 rounded-sm bg-lightBlue-300">
               {collapsed ? 'app' : 'andromedaapp'}
             </div>
             <NavigationItems {...props} collapsed={collapsed} />
