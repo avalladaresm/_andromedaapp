@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <div className='fixed bg-blueGray-400 h-12 w-full z-100'>
-      <div className='flex align-middle justify-end pr-14 py-1 space-x-3'>
+      <div className={`flex align-middle justify-end lg:pr-14 pr-4 py-1 space-x-3`}>
         <div className='flex text-white text-base items-center justify-center'>
           {`Hello ${auth?.u}`}
         </div>
