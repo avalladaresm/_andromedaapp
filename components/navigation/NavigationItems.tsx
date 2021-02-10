@@ -6,6 +6,9 @@ import { CurrentUserAuthData } from '../../models/CurrentUserAuthData'
 import { useAuth } from '../../services/auth'
 import { isUserAuthorizedToViewThisPage } from '../../utils/utils'
 import { NavigationItem } from './NavigationItem'
+import { MdAccountBox, MdComment, MdDashboard, MdHistory, MdNotificationsActive, MdViewList } from 'react-icons/md'
+import { FaBoxes, FaUsers, FaWarehouse } from 'react-icons/fa'
+import { AiOutlineFundProjectionScreen } from 'react-icons/ai'
 
 export const NavigationItems = (props) => {
   const router = useRouter()
@@ -18,7 +21,8 @@ export const NavigationItems = (props) => {
       route: '/dashboard',
       activePage: false,
       authorization: ['SUPREME_LEADER', 'PERSON_ADMIN'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER', 'PERSON_ADMIN'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER', 'PERSON_ADMIN']),
+      icon: <MdDashboard />
     },
     {
       title: 'Employees',
@@ -31,7 +35,8 @@ export const NavigationItems = (props) => {
         onClick: () => router.push('/employees/new')
       }],
       authorization: ['SUPREME_LEADER', 'PERSON_ADMIN'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER', 'PERSON_ADMIN'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER', 'PERSON_ADMIN']),
+      icon: <FaUsers />
     },
     {
       title: 'Accounts',
@@ -44,54 +49,62 @@ export const NavigationItems = (props) => {
         title: 'New account'
       }],
       authorization: ['SUPREME_LEADER'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
+      icon: <MdAccountBox />
     },
     {
       title: 'Login history',
       route: '/loginhistory',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
+      icon: <MdHistory />
     },
     {
       title: 'Logs',
       route: '/logs',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
+      icon: <MdViewList />
     },
     {
       title: 'Products',
       route: '/products',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
+      icon: <FaBoxes />
     },
     {
       title: 'Inventory',
       route: '/inventory',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
+      icon: <FaWarehouse />
     },
     {
       title: 'Projects',
       route: '/projects',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
+      icon: <AiOutlineFundProjectionScreen />
     },
     {
       title: 'Notification',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
+      icon: <MdNotificationsActive />
     },
     {
       title: 'Triggerload',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
-      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER'])
+      canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
+      icon: <MdComment />
     },
   ]
 
@@ -119,6 +132,7 @@ export const NavigationItems = (props) => {
             activePage={o.activePage}
             route={o.route}
             actions={o.actions}
+            icon={o.icon}
           />}
         </div>
       ))}
