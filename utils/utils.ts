@@ -62,10 +62,15 @@ export const isUserAuthorizedToViewThisPage = (currentUserRoles: string[], autho
 
 export const getPlatformData = () => {
   let p: AuthLog = { ip: null, osplatform: null, browsername: null, browserversion: null };
-  
+
   p.osplatform = platform.os.toString()
   p.browsername = platform.name
   p.browserversion = platform.version
-  
+
   return p
 }
+
+export const sortBy = (key, order: 'asc' | 'desc') => {
+  if (order === 'asc') return (a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0);
+  if (order === 'desc') return (a, b) => (a[key] < b[key]) ? 1 : ((b[key] < a[key]) ? -1 : 0);
+};

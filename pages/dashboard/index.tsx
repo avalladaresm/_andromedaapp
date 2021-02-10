@@ -5,6 +5,7 @@ import Error from 'next/error'
 import Mayre from 'mayre'
 import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
+import RecentAuthLogRecords from "./RecentAuthLogRecords";
 
 export default function Dashboard() {
   const queryClient = useQueryClient()
@@ -18,7 +19,13 @@ export default function Dashboard() {
           <div className='flex flex-wrap justify-between'>
             Dashboard content
           </div>
-        </MainContainer>
+          {auth?.r.includes('SUPREME_LEADER') &&
+            <div className='p-3 border border-gray-900 w-1/3'>
+              <p className='text-center font-semibold text-2xl'>Recent user login activity</p>
+              <RecentAuthLogRecords />
+            </div>
+          }
+        </ MainContainer>
       }
       or={
         <Mayre
