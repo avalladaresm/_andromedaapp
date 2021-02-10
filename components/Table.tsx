@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { FcHighPriority, FcOk } from 'react-icons/fc'
 import { useTable, usePagination } from 'react-table'
 import Select from 'react-select'
 import { TextSkeleton } from '../components/Skeleton'
 import { store } from 'react-notifications-component';
 import { NotificationType } from '../models/NotificationType';
+import { TableSettings } from '../models/TableSettings'
 
-export default function Table(props) {
+const Table: FC<TableSettings> = (props, { showPagination = true, showVisibleColumnSelector = true }) => {
   const tableData = useMemo(
     () => (
       props.isLoading ? Array(10).fill({}) : props.data),
@@ -83,61 +84,65 @@ export default function Table(props) {
 
   return (
     <div className='flex flex-col space-y-3'>
-      <div className='self-end'>
-        <label>Visible Columns</label>
-        <Select menuPlacement='auto' className='min-w-xxs max-w-max' options={options} onChange={onChange}
-          isMulti isClearable defaultValue={props.columns.map(c => {
-            const temp = { value: '', label: '' }
-            temp.value = c.accessor
-            temp.label = c.Header
-            return temp
-          })} closeMenuOnSelect={false}
-        />
-      </div>
-      <div className='pagination'>
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>{' '}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>{' '}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>{' '}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <span>
-          | Go to page:{' '}
-          <input
-            type='number'
-            defaultValue={pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(page)
-            }}
-            style={{ width: '100px' }}
+      {props.showVisibleColumnSelector ?? (showVisibleColumnSelector &&
+        <div className='self-end'>
+          <label>Visible Columns</label>
+          <Select menuPlacement='auto' className='min-w-xxs max-w-max' options={options} onChange={onChange}
+            isMulti isClearable defaultValue={props.columns.map(c => {
+              const temp = { value: '', label: '' }
+              temp.value = c.accessor
+              temp.label = c.Header
+              return temp
+            })} closeMenuOnSelect={false}
           />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={e => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
+        </div>)
+      }
+      {props.showPagination ?? (showPagination &&
+        <div className='pagination'>
+          <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+            {'<<'}
+          </button>{' '}
+          <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+            {'<'}
+          </button>{' '}
+          <button onClick={() => nextPage()} disabled={!canNextPage}>
+            {'>'}
+          </button>{' '}
+          <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+            {'>>'}
+          </button>{' '}
+          <span>
+            Page{' '}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{' '}
+          </span>
+          <span>
+            | Go to page:{' '}
+            <input
+              type='number'
+              defaultValue={pageIndex + 1}
+              onChange={e => {
+                const page = e.target.value ? Number(e.target.value) - 1 : 0
+                gotoPage(page)
+              }}
+              style={{ width: '100px' }}
+            />
+          </span>{' '}
+          <select
+            value={pageSize}
+            onChange={e => {
+              setPageSize(Number(e.target.value))
+            }}
+          >
+            {[10, 20, 30, 40, 50].map(pageSize => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </select>
+        </div>)
+      }
       <div className='overflow-x-auto'>
         <table {...getTableProps()} className='table-auto border-collapse'>
           <thead>
@@ -177,7 +182,7 @@ export default function Table(props) {
           </tbody>
         </table>
       </div>
-      <div className='pagination'>
+      {props.showPagination ?? (showPagination && <div className='pagination'>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
@@ -220,9 +225,12 @@ export default function Table(props) {
             </option>
           ))}
         </select>
-      </div>
+      </div>)
+      }
     </div>
   )
 }
+
+export default Table
 
 // usePagination: https://react-table.tanstack.com/docs/api/usePagination
