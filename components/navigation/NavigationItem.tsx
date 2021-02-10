@@ -11,7 +11,7 @@ export const NavigationItem: FC<NavItemSettings> = (props) => {
         <div
           data-tip data-for={props.title}
           className={
-            `px-3 py-2 rounded-sm text-sm font-medium hover:bg-cyan-800 cursor-pointer text-white ${props.activePage && 'bg-blueGray-700 shadow-inner'}`
+            `px-2 sm:px-3 py-2 rounded-sm text-sm font-medium hover:bg-cyan-800 cursor-pointer text-white ${props.activePage && 'bg-blueGray-700 shadow-inner'}`
           }
           onClick={props.onClick}
         >
