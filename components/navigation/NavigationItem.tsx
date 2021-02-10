@@ -12,17 +12,19 @@ export const NavigationItem: FC<NavItemSettings> = (props) => {
         ${props.activePage && 'bg-blueGray-700 shadow-inner'}`}
           onClick={props.onClick}
         >
-          <div className='flex space-x-2'>
+          <div className={`flex space-x-2 ${props.collapsed && 'justify-center'}`}>
             <div className='self-center'>
               {props.icon}
             </div>
-            <div>
-              {props.title}
-            </div>
+            {!props.collapsed &&
+              <div>
+                {props.title}
+              </div>
+            }
           </div>
         </div>
       </li>
-      {props.actions?.length > 0 && props.activePage &&
+      {props.actions?.length > 0 && props.activePage && !props.collapsed &&
         <NavigationItemActions {...props} />
       }
     </div>

@@ -7,4 +7,5 @@ export interface NavItemSettings {
   actions?: NavItemSettings[]
   onClick?: () => void
   icon?: ReactElement
+  collapsed?: boolean
 }

@@ -12,7 +12,14 @@ export const NavigationItemActions: FC<NavItemSettings> = (props) => {
               className='pl-8 px-3 py-2 rounded-sm text-sm font-medium hover:bg-cyan-800 cursor-pointer text-white'
               onClick={a.onClick}
             >
-              {a.title}
+              <div className={`flex space-x-2 ${props.collapsed && 'justify-center'}`}>
+                <div className='self-center'>
+                  {a.icon}
+                </div>
+                <div>
+                  {a.title}
+                </div>
+              </div>
             </div>
           </li>
         ))}
