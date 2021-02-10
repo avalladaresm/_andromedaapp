@@ -7,8 +7,9 @@ import { useAuth } from '../../services/auth'
 import { isUserAuthorizedToViewThisPage } from '../../utils/utils'
 import { NavigationItem } from './NavigationItem'
 import { MdAccountBox, MdComment, MdDashboard, MdHistory, MdNotificationsActive, MdViewList } from 'react-icons/md'
-import { FaBoxes, FaUsers, FaWarehouse } from 'react-icons/fa'
+import { FaBoxes, FaUserPlus, FaUsers, FaWarehouse } from 'react-icons/fa'
 import { AiOutlineFundProjectionScreen } from 'react-icons/ai'
+import {HiOutlineRefresh} from 'react-icons/hi'
 
 export const NavigationItems = (props) => {
   const router = useRouter()
@@ -22,21 +23,23 @@ export const NavigationItems = (props) => {
       activePage: false,
       authorization: ['SUPREME_LEADER', 'PERSON_ADMIN'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER', 'PERSON_ADMIN']),
-      icon: <MdDashboard />
+      icon: <MdDashboard size='1.5em' />
     },
     {
       title: 'Employees',
       route: '/employees',
       activePage: false,
       actions: [{
-        title: 'Refresh'
+        title: 'Refresh',
+        icon: <HiOutlineRefresh />
       }, {
         title: 'New employee',
-        onClick: () => router.push('/employees/new')
+        onClick: () => router.push('/employees/new'),
+        icon: <FaUserPlus />
       }],
       authorization: ['SUPREME_LEADER', 'PERSON_ADMIN'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER', 'PERSON_ADMIN']),
-      icon: <FaUsers />
+      icon: <FaUsers size='1.5em' />
     },
     {
       title: 'Accounts',
@@ -44,13 +47,15 @@ export const NavigationItems = (props) => {
       activePage: false,
       actions: [{
         title: 'Refresh',
-        onClick: () => { queryClient.refetchQueries(['PersonAccounts']), queryClient.refetchQueries(['BusinessAccounts']) }
+        onClick: () => { queryClient.refetchQueries(['PersonAccounts']), queryClient.refetchQueries(['BusinessAccounts']) },
+        icon: <HiOutlineRefresh />
       }, {
-        title: 'New account'
+        title: 'New account',
+        icon: <FaUserPlus />
       }],
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
-      icon: <MdAccountBox />
+      icon: <MdAccountBox size='1.5em' />
     },
     {
       title: 'Login history',
@@ -58,7 +63,7 @@ export const NavigationItems = (props) => {
       activePage: false,
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
-      icon: <MdHistory />
+      icon: <MdHistory size='1.5em' />
     },
     {
       title: 'Logs',
@@ -66,7 +71,7 @@ export const NavigationItems = (props) => {
       activePage: false,
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
-      icon: <MdViewList />
+      icon: <MdViewList size='1.5em' />
     },
     {
       title: 'Products',
@@ -74,7 +79,7 @@ export const NavigationItems = (props) => {
       activePage: false,
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
-      icon: <FaBoxes />
+      icon: <FaBoxes size='1.5em' />
     },
     {
       title: 'Inventory',
@@ -82,7 +87,7 @@ export const NavigationItems = (props) => {
       activePage: false,
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
-      icon: <FaWarehouse />
+      icon: <FaWarehouse size='1.5em' />
     },
     {
       title: 'Projects',
@@ -90,21 +95,21 @@ export const NavigationItems = (props) => {
       activePage: false,
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
-      icon: <AiOutlineFundProjectionScreen />
+      icon: <AiOutlineFundProjectionScreen size='1.5em' />
     },
     {
       title: 'Notification',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
-      icon: <MdNotificationsActive />
+      icon: <MdNotificationsActive size='1.5em' />
     },
     {
       title: 'Triggerload',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
-      icon: <MdComment />
+      icon: <MdComment size='1.5em' />
     },
   ]
 
