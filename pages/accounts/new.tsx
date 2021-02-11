@@ -1,9 +1,8 @@
 import { Field, Form, Formik, FormikValues } from 'formik'
 import React, { FC, useEffect, useState } from 'react'
 import { ModalSettings } from '../../models/ModalSettings'
-import { object, string } from 'yup'
+import { date, object, string } from 'yup'
 import { FcCheckmark } from 'react-icons/fc';
-import { Tooltip, DatePicker } from 'antd'
 import Select from '../../components/Select'
 import { FetchCitiesByState, FetchCountries, FetchStatesByCountry } from '../../services/location'
 import { number } from 'yup'
@@ -16,6 +15,10 @@ import Error from 'next/error'
 import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
 import { useAuth } from '../../services/auth';
 import { useQueryClient } from 'react-query';
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css';
+import { format, subYears } from 'date-fns';
+import ReactTooltip from 'react-tooltip';
 
 const NewAccount: FC<ModalSettings> = (props) => {
   const [countries, setCoutries] = useState([])
@@ -24,6 +27,7 @@ const NewAccount: FC<ModalSettings> = (props) => {
   const [selectedState, setSelectedState] = useState<number>(undefined)
   const [cities, setCities] = useState([])
   const [accountTypeId, setAccountTypeId] = useState<string>()
+  const [selectedDob, setSelectedDob] = useState<Date>();
 
   const queryClient = useQueryClient()
 
@@ -89,7 +93,13 @@ const NewAccount: FC<ModalSettings> = (props) => {
     phoneNumber: string()
       .required('Required'),
     gender: string(),
-    dob: string(),
+    dob: date()
+      .max(
+        subYears(new Date(), 18), selectedDob > new Date() ?
+        'Dude your new employee hasn\'t even born yet? wtf??' :
+        'Employee must be at least 18 years old!'
+      )
+      .required('Employee\'s date of birth is required!'),
     accountTypeId: number()
       .required('Required')
   });
@@ -253,18 +263,28 @@ const NewAccount: FC<ModalSettings> = (props) => {
                               <FcCheckmark />)
                           }
                         </div>
-                        <DatePicker allowClear format='MM/DD/YYYY'
-                          onChange={(undefined, dateString) => {
-                            setFieldValue('dob', dateString)
-                          }}
-                          onClick={() => setTouched({ ...touched, dob: true })}
+                        <DatePicker
                           className={`min-w-full ${(
                             values.dob === initialValues.dob && !touched.dob
                           ) ? '' : (
                               errors.dob ?
                                 'ring-2 ring-red-600 ring-inset ring-opacity-50' :
                                 'focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500'
-                            )} text-center shadow-sm rounded-sm h-10`}
+                            )} text-center shadow-sm rounded-sm h-10 px-3`}
+                          selected={selectedDob}
+                          dateFormat='MMMM d, yyyy'
+                          onChange={(date: Date) => {
+                            setSelectedDob(date);
+                            setFieldValue('dob', (date && format(date, 'P')) ?? '');
+                          }}
+                          peekNextMonth
+                          showMonthDropdown
+                          showYearDropdown
+                          dropdownMode='select'
+                          todayButton="Today"
+                          placeholderText={'Enter the account holder\'s date of birth'}
+                          onBlur={() => setTouched({ ...touched, dob: true })}
+
                         />
                       </div>}
                     </div>
@@ -458,27 +478,23 @@ const NewAccount: FC<ModalSettings> = (props) => {
                     >
                       Reset
                   </button>
-                    {dirty ?
-                      <Tooltip title='Your current data will be lost.' mouseEnterDelay={0}>
-                        <button
-                          className='px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-red-500 hover:bg-red-600 active:bg-red-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
-                          type='button'
-                          style={{ transition: 'all .15s ease', outline: 'none' }}
-                          onClick={() => props.onCancel(false)}
-                        >
-                          Cancel
-                    </button>
-                      </Tooltip> :
+                    <div>
                       <button
+                        data-tip data-for={'cancelButton'}
                         className='px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-red-500 hover:bg-red-600 active:bg-red-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
                         type='button'
                         style={{ transition: 'all .15s ease', outline: 'none' }}
                         onClick={() => props.onCancel(false)}
                       >
                         Cancel
-                  </button>
-                    }
-
+                      </button>
+                      {
+                        dirty &&
+                        <ReactTooltip id='cancelButton'>
+                          <span>Your current data will be lost.</span>
+                        </ReactTooltip>
+                      }
+                    </div>
                     {isSubmitting ?
                       <button
                         className='px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-lightBlue-500 hover:bg-lightBlue-600 active:bg-lightBlue-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
