@@ -8,7 +8,7 @@ import { object, string, number } from 'yup'
 import { Field, Formik } from "formik"
 import { FcCheckmark } from "react-icons/fc"
 import { AccountSignUp } from "../../models/Auth"
-import { message } from "antd"
+import { store } from "react-notifications-component"
 
 export const SignupCard: FC<LoginSettings> = () => {
   const router = useRouter();
@@ -58,13 +58,36 @@ export const SignupCard: FC<LoginSettings> = () => {
         onSubmit={async (values, { resetForm }) => {
           try {
             const res = await signup(values)
-            if (res.status === 200)
-              message.success('Sign up success! Check your email to verify your account.')
+            if (res.status === 200) {
+              store.addNotification({
+                message: 'Sign up success! Check your email to verify your account.',
+                type: 'success',
+                insert: 'bottom',
+                container: 'top-center',
+                animationIn: ['animate__animated', 'animate__fadeIn'],
+                animationOut: ['animate__animated', 'animate__fadeOut'],
+                dismiss: {
+                  duration: 5000,
+                  onScreen: true
+                }
+              });
+            }
             resetForm()
           }
           catch (e) {
             console.log(e)
-            message.error(`Sign up failed! ${e.response.data.message}`)
+            store.addNotification({
+              message: `Sign up failed! ${e.response.data.message}`,
+              type: 'danger',
+              insert: 'bottom',
+              container: 'top-center',
+              animationIn: ['animate__animated', 'animate__fadeIn'],
+              animationOut: ['animate__animated', 'animate__fadeOut'],
+              dismiss: {
+                duration: 5000,
+                onScreen: true
+              }
+            });
           }
         }}
       >

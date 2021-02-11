@@ -5,16 +5,15 @@ import 'nprogress/nprogress.css'
 import 'react-notifications-component/dist/theme.css'
 
 import React, { useEffect, useState } from 'react';
-import { QueryClient, QueryClientProvider, QueryObserverResult } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { useRouter } from 'next/router';
-import { message } from 'antd';
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { useAuth } from '../services/auth';
 import { FetchAccountRole } from '../services/account';
 import { deleteSpecificCookies, documentCookieJsonify, getPlatformData } from '../utils/utils';
 import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import NProgress from 'nprogress'
-import ReactNotification from 'react-notifications-component'
+import ReactNotification, { store } from 'react-notifications-component'
 import IPData from 'ipdata';
 import { setPlatformSettings } from '../services/appsettings';
 const ipdata = new IPData(`${process.env.IPDATA_APIKEY}`);
@@ -76,12 +75,34 @@ function MyApp({ Component, pageProps }) {
         }, interval);
       }
       else {
-        message.warning('DEBUG: no existing session.')
+        store.addNotification({
+          message: 'DEBUG: no existing session.',
+          type: 'warning',
+          insert: 'bottom',
+          container: 'top-center',
+          animationIn: ['animate__animated', 'animate__fadeIn'],
+          animationOut: ['animate__animated', 'animate__fadeOut'],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     }
 
     listenCookieChange(() => {
-      message.error('You are not logged in!')
+      store.addNotification({
+        message: 'You are not logged in!',
+        type: 'danger',
+        insert: 'bottom',
+        container: 'top-center',
+        animationIn: ['animate__animated', 'animate__fadeIn'],
+        animationOut: ['animate__animated', 'animate__fadeOut'],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
       router.push('/auth/login')
     }, 3000);
 

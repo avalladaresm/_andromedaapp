@@ -1,5 +1,5 @@
-import { message } from "antd"
 import axios, { AxiosError } from "axios"
+import { store } from "react-notifications-component"
 import { QueryClient, useMutation } from "react-query"
 import { AccountLogIn, AccountSignUp } from "../models/Auth"
 import { AuthLog } from "../models/AuthLog"
@@ -20,10 +20,32 @@ export const useDoLogin = (queryClient: QueryClient, router) => {
       setAuth(queryClient, authData)
       document.cookie = 'u=' + authData.u
       document.cookie = 'a_t=' + authData.a_t
-      message.success(`Login success, whoo! Welcome ${variables.username}`)
+      store.addNotification({
+        message: `Login success, whoo! Welcome ${variables.username}`,
+        type: 'success',
+        insert: 'bottom',
+        container: 'top-center',
+        animationIn: ['animate__animated', 'animate__fadeIn'],
+        animationOut: ['animate__animated', 'animate__fadeOut'],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
       router.push('/')
     }, onError: (error: AxiosError) => {
-      message.error(`Login failed! ${error.response.data === 'InternalServerError' ? 'Please, try again in a few minutes.' : error.response.data.message}`)
+      store.addNotification({
+        message: `Login failed! ${error.response.data === 'InternalServerError' ? 'Please, try again in a few minutes.' : error.response.data.message}`,
+        type: 'danger',
+        insert: 'bottom',
+        container: 'top-center',
+        animationIn: ['animate__animated', 'animate__fadeIn'],
+        animationOut: ['animate__animated', 'animate__fadeOut'],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
       console.log('erorrr', error.response.data)
     }
   })

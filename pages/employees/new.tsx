@@ -5,7 +5,6 @@ import Error from 'next/error'
 import Mayre from 'mayre'
 import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
 import { useAuth } from '../../services/auth';
-import { message } from 'antd';
 import { FormikValues, Formik, Form, Field } from 'formik';
 import { object, string, number, date } from 'yup';
 import { FetchCountries, FetchStatesByCountry, FetchCitiesByState } from '../../services/location';
@@ -17,6 +16,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { format, subDays, subYears } from 'date-fns'
 import Spin from '../../components/Spin';
 import { createEmployeeAccount } from '../../services/employee';
+import { store } from 'react-notifications-component';
 
 export default function NewEmployee() {
   const [countries, setCoutries] = useState([])
@@ -200,11 +200,33 @@ export default function NewEmployee() {
                 values.roleId = values.roleId.value
                 let res = await createEmployeeAccount(auth.a_t, values)
                 if (res.status === 200)
-                  message.success('Employee added successfully!')
+                store.addNotification({
+                  message: 'Employee added successfully!',
+                  type: 'success',
+                  insert: 'bottom',
+                  container: 'top-center',
+                  animationIn: ['animate__animated', 'animate__fadeIn'],
+                  animationOut: ['animate__animated', 'animate__fadeOut'],
+                  dismiss: {
+                    duration: 5000,
+                    onScreen: true
+                  }
+                });
                 resetForm()
               }
               catch (e) {
-                message.error(`Error adding employee! ${e.response.data.message}`)
+                store.addNotification({
+                  message: `Error adding employee! ${e.response.data.message}`,
+                  type: 'danger',
+                  insert: 'bottom',
+                  container: 'top-center',
+                  animationIn: ['animate__animated', 'animate__fadeIn'],
+                  animationOut: ['animate__animated', 'animate__fadeOut'],
+                  dismiss: {
+                    duration: 5000,
+                    onScreen: true
+                  }
+                });
               }
             }}
           >

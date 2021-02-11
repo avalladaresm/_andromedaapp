@@ -4,12 +4,13 @@ import Modal from '../../components/Modal'
 import { ModalSettings } from '../../models/ModalSettings'
 import { object, string } from 'yup'
 import { FcCheckmark } from 'react-icons/fc';
-import { Tooltip, DatePicker, message } from 'antd'
+import { Tooltip, DatePicker } from 'antd'
 import Select from '../../components/Select'
 import { FetchCitiesByState, FetchCountries, FetchStatesByCountry } from '../../services/location'
 import { number } from 'yup'
 import { createBusinessAccount, createPersonAccount } from '../../services/account'
 import Spin from '../../components/Spin'
+import { store } from 'react-notifications-component'
 
 const CreateAccount: FC<ModalSettings> = (props) => {
   const [countries, setCoutries] = useState([])
@@ -120,11 +121,33 @@ const CreateAccount: FC<ModalSettings> = (props) => {
             else if (accountTypeId === '2')
               res = await createBusinessAccount(values)
             if (res.status === 200)
-              message.success('Sign up success! Check your email to verify your account.')
+              store.addNotification({
+                message: 'Sign up success! Check your email to verify your account.',
+                type: 'success',
+                insert: 'bottom',
+                container: 'top-center',
+                animationIn: ['animate__animated', 'animate__fadeIn'],
+                animationOut: ['animate__animated', 'animate__fadeOut'],
+                dismiss: {
+                  duration: 5000,
+                  onScreen: true
+                }
+              });
             resetForm()
           }
           catch (e) {
-            message.error(`Sign up failed! ${e.response.data.message}`)
+            store.addNotification({
+              message: `Sign up failed! ${e.response.data.message}`,
+              type: 'danger',
+              insert: 'bottom',
+              container: 'top-center',
+              animationIn: ['animate__animated', 'animate__fadeIn'],
+              animationOut: ['animate__animated', 'animate__fadeOut'],
+              dismiss: {
+                duration: 5000,
+                onScreen: true
+              }
+            });
           }
         }}
       >
