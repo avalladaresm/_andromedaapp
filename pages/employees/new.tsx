@@ -5,7 +5,7 @@ import Error from 'next/error'
 import Mayre from 'mayre'
 import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
 import { useAuth } from '../../services/auth';
-import { FormikValues, Formik, Form, Field } from 'formik';
+import { FormikValues, Formik, Form, Field, FormikState } from 'formik';
 import { object, string, number, date } from 'yup';
 import { FetchCountries, FetchStatesByCountry, FetchCitiesByState } from '../../services/location';
 import { FcCheckmark } from 'react-icons/fc';
@@ -17,6 +17,7 @@ import { format, subDays, subYears } from 'date-fns'
 import Spin from '../../components/Spin';
 import { createEmployeeAccount } from '../../services/employee';
 import { store } from 'react-notifications-component';
+import { CreateEmployeeAccount } from '../../models/Employee';
 
 export default function NewEmployee() {
   const [countries, setCoutries] = useState([])
@@ -40,22 +41,18 @@ export default function NewEmployee() {
     value: 'Other', label: 'Other'
   }]
 
-  const determineManagerialRoleId = (employerRole: string): number => {
-    switch (employerRole) {
-      case 'PERSON_ADMIN':
-        return 4
-      case 'BUSINESS_ADMIN':
-        return 5
-    }
+  const determineManagerialRoleId = (employerRole: string[]): number => {
+    if (employerRole.includes('PERSON_ADMIN'))
+      return 4
+    else if (employerRole.includes('BUSINESS_ADMIN'))
+      return 5
   }
 
-  const determineEmployeeRoleId = (employerRole: string): number => {
-    switch (employerRole) {
-      case 'PERSON_ADMIN':
-        return 6
-      case 'BUSINESS_ADMIN':
-        return 7
-    }
+  const determineEmployeeRoleId = (employerRole: string[]): number => {
+    if (employerRole.includes('PERSON_ADMIN'))
+      return 6
+    else if (employerRole.includes('BUSINESS_ADMIN'))
+      return 7
   }
 
   const employeeRoleOptions = [{
@@ -159,7 +156,7 @@ export default function NewEmployee() {
       .required('Required')
   });
 
-  const initialValues: Partial<FormikValues> = {
+  const initialValues: CreateEmployeeAccount = {
     name: '',
     surname: '',
     gender: undefined,
@@ -168,7 +165,7 @@ export default function NewEmployee() {
     dob: '',
     position: '',
     contractType: '',
-    salary: '',
+    salary: null,
     roleId: undefined,
     hiredOn: '',
     email: '',
@@ -177,9 +174,10 @@ export default function NewEmployee() {
     phoneNumberType: '',
     streetAddress1: '',
     zip: '',
-    cityId: '',
-    stateId: '',
-    countryId: '',
+    cityId: null,
+    stateId: null,
+    countryId: null,
+    employerId: null
   }
 
   return (
@@ -193,25 +191,25 @@ export default function NewEmployee() {
               console.log('v', values)
               try {
                 values.employerId = auth?.aid
-                values.gender = values.gender.value
-                values.cityId = values.cityId.value
-                values.stateId = values.stateId.value
-                values.countryId = values.countryId.value
-                values.roleId = values.roleId.value
+                values.gender = values.gender
+                values.cityId = values.cityId
+                values.stateId = values.stateId
+                values.countryId = values.countryId
+                values.roleId = values.roleId
                 let res = await createEmployeeAccount(auth.a_t, values)
                 if (res.status === 200)
-                store.addNotification({
-                  message: 'Employee added successfully!',
-                  type: 'success',
-                  insert: 'bottom',
-                  container: 'top-center',
-                  animationIn: ['animate__animated', 'animate__fadeIn'],
-                  animationOut: ['animate__animated', 'animate__fadeOut'],
-                  dismiss: {
-                    duration: 5000,
-                    onScreen: true
-                  }
-                });
+                  store.addNotification({
+                    message: 'Employee added successfully!',
+                    type: 'success',
+                    insert: 'bottom',
+                    container: 'top-center',
+                    animationIn: ['animate__animated', 'animate__fadeIn'],
+                    animationOut: ['animate__animated', 'animate__fadeOut'],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
                 resetForm()
               }
               catch (e) {
@@ -239,7 +237,7 @@ export default function NewEmployee() {
                         className='w-1/4 px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-coolGray-500 hover:bg-coolGray-600 active:bg-coolGray-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
                         type='button'
                         style={{ transition: 'all .15s ease', outline: 'none' }}
-                        onClick={() => { resetForm(initialValues), setSelectedCountry(0), setSelectedState(undefined) }}
+                        onClick={() => { resetForm(initialValues as Partial<FormikState<CreateEmployeeAccount>>), setSelectedCountry(0), setSelectedState(undefined) }}
                       >
                         Reset
                       </button>
