@@ -66,8 +66,8 @@ export const NavigationItems = (props) => {
       icon: <MdHistory size='1.5em' />
     },
     {
-      title: 'Logs',
-      route: '/logs',
+      title: 'Activity logs',
+      route: '/activitylogs',
       activePage: false,
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
