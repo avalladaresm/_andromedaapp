@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQueryClient } from "react-query";
-import CreateAccount from "./CreateAccount";
 import PersonTable from "./PersonTable";
 import Mayre from "mayre";
 import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
@@ -10,7 +9,6 @@ import MainContainer from "../../components/navigation";
 import Error from 'next/error'
 
 export default function Accounts() {
-  const [showCreateAccount, setShowCreateAccount] = useState(false)
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -28,11 +26,6 @@ export default function Accounts() {
             of={<div>Verifying your credentials...</div>}
             or={<BusinessTable />}
             when={!auth?.a_t}
-          />
-          <CreateAccount
-            isShowing={showCreateAccount}
-            title='Create account'
-            onCancel={() => setShowCreateAccount(false)}
           />
         </MainContainer >
       }

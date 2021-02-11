@@ -51,6 +51,7 @@ export const NavigationItems = (props) => {
         icon: <HiOutlineRefresh />
       }, {
         title: 'New account',
+        onClick: () => router.push('/accounts/new'),
         icon: <FaUserPlus />
       }],
       authorization: ['SUPREME_LEADER'],
