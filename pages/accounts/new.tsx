@@ -1,4 +1,4 @@
-import { Field, Form, Formik, FormikValues } from 'formik'
+import { Field, Form, Formik, FormikState } from 'formik'
 import React, { FC, useEffect, useState } from 'react'
 import { ModalSettings } from '../../models/ModalSettings'
 import { date, object, string } from 'yup'
@@ -19,6 +19,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, subYears } from 'date-fns';
 import ReactTooltip from 'react-tooltip';
+import { CreatePersonAccount } from '../../models/Account';
 
 const NewAccount: FC<ModalSettings> = (props) => {
   const [countries, setCoutries] = useState([])
@@ -104,19 +105,20 @@ const NewAccount: FC<ModalSettings> = (props) => {
       .required('Required')
   });
 
-  const initialValues: Partial<FormikValues> = {
+  const initialValues: CreatePersonAccount = {
     name: '',
     surname: '',
     username: '',
+    password: '',
     email: '',
     gender: '',
     dob: '',
     phoneNumber: '',
     streetAddress1: '',
-    cityId: '',
-    stateId: '',
-    countryId: '',
-    accountTypeId: -1
+    cityId: null,
+    stateId: null,
+    countryId: null,
+    accountTypeId: null
   }
 
   const onChange = (e) => {
@@ -132,7 +134,7 @@ const NewAccount: FC<ModalSettings> = (props) => {
             validationSchema={SignupSchema}
             onSubmit={async (values, { resetForm }) => {
               try {
-                values.accountTypeId = accountTypeId
+                values.accountTypeId = parseInt(accountTypeId)
                 let res;
                 if (accountTypeId === '1')
                   res = await createPersonAccount(values)
@@ -474,7 +476,7 @@ const NewAccount: FC<ModalSettings> = (props) => {
                       className='px-3 py-2 rounded-md text-md font-semibold text-coolGray-50 bg-coolGray-500 hover:bg-coolGray-600 active:bg-coolGray-900 focus:ring-2 focus:ring-opacity-50 focus:ring-blue-500 active:shadow-inner'
                       type='button'
                       style={{ transition: 'all .15s ease', outline: 'none' }}
-                      onClick={() => { resetForm(initialValues), setSelectedCountry(0), setSelectedState(undefined) }}
+                      onClick={() => { resetForm(initialValues as Partial<FormikState<CreatePersonAccount>>), setSelectedCountry(0), setSelectedState(undefined) }}
                     >
                       Reset
                   </button>
