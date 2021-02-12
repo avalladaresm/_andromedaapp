@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 8000 && \"npm run lint\"",
-    "build": "next build && next export",
-    "start": "next start",
+    "build": "next build",
+    "start": "next start -p $PORT",
+    "postinstall": "next build",
     "analyze": "cross-env ANALYZE=true next build",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
     "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build"
