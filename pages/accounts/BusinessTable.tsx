@@ -11,7 +11,7 @@ import { BusinessAccountResult } from '../../models/Account';
 import { store } from 'react-notifications-component';
 import { NotificationType } from '../../models/NotificationType';
 
-export default function Accounts() {
+const BusinessTable = () => {
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -53,3 +53,5 @@ export default function Accounts() {
     />
   )
 }
+
+export default BusinessTable

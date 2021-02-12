@@ -7,7 +7,7 @@ import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
 import EmployeeTable from "./EmployeeTable";
 
-export default function Employees() {
+const Employees = () => {
   const queryClient = useQueryClient()
 
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -41,3 +41,5 @@ export default function Employees() {
     />
   )
 }
+
+export default Employees

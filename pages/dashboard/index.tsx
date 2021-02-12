@@ -8,7 +8,7 @@ import { useAuth } from "../../services/auth";
 import RecentAuthLogRecords from "./RecentAuthLogRecords";
 import { useRouter } from "next/router";
 
-export default function Dashboard() {
+const Dashboard = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -43,3 +43,5 @@ export default function Dashboard() {
     />
   )
 }
+
+export default Dashboard

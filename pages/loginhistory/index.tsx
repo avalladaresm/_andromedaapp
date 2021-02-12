@@ -7,7 +7,7 @@ import MainContainer from "../../components/navigation";
 import Error from 'next/error'
 import AuthLogTable from "./AuthLogTable";
 
-export default function LoginHistory() {
+const LoginHistory = () => {
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -34,3 +34,5 @@ export default function LoginHistory() {
     />
   )
 }
+
+export default LoginHistory

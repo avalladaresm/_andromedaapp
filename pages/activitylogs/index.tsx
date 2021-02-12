@@ -7,7 +7,7 @@ import MainContainer from "../../components/navigation";
 import Error from 'next/error'
 import ActivityLogTable from "./ActivityLogTable";
 
-export default function ActivityLog() {
+const ActivityLogs = () => {
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -34,3 +34,5 @@ export default function ActivityLog() {
     />
   )
 }
+
+export default ActivityLogs

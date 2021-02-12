@@ -8,7 +8,7 @@ import BusinessTable from "./BusinessTable";
 import MainContainer from "../../components/navigation";
 import Error from 'next/error'
 
-export default function Accounts() {
+const Accounts = () => {
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -40,3 +40,5 @@ export default function Accounts() {
     />
   )
 }
+
+export default Accounts

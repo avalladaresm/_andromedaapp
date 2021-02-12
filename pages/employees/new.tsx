@@ -19,7 +19,7 @@ import { createEmployeeAccount } from '../../services/employee';
 import { store } from 'react-notifications-component';
 import { CreateEmployeeAccount } from '../../models/Employee';
 
-export default function NewEmployee() {
+const NewEmployee = () => {
   const [countries, setCoutries] = useState([])
   const [selectedCountry, setSelectedCountry] = useState<number>(undefined)
   const [states, setStates] = useState([])
@@ -809,3 +809,5 @@ export default function NewEmployee() {
     />
   )
 }
+
+export default NewEmployee
