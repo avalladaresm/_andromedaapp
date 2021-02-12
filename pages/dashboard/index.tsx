@@ -7,8 +7,10 @@ import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
 import RecentAuthLogRecords from "./RecentAuthLogRecords";
 import { useRouter } from "next/router";
+import { Context } from "vm";
+import { documentCookieJsonify } from "../../utils/utils";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   const queryClient = useQueryClient()
   const router = useRouter()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -22,7 +24,7 @@ const Dashboard = () => {
               <div className='flex flex-col m-3 p-3 rounded-md bg-blueGray-200 shadow-md sm:w-1/2 lg:w-1/3 xl:w-1/4 2xl:w-1/5 items-center'>
                 <p className='text-center font-semibold text-2xl'>Recent user login activity</p>
                 <p className='text-center'>Showing the 10 most recent records, click <a onClick={() => router.push('/loginhistory')}>here</a> to view complete login history</p>
-                <RecentAuthLogRecords />
+                <RecentAuthLogRecords {...props} />
               </div>
             </div>
           }
@@ -42,6 +44,28 @@ const Dashboard = () => {
       }
     />
   )
+}
+
+export const getServerSideProps = async (ctx: Context) => {
+  const parsedCookie: CurrentUserAuthData = ctx.req.headers.cookie && documentCookieJsonify(ctx.req?.headers?.cookie)
+
+  if (!parsedCookie?.a_t) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false
+      }
+    }
+  }
+  
+  return {
+    props: {
+      cookies: {
+        u: parsedCookie.u,
+        a_t: parsedCookie.a_t
+      }
+    }
+  }
 }
 
 export default Dashboard

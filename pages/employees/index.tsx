@@ -6,8 +6,10 @@ import Mayre from 'mayre'
 import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
 import EmployeeTable from "./EmployeeTable";
+import { Context } from "vm";
+import { documentCookieJsonify } from "../../utils/utils";
 
-const Employees = () => {
+const Employees = (props) => {
   const queryClient = useQueryClient()
 
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -21,7 +23,7 @@ const Employees = () => {
           </div>
           <Mayre
             of={<div>Verifying your credentials...</div>}
-            or={<EmployeeTable />}
+            or={<EmployeeTable {...props} />}
             when={!auth?.a_t}
           />
         </MainContainer>
@@ -40,6 +42,28 @@ const Employees = () => {
       }
     />
   )
+}
+
+export const getServerSideProps = async (ctx: Context) => {
+  const parsedCookie: CurrentUserAuthData = ctx.req.headers.cookie && documentCookieJsonify(ctx.req?.headers?.cookie)
+  
+  if (!parsedCookie.a_t) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false
+      }
+    }
+  }
+  
+  return {
+    props: {
+      cookies: {
+        u: parsedCookie.u,
+        a_st: parsedCookie.a_t
+      }
+    }
+  }
 }
 
 export default Employees

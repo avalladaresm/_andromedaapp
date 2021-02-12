@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Context, useEffect, useState } from 'react';
 import { useIsFetching, useQueryClient } from 'react-query';
 import MainContainer from "../../components/navigation";
 import Error from 'next/error'
@@ -18,8 +18,11 @@ import Spin from '../../components/Spin';
 import { createEmployeeAccount } from '../../services/employee';
 import { store } from 'react-notifications-component';
 import { CreateEmployeeAccount } from '../../models/Employee';
+import { FetchAccountRolesOnly } from '../../services/account';
+import { documentCookieJsonify } from '../../utils/utils';
+import { GetServerSidePropsContext } from 'next';
 
-const NewEmployee = () => {
+const NewEmployee = (props) => {
   const [countries, setCoutries] = useState([])
   const [selectedCountry, setSelectedCountry] = useState<number>(undefined)
   const [states, setStates] = useState([])
@@ -42,23 +45,23 @@ const NewEmployee = () => {
   }]
 
   const determineManagerialRoleId = (employerRole: string[]): number => {
-    if (employerRole.includes('PERSON_ADMIN'))
+    if (employerRole?.includes('PERSON_ADMIN'))
       return 4
-    else if (employerRole.includes('BUSINESS_ADMIN'))
+    else if (employerRole?.includes('BUSINESS_ADMIN'))
       return 5
   }
 
   const determineEmployeeRoleId = (employerRole: string[]): number => {
-    if (employerRole.includes('PERSON_ADMIN'))
+    if (employerRole?.includes('PERSON_ADMIN'))
       return 6
-    else if (employerRole.includes('BUSINESS_ADMIN'))
+    else if (employerRole?.includes('BUSINESS_ADMIN'))
       return 7
   }
 
   const employeeRoleOptions = [{
-    value: determineManagerialRoleId(auth?.r), label: 'Managerial'
+    value: determineManagerialRoleId(props?.cookies?.r), label: 'Managerial'
   }, {
-    value: determineEmployeeRoleId(auth?.r), label: 'Employee'
+    value: determineEmployeeRoleId(props?.cookies?.r), label: 'Employee'
   }]
 
   useEffect(() => {
@@ -808,6 +811,31 @@ const NewEmployee = () => {
       }
     />
   )
+}
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const parsedCookie: CurrentUserAuthData = ctx.req.headers.cookie && documentCookieJsonify(ctx.req?.headers?.cookie)
+  
+  if (!parsedCookie.a_t) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false
+      }
+    }
+  }
+
+  const accountRoles = await FetchAccountRolesOnly(parsedCookie)
+
+  return {
+    props: {
+      cookies: {
+        u: parsedCookie.u,
+        a_st: parsedCookie.a_t,
+        r: accountRoles
+      }
+    }
+  }
 }
 
 export default NewEmployee

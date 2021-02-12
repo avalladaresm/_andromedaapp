@@ -6,8 +6,10 @@ import { useAuth } from "../../services/auth";
 import MainContainer from "../../components/navigation";
 import Error from 'next/error'
 import AuthLogTable from "./AuthLogTable";
+import { Context } from "vm";
+import { documentCookieJsonify } from "../../utils/utils";
 
-const LoginHistory = () => {
+const LoginHistory = (props) => {
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -18,7 +20,7 @@ const LoginHistory = () => {
         <MainContainer header='Login/Logout history'>
           <Mayre
             of={<div>Verifying your credentials...</div>}
-            or={<AuthLogTable />}
+            or={<AuthLogTable {...props} />}
             when={!auth?.a_t}
           />
         </MainContainer >
@@ -33,6 +35,28 @@ const LoginHistory = () => {
       when={auth?.r.includes('SUPREME_LEADER')}
     />
   )
+}
+
+export const getServerSideProps = async (ctx: Context) => {
+  const parsedCookie: CurrentUserAuthData = ctx.req.headers.cookie && documentCookieJsonify(ctx.req?.headers?.cookie)
+
+  if (!parsedCookie.a_t) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+      cookies: {
+        u: parsedCookie.u,
+        a_t: parsedCookie.a_t
+      }
+    }
+  }
 }
 
 export default LoginHistory

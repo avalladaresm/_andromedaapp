@@ -6,8 +6,10 @@ import { useAuth } from "../../services/auth";
 import MainContainer from "../../components/navigation";
 import Error from 'next/error'
 import ActivityLogTable from "./ActivityLogTable";
+import { Context } from "vm";
+import { documentCookieJsonify } from "../../utils/utils";
 
-const ActivityLogs = () => {
+const ActivityLogs = (props) => {
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
@@ -18,7 +20,7 @@ const ActivityLogs = () => {
         <MainContainer header='Activity logs'>
           <Mayre
             of={<div>Verifying your credentials...</div>}
-            or={<ActivityLogTable />}
+            or={<ActivityLogTable {...props} />}
             when={!auth?.a_t}
           />
         </MainContainer >
@@ -33,6 +35,27 @@ const ActivityLogs = () => {
       when={auth?.r.includes('SUPREME_LEADER')}
     />
   )
+}
+
+export const getServerSideProps = async (ctx: Context) => {
+  const parsedCookie: CurrentUserAuthData = ctx.req.headers.cookie && documentCookieJsonify(ctx.req?.headers?.cookie)
+
+  if (!parsedCookie.a_t) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false
+      }
+    }
+  }
+  return {
+    props: {
+      cookies: {
+        u: parsedCookie.u,
+        a_t: parsedCookie.a_t
+      }
+    }
+  }
 }
 
 export default ActivityLogs

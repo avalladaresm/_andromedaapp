@@ -1,21 +1,17 @@
 import React, { useEffect } from 'react';
-import { useQueryClient, QueryObserverResult } from 'react-query';
+import { QueryObserverResult } from 'react-query';
 import { useFetchBusinessAccounts } from '../../services/account';
 import Table from '../../components/Table'
 import BusinessColumns from '../../columns/BusinessColumns'
-import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
-import { useAuth } from '../../services/auth';
 import Mayre from 'mayre';
 import { AxiosError } from 'axios';
 import { BusinessAccountResult } from '../../models/Account';
 import { store } from 'react-notifications-component';
 import { NotificationType } from '../../models/NotificationType';
 
-const BusinessTable = () => {
+const BusinessTable = (props) => {
 
-  const queryClient = useQueryClient()
-  const auth: CurrentUserAuthData = useAuth(queryClient)
-  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<BusinessAccountResult[], AxiosError> = useFetchBusinessAccounts(auth.a_t)
+  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<BusinessAccountResult[], AxiosError> = useFetchBusinessAccounts(props?.cookies?.a_t)
 
   useEffect(() => {
     if (data && data.length !== 0) {
