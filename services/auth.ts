@@ -1,59 +1,91 @@
-import axios from 'axios';
-import Cookies from 'js-cookie'
-import { DO_SIGN_IN, SIGN_IN_STATUS, IS_SIGNING_IN, GET_SIGNED_IN_USER_FROM_COOKIE, DO_SIGN_OUT, WANTED_PATH } from '../actionTypes/auth'
-import { CREATE_LOGIN_LOG, CREATE_LOGOUT_LOG } from '../actionTypes/logs'
-import { SignInStatus } from '../models/SignInStatus'
-import { LogTypes } from '../models/LogTypes'
-import { CreateLoginLog, CreateLogoutLog } from './logs';
-import moment from 'moment'
+import axios, { AxiosError } from "axios"
+import { store } from "react-notifications-component"
+import { QueryClient, useMutation } from "react-query"
+import { AccountLogIn, AccountSignUp } from "../models/Auth"
+import { AuthLog } from "../models/AuthLog"
+import { CurrentUserAuthData } from "../models/CurrentUserAuthData"
+import { cookieNames, deleteCookie } from "../utils/utils"
 
-export const DoSignIn = (params) => ( dispatch ) => {
-	dispatch({ type: IS_SIGNING_IN, payload: true });
-  axios.post(`http://localhost:8080/docs/auth/signin`, {
-		username: params.username, password: params.password,
-	}).then((res) => {
-		console.log('res', res)
-		Cookies.set('currentUser', JSON.stringify(res.data), { expires: 7 })
-		dispatch({ type: DO_SIGN_IN, payload: res.data });
-		dispatch({ type: SIGN_IN_STATUS, payload: SignInStatus.SIGN_IN_SUCCESS });
-		dispatch({ type: IS_SIGNING_IN, payload: false });
-		dispatch(CreateLoginLog({
-			userName: params.username, 
-			date: moment(), 
-			type:	LogTypes.LOGIN, 
-			description: `${SignInStatus.SIGN_IN_SUCCESS}: ${params.username} signed in successfully.`, 
-			data: JSON.stringify(`${SignInStatus.SIGN_IN_SUCCESS}`)
-		}))
-	}).catch((e) => {
-		dispatch({ type: SIGN_IN_STATUS, payload: SignInStatus.SIGN_IN_ERROR });
-		dispatch(CreateLoginLog({
-			userName: params.username, 
-			date: moment(), 
-			type:	LogTypes.LOGIN, 
-			description: `${SignInStatus.SIGN_IN_ERROR}: ${params.username} had an error logging in.`, 
-			data: JSON.stringify({error: e.data})
-		}))
-		dispatch({ type: IS_SIGNING_IN, payload: false });
-	});
+export const useDoLogin = (queryClient: QueryClient, router) => {
+  return useMutation((values: AccountLogIn) => {
+    return axios.post(`${process.env.API_BASE_URL}/auth/login`, {
+      data: {
+        username: values.username, password: values.password, platform: values.platform
+      }
+    })
+  }, {
+    onSuccess: (data, variables) => {
+      const loginRes: CurrentUserAuthData = data.data
+      const authData = { u: loginRes.u, a_t: loginRes.a_t, r: loginRes.r, aid: loginRes.aid }
+      setAuth(queryClient, authData)
+      document.cookie = 'u=' + authData.u
+      document.cookie = 'a_t=' + authData.a_t
+      store.addNotification({
+        message: `Login success, whoo! Welcome ${variables.username}`,
+        type: 'success',
+        insert: 'bottom',
+        container: 'top-center',
+        animationIn: ['animate__animated', 'animate__fadeIn'],
+        animationOut: ['animate__animated', 'animate__fadeOut'],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
+      router.push('/')
+    }, onError: (error: AxiosError) => {
+      store.addNotification({
+        message: `Login failed! ${error.response.data === 'InternalServerError' ? 'Please, try again in a few minutes.' : error.response.data.message}`,
+        type: 'danger',
+        insert: 'bottom',
+        container: 'top-center',
+        animationIn: ['animate__animated', 'animate__fadeIn'],
+        animationOut: ['animate__animated', 'animate__fadeOut'],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
+      console.log('erorrr', error.response.data)
+    }
+  })
 }
 
-export const DoSignOut = (userName) => ( dispatch ) => {
-	Cookies.remove('currentUser')
-	dispatch({ type: DO_SIGN_OUT, payload: { signInStatus: SignInStatus.NOT_SIGNED_IN_YET, loggedInUser: {}} });
-	dispatch(CreateLogoutLog({
-		userName: userName, 
-		date: moment(), 
-		type:	LogTypes.LOGOUT, 
-		description: `${userName} logged out.`, 
-		data: JSON.stringify(`${SignInStatus.SIGN_OUT_SUCCESS}`)
-	}))
+export const signup = async (values: AccountSignUp) => {
+  try {
+    const signup = await axios.post(`${process.env.API_BASE_URL}/auth/signup`, {
+      data: {
+        name: values.name, surname: values.username,
+        username: values.username, password: values.password,
+        email: values.email, accountTypeId: values.accountTypeId
+      }
+    })
+
+    return signup
+  } catch (e) {
+    throw e
+  }
 }
 
-export const GetSignedInUserFromCookie = (data) => ( dispatch ) => {
-	dispatch({ type: GET_SIGNED_IN_USER_FROM_COOKIE, payload: JSON.parse(data) });
-	dispatch({ type: SIGN_IN_STATUS, payload: SignInStatus.SIGN_IN_SUCCESS_BY_COOKIE });
+export const useDoLogout = (queryClient: QueryClient, router, cookie: string, username: string, platform: AuthLog) => {
+  queryClient.clear()
+  router.push('/auth/login')
+  cookieNames(cookie).map(c => {
+    document.cookie = deleteCookie(c)
+  })
+
+  return axios.post(`${process.env.API_BASE_URL}/auth/logout`, {
+    data: {
+      username: username, authlog: platform
+    }
+  })
 }
 
-export const GetWantedPath = (path) => ( dispatch ) => {
-	dispatch({ type: WANTED_PATH, payload: path });
+export const setAuth = (queryClient: QueryClient, authData: CurrentUserAuthData) => {
+  queryClient.setQueryData('Auth', authData)
+}
+
+export const useAuth = (queryClient: QueryClient) => {
+  const res: CurrentUserAuthData = queryClient.getQueryData('Auth')
+  return res
 }

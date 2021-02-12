@@ -1,6 +1,0 @@
-export const DO_SIGN_IN = 'DO_SIGN_IN';
-export const DO_SIGN_OUT = 'DO_SIGN_OUT';
-export const GET_SIGNED_IN_USER_FROM_COOKIE = 'GET_SIGNED_IN_USER_FROM_COOKIE';
-export const SIGN_IN_STATUS = 'SIGN_IN_STATUS';
-export const IS_SIGNING_IN = 'IS_SIGNING_IN';
-export const WANTED_PATH = 'WANTED_PATH';

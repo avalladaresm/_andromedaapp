@@ -5,30 +5,28 @@ import Error from 'next/error'
 import Mayre from 'mayre'
 import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
 import { useAuth } from "../../services/auth";
-import RecentAuthLogRecords from "./RecentAuthLogRecords";
-import { useRouter } from "next/router";
+import EmployeeTable from "./EmployeeTable";
 import { Context } from "vm";
 import { documentCookieJsonify } from "../../utils/utils";
 
-const Dashboard = (props) => {
+const Employees = (props) => {
   const queryClient = useQueryClient()
-  const router = useRouter()
+
   const auth: CurrentUserAuthData = useAuth(queryClient)
 
   return (
     <Mayre
       of={
-        <MainContainer header='Dashboard'>
-          {auth?.r.includes('SUPREME_LEADER') &&
-            <div className='flex flex-wrap'>
-              <div className='flex flex-col m-3 p-3 rounded-md bg-blueGray-200 shadow-md sm:w-1/2 lg:w-1/3 xl:w-1/4 2xl:w-1/5 items-center'>
-                <p className='text-center font-semibold text-2xl'>Recent user login activity</p>
-                <p className='text-center'>Showing the 10 most recent records, click <a onClick={() => router.push('/loginhistory')}>here</a> to view complete login history</p>
-                <RecentAuthLogRecords {...props} />
-              </div>
-            </div>
-          }
-        </ MainContainer>
+        <MainContainer header='Employees'>
+          <div className='flex flex-wrap justify-between'>
+            Employees content
+          </div>
+          <Mayre
+            of={<div>Verifying your credentials...</div>}
+            or={<EmployeeTable {...props} />}
+            when={!auth?.a_t}
+          />
+        </MainContainer>
       }
       or={
         <Mayre
@@ -48,8 +46,8 @@ const Dashboard = (props) => {
 
 export const getServerSideProps = async (ctx: Context) => {
   const parsedCookie: CurrentUserAuthData = ctx.req.headers.cookie && documentCookieJsonify(ctx.req?.headers?.cookie)
-
-  if (!parsedCookie?.a_t) {
+  
+  if (!parsedCookie.a_t) {
     return {
       redirect: {
         destination: '/auth/login',
@@ -62,10 +60,10 @@ export const getServerSideProps = async (ctx: Context) => {
     props: {
       cookies: {
         u: parsedCookie.u,
-        a_t: parsedCookie.a_t
+        a_st: parsedCookie.a_t
       }
     }
   }
 }
 
-export default Dashboard
+export default Employees
