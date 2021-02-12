@@ -1,5 +1,4 @@
 import 'tailwindcss/tailwind.css';
-import 'antd/dist/antd.css';
 import '../styles/globals.css'
 import 'nprogress/nprogress.css'
 import 'react-notifications-component/dist/theme.css'
