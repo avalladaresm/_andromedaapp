@@ -1,4 +1,4 @@
-export const EmployeeColumns = [
+const EmployeeColumns = [
   {
     Header: 'id',
     accessor: 'id'
@@ -100,3 +100,5 @@ export const EmployeeColumns = [
     accessor: 'employerId',
   }
 ]
+
+export default EmployeeColumns

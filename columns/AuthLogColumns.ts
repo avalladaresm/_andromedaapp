@@ -1,7 +1,7 @@
 import { format } from "date-fns"
-import { AuthLogResult } from "../../models/AuthLog"
+import { AuthLogResult } from "../models/AuthLog"
 
-export const AuthLogColumns = [
+const AuthLogColumns = [
   {
     Header: 'id',
     accessor: 'id'
@@ -39,3 +39,5 @@ export const AuthLogColumns = [
     accessor: 'browserversion',
   }
 ]
+
+export default AuthLogColumns

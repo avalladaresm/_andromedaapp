@@ -1,4 +1,4 @@
-export const BusinessColumns = [
+const BusinessColumns = [
   {
     Header: 'id',
     accessor: 'id'
@@ -45,3 +45,5 @@ export const BusinessColumns = [
     accessor: 'country'
   }
 ]
+
+export default BusinessColumns

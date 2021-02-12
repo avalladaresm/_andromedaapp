@@ -1,20 +1,16 @@
 import React from 'react';
-import { useQueryClient, QueryObserverResult } from 'react-query';
+import { QueryObserverResult } from 'react-query';
 import Table from '../../components/Table'
-import { RecentAuthLogRecordsColumns } from './RecentAuthLogRecordsColumns'
-import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
-import { useAuth } from '../../services/auth';
+import RecentAuthLogRecordsColumns from '../../columns/RecentAuthLogRecordsColumns'
 import Mayre from 'mayre';
 import { AxiosError } from 'axios';
 import { useFetchAuthLogs } from '../../services/authlog';
 import { AuthLogResult } from '../../models/AuthLog';
 import { sortBy } from '../../utils/utils';
 
-export default function RecentAuthLogRecords() {
+const RecentAuthLogRecords = (props) => {
 
-  const queryClient = useQueryClient()
-  const auth: CurrentUserAuthData = useAuth(queryClient)
-  const { data, isLoading, error }: QueryObserverResult<AuthLogResult[], AxiosError> = useFetchAuthLogs(auth.a_t)
+  const { data, isLoading, error }: QueryObserverResult<AuthLogResult[], AxiosError> = useFetchAuthLogs(props?.cookies?.a_t)
 
   return (
     <Mayre
@@ -36,3 +32,5 @@ export default function RecentAuthLogRecords() {
     />
   )
 }
+
+export default RecentAuthLogRecords

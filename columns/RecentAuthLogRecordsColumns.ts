@@ -1,7 +1,7 @@
 import { formatRelative } from "date-fns"
-import { AuthLogResult } from "../../models/AuthLog"
+import { AuthLogResult } from "../models/AuthLog"
 
-export const RecentAuthLogRecordsColumns = [
+const RecentAuthLogRecordsColumns = [
   {
     Header: 'Username',
     accessor: 'username'
@@ -19,3 +19,5 @@ export const RecentAuthLogRecordsColumns = [
     },
   }
 ]
+
+export default RecentAuthLogRecordsColumns

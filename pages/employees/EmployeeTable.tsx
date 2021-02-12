@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { useQueryClient, QueryObserverResult } from 'react-query';
+import { QueryObserverResult } from 'react-query';
 import Table from '../../components/Table'
-import { EmployeeColumns } from './EmployeeColumns'
-import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
-import { useAuth } from '../../services/auth';
+import EmployeeColumns from '../../columns/EmployeeColumns'
 import Mayre from 'mayre';
 import { AxiosError } from 'axios';
 import { EmployeeAccountResult } from '../../models/Employee';
@@ -11,11 +9,9 @@ import { store } from 'react-notifications-component';
 import { NotificationType } from '../../models/NotificationType';
 import { useFetchEmployerEmployees } from '../../services/employee';
 
-export default function Accounts() {
+const EmployeeTable = (props) => {
 
-  const queryClient = useQueryClient()
-  const auth: CurrentUserAuthData = useAuth(queryClient)
-  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<EmployeeAccountResult[], AxiosError> = useFetchEmployerEmployees(auth.a_t, auth?.aid)
+  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<EmployeeAccountResult[], AxiosError> = useFetchEmployerEmployees(props?.cookies?.a_t, props?.cookies?.aid)
 
   useEffect(() => {
     if (data && data.length !== 0) {
@@ -53,3 +49,5 @@ export default function Accounts() {
     />
   )
 }
+
+export default EmployeeTable

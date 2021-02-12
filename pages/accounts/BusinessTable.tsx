@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useQueryClient, QueryObserverResult } from 'react-query';
 import { useFetchBusinessAccounts } from '../../services/account';
 import Table from '../../components/Table'
-import { BusinessColumns } from './BusinessColumns'
+import BusinessColumns from '../../columns/BusinessColumns'
 import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
 import { useAuth } from '../../services/auth';
 import Mayre from 'mayre';

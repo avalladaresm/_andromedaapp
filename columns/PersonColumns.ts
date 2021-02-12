@@ -1,4 +1,4 @@
-export const PersonColumns = [
+const PersonColumns = [
   {
     Header: 'id',
     accessor: 'id'
@@ -57,3 +57,5 @@ export const PersonColumns = [
     accessor: 'country'
   }
 ]
+
+export default PersonColumns

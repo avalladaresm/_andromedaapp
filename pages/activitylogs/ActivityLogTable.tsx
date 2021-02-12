@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { useQueryClient, QueryObserverResult } from 'react-query';
+import { QueryObserverResult } from 'react-query';
 import Table from '../../components/Table'
-import { ActivityLogColumns } from './ActivityLogColumns'
-import { CurrentUserAuthData } from '../../models/CurrentUserAuthData';
-import { useAuth } from '../../services/auth';
+import ActivityLogColumns from '../../columns/ActivityLogColumns'
 import Mayre from 'mayre';
 import { AxiosError } from 'axios';
 import { store } from 'react-notifications-component';
@@ -11,11 +9,9 @@ import { NotificationType } from '../../models/NotificationType';
 import { useFetchActivityLogs } from '../../services/activitylog';
 import { ActivityLogResult } from '../../models/ActivityLog';
 
-export default function ActivityLogTable() {
+const ActivityLogTable = (props) => {
 
-  const queryClient = useQueryClient()
-  const auth: CurrentUserAuthData = useAuth(queryClient)
-  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<ActivityLogResult[], AxiosError> = useFetchActivityLogs(auth.a_t)
+  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<ActivityLogResult[], AxiosError> = useFetchActivityLogs(props?.cookies?.a_t)
 
   useEffect(() => {
     if (data && data.length !== 0) {
@@ -53,3 +49,6 @@ export default function ActivityLogTable() {
     />
   )
 }
+
+
+export default ActivityLogTable
