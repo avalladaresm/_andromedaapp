@@ -23,7 +23,7 @@ const RecentAuthLogRecords = (props) => {
       }
       or={
         <Mayre
-          of={<Table columns={RecentAuthLogRecordsColumns} data={data} isLoading={isLoading} />}
+          of={<Table columns={RecentAuthLogRecordsColumns} data={data} isLoading={isLoading} showPagination={false} showVisibleColumnSelector={false} />}
           or={<div>Error mate: {error?.response?.data?.message}</div>}
           when={!!isLoading}
         />
