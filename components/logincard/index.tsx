@@ -37,7 +37,7 @@ export const LoginCard: FC<LoginSettings> = () => {
           <input style={{ outline: 'none' }} type='text' onChange={(e) => setLoginData({ ...loginData, username: e.target.value })} className='text-center shadow-xl rounded-t-md h-8 focus:ring-4 focus:ring-opacity-75 focus:ring-blue-500 ' placeholder='username' />
           <input style={{ outline: 'none' }} type='password' onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} className='text-center shadow-xl rounded-b-md h-8 focus:ring-4 focus:ring-opacity-75 focus:ring-blue-500' placeholder='password' />
         </div>
-        <div className='flex flex-col self-center w-2/6 space-y-3'>
+        <div className='flex flex-col self-center w-1/2 space-y-3'>
           {doLogin.isLoading ?
             <button disabled type='button' className='h-8 rounded-md bg-blueGray-400 text-md font-semibold disabled:opacity-75 text-coolGray-50 flex flex-row justify-center items-center cursor-wait'>
               <Spin /> logging in...
