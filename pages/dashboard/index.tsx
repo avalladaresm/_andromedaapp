@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQueryClient } from "react-query";
 import MainContainer from "../../components/navigation";
 import Error from 'next/error'
@@ -10,12 +10,22 @@ import { useRouter } from "next/router";
 import { Context } from "vm";
 import { documentCookieJsonify } from "../../utils/utils";
 import Spin from "../../components/Spin";
+import { createActivityLog } from "../../services/activitylog";
+import { ActivityLogType } from "../../models/ActivityLogType";
+import { usePlatformSettings } from "../../services/appsettings";
 
 const Dashboard = (props) => {
   const queryClient = useQueryClient()
   const router = useRouter()
   const auth: CurrentUserAuthData = useAuth(queryClient)
+  const platform = usePlatformSettings(queryClient)
 
+  useEffect(() => {
+    (async () => {
+      await createActivityLog(props?.cookies?.a_t, props?.cookies?.u, ActivityLogType.VISITED_PAGE, router.pathname, platform)
+    })()
+  }, [])
+  
   return (
     <Mayre
       of={
