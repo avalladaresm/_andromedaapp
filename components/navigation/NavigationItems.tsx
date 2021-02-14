@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 import React from 'react'
-import { useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import { CurrentUserAuthData } from '../../models/CurrentUserAuthData'
 import { useAuth } from '../../services/auth'
@@ -20,7 +19,7 @@ export const NavigationItems = (props) => {
     {
       title: 'Dashboard',
       route: '/dashboard',
-      activePage: false,
+      activePage: router.pathname.startsWith('/dashboard'),
       authorization: ['SUPREME_LEADER', 'PERSON_ADMIN'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER', 'PERSON_ADMIN']),
       icon: <MdDashboard size='1.5em' />
@@ -28,7 +27,7 @@ export const NavigationItems = (props) => {
     {
       title: 'Employees',
       route: '/employees',
-      activePage: false,
+      activePage: router.pathname.startsWith('/employees'),
       actions: [{
         title: 'Refresh',
         icon: <HiOutlineRefresh />
@@ -44,7 +43,7 @@ export const NavigationItems = (props) => {
     {
       title: 'Accounts',
       route: '/accounts',
-      activePage: false,
+      activePage: router.pathname.startsWith('/accounts'),
       actions: [{
         title: 'Refresh',
         onClick: () => { queryClient.refetchQueries(['PersonAccounts']), queryClient.refetchQueries(['BusinessAccounts']) },
@@ -61,7 +60,7 @@ export const NavigationItems = (props) => {
     {
       title: 'Login history',
       route: '/loginhistory',
-      activePage: false,
+      activePage: router.pathname.startsWith('/loginhistory'),
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
       icon: <MdHistory size='1.5em' />
@@ -69,7 +68,7 @@ export const NavigationItems = (props) => {
     {
       title: 'Activity logs',
       route: '/activitylogs',
-      activePage: false,
+      activePage: router.pathname.startsWith('/activitylogs'),
       authorization: ['SUPREME_LEADER'],
       canViewThis: isUserAuthorizedToViewThisPage(auth?.r, ['SUPREME_LEADER']),
       icon: <MdViewList size='1.5em' />
@@ -114,21 +113,9 @@ export const NavigationItems = (props) => {
     },
   ]
 
-  const [menuOptions, updateMenuOptions] = useState(options)
-
-  useEffect(() => {
-
-    menuOptions.forEach((o, i) => {
-      if (router.pathname.startsWith(o.route)) {
-        menuOptions[i].activePage = true
-      }
-    });
-    updateMenuOptions(menuOptions)
-  }, [])
-
   return (
     <ul className="flex flex-col list-none space-y-2">
-      {menuOptions.map((o, i) => (
+      {options.map((o, i) => (
         <div key={i}>
           {o.canViewThis && <NavigationItem
             {...props}

@@ -9,6 +9,7 @@ import RecentAuthLogRecords from "./RecentAuthLogRecords";
 import { useRouter } from "next/router";
 import { Context } from "vm";
 import { documentCookieJsonify } from "../../utils/utils";
+import Spin from "../../components/Spin";
 
 const Dashboard = (props) => {
   const queryClient = useQueryClient()
@@ -23,7 +24,7 @@ const Dashboard = (props) => {
             <div className='flex flex-wrap'>
               <div className='flex flex-col m-3 p-3 rounded-md bg-blueGray-200 shadow-md sm:w-1/2 lg:w-1/3 xl:w-1/4 2xl:w-1/5 items-center'>
                 <p className='text-center font-semibold text-2xl'>Recent user login activity</p>
-                <p className='text-center'>Showing the 10 most recent records, click <a onClick={() => router.push('/loginhistory')}>here</a> to view complete login history</p>
+                <p className='text-center'>Showing the 10 most recent records, click <a className='text-blue-500 hover:text-blue-800 hover:cursor-pointer underline' onClick={() => router.push('/loginhistory')}>here</a> to view complete login history</p>
                 <RecentAuthLogRecords {...props} />
               </div>
             </div>
@@ -32,7 +33,9 @@ const Dashboard = (props) => {
       }
       or={
         <Mayre
-          of={<div>Loading buddy</div>}
+          of={<div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+              <Spin size={100} />
+            </div>}
           or={<Error statusCode={404} />}
           when={!auth?.r}
         />

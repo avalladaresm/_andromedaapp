@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { NavigationItems } from "./NavigationItems";
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import Content from './Content'
 import Header from './Header'
-import { useRouter } from "next/router";
 import { isMobile } from "../../utils/utils";
 
 export const Sidebar = (props) => {
   const [collapsed, setCollapsed] = useState<boolean>(isMobile())
-  const [loadingMessage, setLoadingMessage] = useState<string>(undefined)
-
-  const router = useRouter()
-
-  useEffect(() => {
-    setLoadingMessage('Redirecting you to your dashboard...')
-  }, [])
 
   return (
     <div>
@@ -39,7 +31,6 @@ export const Sidebar = (props) => {
       <div>
         <Header />
         <Content {...props} collapsed={collapsed}>
-          {router.pathname === '/' && loadingMessage}
           {props.children}
         </Content>
       </div>
