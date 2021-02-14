@@ -34,3 +34,17 @@ const FetchEmployerEmployees = async (accessToken: string, employerId: number): 
 export const useFetchEmployerEmployees = (accessToken: string, employerId: number): QueryObserverResult<EmployeeAccountResult[], AxiosError> => {
   return useQuery('EmployerEmployees', async () => await FetchEmployerEmployees(accessToken, employerId), { refetchOnMount: false })
 }
+
+export const getCurrentEmployerId = async (accessToken: string, employerUsername: string) => {
+  try {
+    const { data } = await axios.get(`${process.env.API_BASE_URL}/employee/${employerUsername}/getCurrentEmployerId`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
+    return data.employerId
+  }
+  catch (e) {
+    throw e
+  }
+}

@@ -9,6 +9,7 @@ import EmployeeTable from "./EmployeeTable";
 import { Context } from "vm";
 import { documentCookieJsonify } from "../../utils/utils";
 import Spin from "../../components/Spin";
+import { getCurrentEmployerId } from "../../services/employee";
 
 const Employees = (props) => {
   const queryClient = useQueryClient()
@@ -59,11 +60,14 @@ export const getServerSideProps = async (ctx: Context) => {
     }
   }
   
+  const employerId = await getCurrentEmployerId(parsedCookie.a_t, parsedCookie.u)
+
   return {
     props: {
       cookies: {
         u: parsedCookie.u,
-        a_st: parsedCookie.a_t
+        a_t: parsedCookie.a_t,
+        aid: employerId
       }
     }
   }
