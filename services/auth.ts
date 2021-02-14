@@ -32,7 +32,7 @@ export const useDoLogin = (queryClient: QueryClient, router) => {
           onScreen: true
         }
       });
-      router.push('/')
+      router.push('/dashboard')
     }, onError: (error: AxiosError) => {
       store.addNotification({
         message: `Login failed! ${error.response.data === 'InternalServerError' ? 'Please, try again in a few minutes.' : error.response.data.message}`,
