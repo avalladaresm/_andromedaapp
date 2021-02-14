@@ -4,6 +4,8 @@ import { CurrentUserAuthData } from '../models/CurrentUserAuthData';
 import { useAuth } from '../services/auth';
 import { useQueryClient } from 'react-query';
 import Mayre from 'mayre'
+import { Context } from 'vm';
+import { documentCookieJsonify } from '../utils/utils';
 
 const Home = () => {
   const queryClient = useQueryClient()
@@ -23,6 +25,26 @@ const Home = () => {
       when={!!auth?.u && !!auth?.r}
     />
   )
+}
+
+export const getServerSideProps = async (ctx: Context) => {
+  const parsedCookie: CurrentUserAuthData = ctx.req.headers.cookie && documentCookieJsonify(ctx.req?.headers?.cookie)
+
+  if (!parsedCookie?.a_t) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    redirect: {
+      destination: '/dashboard',
+      permanent: false
+    }
+  }
 }
 
 export default Home
