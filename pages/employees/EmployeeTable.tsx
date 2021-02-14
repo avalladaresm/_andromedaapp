@@ -8,6 +8,7 @@ import { EmployeeAccountResult } from '../../models/Employee';
 import { store } from 'react-notifications-component';
 import { NotificationType } from '../../models/NotificationType';
 import { useFetchEmployerEmployees } from '../../services/employee';
+import { Empty } from '../../components/Empty';
 
 const EmployeeTable = (props) => {
 
@@ -41,7 +42,7 @@ const EmployeeTable = (props) => {
       or={
         <Mayre
           of={<Table columns={EmployeeColumns} data={data} isLoading={isLoading} />}
-          or={<div>Error mate: {error?.response?.data?.message}</div>}
+          or={<Empty />}
           when={!!isLoading}
         />
       }
