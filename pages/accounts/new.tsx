@@ -1,6 +1,5 @@
 import { Field, Form, Formik, FormikState } from 'formik'
-import React, { FC, useEffect, useState } from 'react'
-import { ModalSettings } from '../../models/ModalSettings'
+import React, { useEffect, useState } from 'react'
 import { date, object, string } from 'yup'
 import { FcCheckmark } from 'react-icons/fc';
 import Select from '../../components/Select'
@@ -20,8 +19,12 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { format, subYears } from 'date-fns';
 import ReactTooltip from 'react-tooltip';
 import { CreatePersonAccount } from '../../models/Account';
+import { useRouter } from 'next/router';
+import { ActivityLogType } from '../../models/ActivityLogType';
+import { createActivityLog } from '../../services/activitylog';
+import { usePlatformSettings } from '../../services/appsettings';
 
-const NewAccount: FC<ModalSettings> = (props) => {
+const NewAccount = (props) => {
   const [countries, setCoutries] = useState([])
   const [selectedCountry, setSelectedCountry] = useState<number>()
   const [states, setStates] = useState([])
@@ -33,6 +36,14 @@ const NewAccount: FC<ModalSettings> = (props) => {
   const queryClient = useQueryClient()
 
   const auth: CurrentUserAuthData = useAuth(queryClient)
+  const router = useRouter()
+  const platform = usePlatformSettings(queryClient)
+
+  useEffect(() => {
+    (async () => {
+      await createActivityLog(auth?.a_t, auth?.u, ActivityLogType.VISITED_PAGE, router.pathname, platform)
+    })()
+  }, [])
 
   const genderOptions = [{
     value: 'Male', displayValue: 'Male'
@@ -523,8 +534,8 @@ const NewAccount: FC<ModalSettings> = (props) => {
       or={
         <Mayre
           of={<div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-              <Spin size={100} />
-            </div>}
+            <Spin size={100} />
+          </div>}
           or={<Error statusCode={404} />}
           when={!auth?.r}
         />

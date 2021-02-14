@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQueryClient } from "react-query";
 import Mayre from "mayre";
 import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
@@ -9,11 +9,23 @@ import ActivityLogTable from "./ActivityLogTable";
 import { Context } from "vm";
 import { documentCookieJsonify } from "../../utils/utils";
 import Spin from "../../components/Spin";
+import { useRouter } from "next/router";
+import { ActivityLogType } from "../../models/ActivityLogType";
+import { createActivityLog } from "../../services/activitylog";
+import { usePlatformSettings } from "../../services/appsettings";
 
 const ActivityLogs = (props) => {
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
+  const router = useRouter()
+  const platform = usePlatformSettings(queryClient)
+
+  useEffect(() => {
+    (async () => {
+      await createActivityLog(props?.cookies?.a_t, props?.cookies?.u, ActivityLogType.VISITED_PAGE, router.pathname, platform)
+    })()
+  }, [])
 
   return (
     <Mayre
@@ -29,8 +41,8 @@ const ActivityLogs = (props) => {
       or={
         <Mayre
           of={<div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-              <Spin size={100} />
-            </div>}
+            <Spin size={100} />
+          </div>}
           or={<Error statusCode={404} />}
           when={!auth?.r}
         />

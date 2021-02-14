@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQueryClient } from "react-query";
 import PersonTable from "./PersonTable";
 import Mayre from "mayre";
@@ -10,11 +10,23 @@ import Error from 'next/error'
 import { Context } from "vm";
 import { documentCookieJsonify } from "../../utils/utils";
 import Spin from "../../components/Spin";
+import { useRouter } from "next/router";
+import { ActivityLogType } from "../../models/ActivityLogType";
+import { createActivityLog } from "../../services/activitylog";
+import { usePlatformSettings } from "../../services/appsettings";
 
 const Accounts = (props) => {
 
   const queryClient = useQueryClient()
   const auth: CurrentUserAuthData = useAuth(queryClient)
+  const router = useRouter()
+  const platform = usePlatformSettings(queryClient)
+
+  useEffect(() => {
+    (async () => {
+      await createActivityLog(props?.cookies?.a_t, props?.cookies?.u, ActivityLogType.VISITED_PAGE, router.pathname, platform)
+    })()
+  }, [])
 
   return (
     <Mayre

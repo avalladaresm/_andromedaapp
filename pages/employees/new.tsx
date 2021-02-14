@@ -21,6 +21,10 @@ import { CreateEmployeeAccount } from '../../models/Employee';
 import { FetchAccountRolesOnly } from '../../services/account';
 import { documentCookieJsonify } from '../../utils/utils';
 import { GetServerSidePropsContext } from 'next';
+import { createActivityLog } from '../../services/activitylog';
+import { useRouter } from 'next/router';
+import { ActivityLogType } from '../../models/ActivityLogType';
+import { usePlatformSettings } from '../../services/appsettings';
 
 const NewEmployee = (props) => {
   const [countries, setCoutries] = useState([])
@@ -35,7 +39,15 @@ const NewEmployee = (props) => {
   const queryClient = useQueryClient()
 
   const auth: CurrentUserAuthData = useAuth(queryClient)
+  const router = useRouter()
+  const platform = usePlatformSettings(queryClient)
 
+  useEffect(() => {
+    (async () => {
+      await createActivityLog(auth?.a_t, auth?.u, ActivityLogType.VISITED_PAGE, router.pathname, platform)
+    })()
+  }, [])
+  
   const genderOptions = [{
     value: 'Male', label: 'Male'
   }, {
