@@ -18,8 +18,8 @@ export const useDoLogin = (queryClient: QueryClient, router) => {
       const loginRes: CurrentUserAuthData = data.data
       const authData = { u: loginRes.u, a_t: loginRes.a_t, r: loginRes.r, aid: loginRes.aid }
       setAuth(queryClient, authData)
-      document.cookie = 'u=' + authData.u
-      document.cookie = 'a_t=' + authData.a_t
+      document.cookie = 'u=' + authData.u + ";path=/"
+      document.cookie = 'a_t=' + authData.a_t + ";path=/"
       store.addNotification({
         message: `Login success, whoo! Welcome ${variables.username}`,
         type: 'success',
