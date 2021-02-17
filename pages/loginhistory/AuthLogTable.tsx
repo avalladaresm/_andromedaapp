@@ -8,6 +8,7 @@ import { store } from 'react-notifications-component';
 import { NotificationType } from '../../models/NotificationType';
 import { useFetchAuthLogs } from '../../services/authlog';
 import { AuthLogResult } from '../../models/AuthLog';
+import { sortBy } from '../../utils/utils';
 
 const AuthLogTable = (props) => {
 
@@ -37,7 +38,7 @@ const AuthLogTable = (props) => {
 
   return (
     <Mayre
-      of={<Table columns={AuthLogColumns} data={data} isLoading={isLoading} />}
+      of={<Table columns={AuthLogColumns} data={data?.concat().sort(sortBy('createdAt', 'desc'))} isLoading={isLoading} />}
       or={
         <Mayre
           of={<Table columns={AuthLogColumns} data={data} isLoading={isLoading} />}

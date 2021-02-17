@@ -8,6 +8,7 @@ import { store } from 'react-notifications-component';
 import { NotificationType } from '../../models/NotificationType';
 import { useFetchActivityLogs } from '../../services/activitylog';
 import { ActivityLogResult } from '../../models/ActivityLog';
+import { sortBy } from '../../utils/utils';
 
 const ActivityLogTable = (props) => {
 
@@ -37,7 +38,7 @@ const ActivityLogTable = (props) => {
 
   return (
     <Mayre
-      of={<Table columns={ActivityLogColumns} data={data} isLoading={isLoading} />}
+      of={<Table columns={ActivityLogColumns} data={data?.concat().sort(sortBy('createdAt', 'desc'))} isLoading={isLoading} />}
       or={
         <Mayre
           of={<Table columns={ActivityLogColumns} data={data} isLoading={isLoading} />}
