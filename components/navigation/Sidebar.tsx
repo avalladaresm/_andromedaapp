@@ -4,9 +4,12 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import Content from './Content'
 import Header from './Header'
 import { isMobile } from "../../utils/utils";
+import { FloatingSettings } from "../FloatingSettings";
+import { SettingsDrawer } from "../SettingsDrawer";
 
 export const Sidebar = (props) => {
   const [collapsed, setCollapsed] = useState<boolean>(isMobile())
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   return (
     <div>
@@ -30,9 +33,11 @@ export const Sidebar = (props) => {
       </nav>
       <div>
         <Header />
-        <Content {...props} collapsed={collapsed}>
+        <Content {...props} collapsed={collapsed} isOpen={isOpen}>
           {props.children}
         </Content>
+        <FloatingSettings onClick={() => setIsOpen(!isOpen)} isOpen={isOpen} />
+        {isOpen && <SettingsDrawer isOpen={isOpen} />}
       </div>
     </div>
   );
