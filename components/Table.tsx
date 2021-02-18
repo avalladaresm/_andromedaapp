@@ -1,7 +1,6 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react'
+import React, { FC, useContext, useMemo } from 'react'
 import { FcHighPriority, FcOk } from 'react-icons/fc'
 import { useTable, usePagination } from 'react-table'
-import Select from 'react-select'
 import { TextSkeleton } from '../components/Skeleton'
 import { store } from 'react-notifications-component';
 import { NotificationType } from '../models/NotificationType';
@@ -22,14 +21,12 @@ const Table: FC<TableSettings> = (props, { showPagination = true }) => {
     [activityLogsSettings]
   )
 
-  const [options, setOptions] = useState([])
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
     page,
-    toggleHideColumn,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -42,23 +39,6 @@ const Table: FC<TableSettings> = (props, { showPagination = true }) => {
   } = useTable({
     columns: tableColumns, data: tableData, initialState: { pageIndex: 0 },
   }, usePagination)
-
-  useEffect(() => {
-    const options = []
-    props.columns.map(x => {
-      const option = { value: '', label: '', isVisible: true }
-      option.value = x.accessor
-      option.label = x.Header
-      option.isVisible = x.isVisible
-      options.push(option)
-    })
-    setOptions(options)
-  }, [])
-
-  const onChange = (options, action) => {
-    action.action === 'remove-value' && toggleHideColumn(action.removedValue.value)
-    action.action === 'select-option' && toggleHideColumn(action.option.value)
-  }
 
   const copiedNotificationWithIcon = (type: NotificationType, copiedText: string) => {
     store.addNotification({
@@ -87,19 +67,6 @@ const Table: FC<TableSettings> = (props, { showPagination = true }) => {
 
   return (
     <div className='flex flex-col space-y-3'>
-      {props.showVisibleColumnSelector ?? (showVisibleColumnSelector &&
-        <div className='self-end'>
-          <label>Visible Columns</label>
-          <Select menuPlacement='auto' className='min-w-xxs max-w-max' options={options} onChange={onChange}
-            isMulti isClearable defaultValue={props.columns.map(c => {
-              const temp = { value: '', label: '' }
-              temp.value = c.accessor
-              temp.label = c.Header
-              return temp
-            })} closeMenuOnSelect={false}
-          />
-        </div>)
-      }
       {props.showPagination ?? (showPagination &&
         <div className='pagination'>
           <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
