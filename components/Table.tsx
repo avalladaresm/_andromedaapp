@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react'
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react'
 import { FcHighPriority, FcOk } from 'react-icons/fc'
 import { useTable, usePagination } from 'react-table'
 import Select from 'react-select'
@@ -6,8 +6,11 @@ import { TextSkeleton } from '../components/Skeleton'
 import { store } from 'react-notifications-component';
 import { NotificationType } from '../models/NotificationType';
 import { TableSettings } from '../models/TableSettings'
+import { ActivityLogsSettingsContext } from '../context/ActivityLogsSettingsContext'
 
-const Table: FC<TableSettings> = (props, { showPagination = true, showVisibleColumnSelector = true }) => {
+const Table: FC<TableSettings> = (props, { showPagination = true }) => {
+  const activityLogsSettings = useContext(ActivityLogsSettingsContext)
+
   const tableData = useMemo(
     () => (
       props.isLoading ? Array(10).fill({}) : props.data),
@@ -15,8 +18,8 @@ const Table: FC<TableSettings> = (props, { showPagination = true, showVisibleCol
   );
 
   const tableColumns = useMemo(
-    () => props.columns,
-    []
+    () => activityLogsSettings.filter(c => c.checked === true),
+    [activityLogsSettings]
   )
 
   const [options, setOptions] = useState([])

@@ -6,6 +6,7 @@ import Header from './Header'
 import { isMobile } from "../../utils/utils";
 import { FloatingSettings } from "../FloatingSettings";
 import { SettingsDrawer } from "../SettingsDrawer";
+import { ActivityLogsSettingsProvider } from "../../context/ActivityLogsSettingsContext";
 
 export const Sidebar = (props) => {
   const [collapsed, setCollapsed] = useState<boolean>(isMobile())
@@ -33,11 +34,13 @@ export const Sidebar = (props) => {
       </nav>
       <div>
         <Header />
-        <Content {...props} collapsed={collapsed} isOpen={isOpen}>
-          {props.children}
-        </Content>
-        <FloatingSettings onClick={() => setIsOpen(!isOpen)} isOpen={isOpen} />
-        {isOpen && <SettingsDrawer isOpen={isOpen} />}
+        <ActivityLogsSettingsProvider>
+          <Content {...props} collapsed={collapsed} isOpen={isOpen}>
+            {props.children}
+          </Content>
+          <FloatingSettings onClick={() => setIsOpen(!isOpen)} isOpen={isOpen} />
+          {isOpen && <SettingsDrawer isOpen={isOpen} />}
+        </ActivityLogsSettingsProvider>
       </div>
     </div>
   );
