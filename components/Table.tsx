@@ -1,14 +1,12 @@
-import React, { FC, useContext, useMemo } from 'react'
+import React, { FC, useMemo } from 'react'
 import { FcHighPriority, FcOk } from 'react-icons/fc'
 import { useTable, usePagination } from 'react-table'
 import { TextSkeleton } from '../components/Skeleton'
 import { store } from 'react-notifications-component';
 import { NotificationType } from '../models/NotificationType';
 import { TableSettings } from '../models/TableSettings'
-import { ActivityLogsSettingsContext } from '../context/ActivityLogsSettingsContext'
 
 const Table: FC<TableSettings> = (props, { showPagination = true }) => {
-  const activityLogsSettings = useContext(ActivityLogsSettingsContext)
 
   const tableData = useMemo(
     () => (
@@ -17,8 +15,8 @@ const Table: FC<TableSettings> = (props, { showPagination = true }) => {
   );
 
   const tableColumns = useMemo(
-    () => activityLogsSettings.filter(c => c.checked === true),
-    [activityLogsSettings]
+    () => props.columns.filter(c => c.checked === true),
+    [props.columns]
   )
 
   const {

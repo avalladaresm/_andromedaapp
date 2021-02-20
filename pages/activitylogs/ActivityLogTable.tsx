@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { QueryObserverResult } from 'react-query';
 import Table from '../../components/Table'
 import Mayre from 'mayre';
@@ -8,9 +8,11 @@ import { NotificationType } from '../../models/NotificationType';
 import { useFetchActivityLogs } from '../../services/activitylog';
 import { ActivityLogResult } from '../../models/ActivityLog';
 import { sortBy } from '../../utils/utils';
+import { TableSettingsContext } from '../../context/TableSettingsContext'
 
 const ActivityLogTable = (props) => {
   const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<ActivityLogResult[], AxiosError> = useFetchActivityLogs(props?.cookies?.a_t)
+  const tableSettings = useContext(TableSettingsContext)
 
   useEffect(() => {
     if (data && data.length !== 0) {
@@ -36,10 +38,10 @@ const ActivityLogTable = (props) => {
 
   return (
     <Mayre
-      of={<Table data={data?.concat().sort(sortBy('createdAt', 'desc'))} isLoading={isLoading} />}
+      of={<Table columns={tableSettings.activityLogColumns} data={data?.concat().sort(sortBy('createdAt', 'desc'))} isLoading={isLoading} />}
       or={
         <Mayre
-          of={<Table data={data} isLoading={isLoading} />}
+          of={<Table columns={tableSettings.activityLogColumns} data={data} isLoading={isLoading} />}
           or={<div>Error mate: {error?.response?.data?.message}</div>}
           when={!!isLoading}
         />

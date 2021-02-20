@@ -1,34 +1,53 @@
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
-import { ActivityLogsSettingsContext, ActivityLogsSettingsUpdateContext } from '../context/ActivityLogsSettingsContext'
+import { useQueryClient } from 'react-query'
+import { TableSettingsContext, TableSettingsUpdateContext } from '../context/TableSettingsContext'
+import { setQueryTableSettings } from '../services/appsettings'
 
 export const SettingsDrawer = (props) => {
   const [settings, setSettings] = useState([])
 
   const router = useRouter()
-  const activityLogsSettings = useContext(ActivityLogsSettingsContext)
-  const activityLogsSettingsUpdate = useContext(ActivityLogsSettingsUpdateContext)
+  const queryClient = useQueryClient()
+  const tableSettings = useContext(TableSettingsContext)
+  const tableSettingsUpdate = useContext(TableSettingsUpdateContext)
 
   useEffect(() => {
     switch (router.pathname) {
       case '/activitylogs':
-        setSettings(activityLogsSettings)
+        setSettings(tableSettings.activityLogColumns)
+        break
+      case '/loginhistory':
+        setSettings(tableSettings.authLogColumns)
         break
       default:
         setSettings([])
     }
-  }, [])
+  }, [settings, tableSettings])
 
   const updateVisibleColumnIsChecked = (event) => {
     const updatedSettings = settings.map(al => {
       if (al.Header === event.target.value) {
         al.checked = event.target.checked
       }
-      return {...al}
+      return { ...al }
     })
+    console.log('sdffd', updatedSettings)
 
+    switch (router.pathname) {
+      case '/activitylogs':
+        tableSettingsUpdate({ ...tableSettings, activityLogColumns: updatedSettings })
+        setQueryTableSettings(queryClient, { ...tableSettings, activityLogColumns: updatedSettings })
+        break
+      case '/loginhistory':
+        tableSettingsUpdate({ ...tableSettings, authLogColumns: updatedSettings })
+        setQueryTableSettings(queryClient, { ...tableSettings, authLogColumns: updatedSettings })
+        break
+      default:
+        setSettings([])
+    }
     setSettings(updatedSettings)
-    activityLogsSettingsUpdate(updatedSettings)
+
   }
 
   return (

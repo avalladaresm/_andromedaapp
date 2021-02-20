@@ -1,6 +1,6 @@
 export interface TableSettings {
   data:                       any
-  columns?:                    any
+  columns:                    any
   isLoading:                  boolean
   showPagination?:            boolean
 }
