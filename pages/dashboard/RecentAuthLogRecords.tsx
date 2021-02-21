@@ -18,12 +18,12 @@ const RecentAuthLogRecords = (props) => {
         <Table
           columns={RecentAuthLogRecordsColumns}
           data={data?.slice(data.length - 10, data.length).concat().sort(sortBy('createdAt', 'desc'))}
-          isLoading={isLoading} showPagination={false} showVisibleColumnSelector={false}
+          isLoading={isLoading} showPagination={false}
         />
       }
       or={
         <Mayre
-          of={<Table columns={RecentAuthLogRecordsColumns} data={data} isLoading={isLoading} showPagination={false} showVisibleColumnSelector={false} />}
+          of={<Table columns={RecentAuthLogRecordsColumns} data={data} isLoading={isLoading} showPagination={false} />}
           or={<div>Error mate: {error?.response?.data?.message}</div>}
           when={!!isLoading}
         />
