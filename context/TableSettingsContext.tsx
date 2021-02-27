@@ -5,6 +5,7 @@ import AuthLogColumns from '../columns/AuthLogColumns'
 import BusinessColumns from '../columns/BusinessColumns'
 import EmployeeColumns from '../columns/EmployeeColumns'
 import PersonColumns from '../columns/PersonColumns'
+import RecentAuthLogRecordsColumns from '../columns/RecentAuthLogRecordsColumns'
 import { useQueryTableSettings } from "../services/appsettings";
 
 const tableSettings = {
@@ -12,7 +13,8 @@ const tableSettings = {
   authLogColumns: AuthLogColumns,
   businessColumns: BusinessColumns,
   employeeColumns: EmployeeColumns,
-  personColumns: PersonColumns
+  personColumns: PersonColumns,
+  RecentAuthLogRecordsColumns: RecentAuthLogRecordsColumns
 }
 
 Object.entries(tableSettings).forEach(([, value]) => value.forEach(v => v['checked'] = true))
