@@ -7,10 +7,20 @@ import { isMobile } from "../../utils/utils";
 import { FloatingSettings } from "../FloatingSettings";
 import { SettingsDrawer } from "../SettingsDrawer";
 import { TableSettingsProvider } from "../../context/TableSettingsContext";
+import { useRouter } from "next/router";
 
 export const Sidebar = (props) => {
   const [collapsed, setCollapsed] = useState<boolean>(isMobile())
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const router = useRouter()
+
+  const allowedPagesWithSettingsDrawer = [
+    '/employees',
+    '/accounts',
+    '/loginhistory',
+    '/activitylogs'
+  ]
 
   return (
     <div>
@@ -38,7 +48,9 @@ export const Sidebar = (props) => {
           <Content {...props} collapsed={collapsed} isOpen={isOpen}>
             {props.children}
           </Content>
-          <FloatingSettings onClick={() => setIsOpen(!isOpen)} isOpen={isOpen} />
+          {allowedPagesWithSettingsDrawer.includes(router.pathname) &&
+            <FloatingSettings onClick={() => setIsOpen(!isOpen)} isOpen={isOpen} />
+          }
           {isOpen && <SettingsDrawer isOpen={isOpen} />}
         </TableSettingsProvider>
       </div>
