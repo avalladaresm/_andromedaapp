@@ -12,7 +12,7 @@ import { Empty } from '../../components/Empty';
 
 const EmployeeTable = (props) => {
 
-  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<EmployeeAccountResult[], AxiosError> = useFetchEmployerEmployees(props?.cookies?.a_t, props?.cookies?.aid)
+  const { data, isLoading, error, isFetchedAfterMount, dataUpdatedAt }: QueryObserverResult<EmployeeAccountResult[], AxiosError> = useFetchEmployerEmployees(props?.cookies?.a_t, props?.cookies?.aid)
 
   useEffect(() => {
     if (data && data.length !== 0) {
@@ -38,7 +38,14 @@ const EmployeeTable = (props) => {
 
   return (
     <Mayre
-      of={<Table columns={EmployeeColumns} data={data} isLoading={isLoading} />}
+      of={
+        <Table
+          columns={EmployeeColumns}
+          data={data}
+          isLoading={isLoading}
+          dataUpdatedAt={dataUpdatedAt}
+        />
+      }
       or={
         <Mayre
           of={<Table columns={EmployeeColumns} data={data} isLoading={isLoading} />}

@@ -10,7 +10,7 @@ import { NotificationType } from '../../models/NotificationType';
 import { TableSettingsContext } from '../../context/TableSettingsContext';
 
 const BusinessTable = (props) => {
-  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<BusinessAccountResult[], AxiosError> = useFetchBusinessAccounts(props?.cookies?.a_t)
+  const { data, isLoading, error, isFetchedAfterMount, dataUpdatedAt }: QueryObserverResult<BusinessAccountResult[], AxiosError> = useFetchBusinessAccounts(props?.cookies?.a_t)
   const tableSettings = useContext(TableSettingsContext)
 
   useEffect(() => {
@@ -37,7 +37,14 @@ const BusinessTable = (props) => {
 
   return (
     <Mayre
-      of={<Table columns={tableSettings.businessColumns} data={data} isLoading={isLoading} />}
+      of={
+        <Table
+          columns={tableSettings.businessColumns}
+          data={data}
+          isLoading={isLoading}
+          dataUpdatedAt={dataUpdatedAt}
+        />
+      }
       or={
         <Mayre
           of={<Table columns={tableSettings.businessColumns} data={data} isLoading={isLoading} />}

@@ -11,7 +11,7 @@ import { sortBy } from '../../utils/utils';
 import { TableSettingsContext } from '../../context/TableSettingsContext'
 
 const ActivityLogTable = (props) => {
-  const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<ActivityLogResult[], AxiosError> = useFetchActivityLogs(props?.cookies?.a_t)
+  const { data, isLoading, error, isFetchedAfterMount, dataUpdatedAt }: QueryObserverResult<ActivityLogResult[], AxiosError> = useFetchActivityLogs(props?.cookies?.a_t)
   const tableSettings = useContext(TableSettingsContext)
 
   useEffect(() => {
@@ -38,7 +38,14 @@ const ActivityLogTable = (props) => {
 
   return (
     <Mayre
-      of={<Table columns={tableSettings.activityLogColumns} data={data?.concat().sort(sortBy('createdAt', 'desc'))} isLoading={isLoading} />}
+      of={
+        <Table
+          columns={tableSettings.activityLogColumns}
+          data={data?.concat().sort(sortBy('createdAt', 'desc'))}
+          isLoading={isLoading}
+          dataUpdatedAt={dataUpdatedAt}
+        />
+      }
       or={
         <Mayre
           of={<Table columns={tableSettings.activityLogColumns} data={data} isLoading={isLoading} />}
