@@ -20,7 +20,7 @@ const tableSettings: TablesColumns = {
 
 Object.entries(tableSettings).forEach(([, value]) => value.forEach(v => v['checked'] = true))
 
-export const TableSettingsContext = createContext<TablesColumns>(undefined)
+export const TableSettingsContext = createContext<TablesColumns>(tableSettings)
 export const TableSettingsUpdateContext = createContext(undefined)
 
 export function useTableSettings() {
