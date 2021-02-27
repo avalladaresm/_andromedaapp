@@ -14,6 +14,9 @@ export const SettingsDrawer = (props) => {
 
   useEffect(() => {
     switch (router.pathname) {
+      case '/employees':
+        setSettings(tableSettings.employeeColumns)
+        break
       case '/activitylogs':
         setSettings(tableSettings.activityLogColumns)
         break
@@ -32,9 +35,12 @@ export const SettingsDrawer = (props) => {
       }
       return { ...al }
     })
-    console.log('sdffd', updatedSettings)
 
     switch (router.pathname) {
+      case '/employees':
+        tableSettingsUpdate({ ...tableSettings, activityLogColumns: updatedSettings })
+        setQueryTableSettings(queryClient, { ...tableSettings, employeeColumns: updatedSettings })
+        break
       case '/activitylogs':
         tableSettingsUpdate({ ...tableSettings, activityLogColumns: updatedSettings })
         setQueryTableSettings(queryClient, { ...tableSettings, activityLogColumns: updatedSettings })
@@ -47,7 +53,6 @@ export const SettingsDrawer = (props) => {
         setSettings([])
     }
     setSettings(updatedSettings)
-
   }
 
   return (
