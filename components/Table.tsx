@@ -6,6 +6,7 @@ import { store } from 'react-notifications-component';
 import { NotificationType } from '../models/NotificationType';
 import { TableSettings } from '../models/TableSettings'
 import LastUpdated from './LastUpdated';
+import Pagination from './Pagination';
 
 const Table: FC<TableSettings> = (props, { showPagination = true }) => {
 
@@ -66,54 +67,22 @@ const Table: FC<TableSettings> = (props, { showPagination = true }) => {
 
   return (
     <div className='flex flex-col space-y-3'>
-      <div className='flex justify-between'>
+      <div className='flex flex-col sm:flex-row sm:justify-between'>
         <div>
           {props.showPagination ?? (showPagination &&
-            <div className='pagination'>
-              <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                {'<<'}
-              </button>{' '}
-              <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                {'<'}
-              </button>{' '}
-              <button onClick={() => nextPage()} disabled={!canNextPage}>
-                {'>'}
-              </button>{' '}
-              <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                {'>>'}
-              </button>{' '}
-              <span>
-                Page{' '}
-                <strong>
-                  {pageIndex + 1} of {pageOptions.length}
-                </strong>{' '}
-              </span>
-              <span>
-                | Go to page:{' '}
-                <input
-                  type='number'
-                  defaultValue={pageIndex + 1}
-                  onChange={e => {
-                    const page = e.target.value ? Number(e.target.value) - 1 : 0
-                    gotoPage(page)
-                  }}
-                  style={{ width: '100px' }}
-                />
-              </span>{' '}
-              <select
-                value={pageSize}
-                onChange={e => {
-                  setPageSize(Number(e.target.value))
-                }}
-              >
-                {[10, 20, 30, 40, 50].map(pageSize => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
-                  </option>
-                ))}
-              </select>
-            </div>)
-          }
+            <Pagination
+              canPreviousPage={canPreviousPage}
+              canNextPage={canNextPage}
+              pageOptions={pageOptions}
+              pageCount={pageCount}
+              gotoPage={gotoPage}
+              nextPage={nextPage}
+              previousPage={previousPage}
+              setPageSize={setPageSize}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+            />
+          )}
         </div>
         <div>
           {!!props.dataUpdatedAt &&
@@ -160,51 +129,22 @@ const Table: FC<TableSettings> = (props, { showPagination = true }) => {
           </tbody>
         </table>
       </div>
-      {props.showPagination ?? (showPagination && <div className='pagination'>
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>{' '}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>{' '}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>{' '}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <span>
-          | Go to page:{' '}
-          <input
-            type='number'
-            defaultValue={pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(page)
-            }}
-            style={{ width: '100px' }}
+      <div>
+        {props.showPagination ?? (showPagination &&
+          <Pagination
+            canPreviousPage={canPreviousPage}
+            canNextPage={canNextPage}
+            pageOptions={pageOptions}
+            pageCount={pageCount}
+            gotoPage={gotoPage}
+            nextPage={nextPage}
+            previousPage={previousPage}
+            setPageSize={setPageSize}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
           />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={e => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>)
-      }
+        )}
+      </div>
     </div>
   )
 }

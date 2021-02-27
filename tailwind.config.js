@@ -56,7 +56,8 @@ module.exports = {
     extend: {
       backgroundColor: ['active'],
       boxShadow: ['active'],
-      cursor: ['hover', 'focus']
+      cursor: ['hover', 'focus'],
+      opacity: ['disabled']
     },
   },
   plugins: [],
