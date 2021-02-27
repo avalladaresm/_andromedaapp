@@ -17,14 +17,14 @@ const RecentAuthLogRecords = (props) => {
     <Mayre
       of={
         <Table
-          columns={tableSettings.RecentAuthLogRecordsColumns}
+          columns={tableSettings.recentAuthLogRecordsColumns}
           data={data?.slice(data.length - 10, data.length).concat().sort(sortBy('createdAt', 'desc'))}
           isLoading={isLoading} showPagination={false}
         />
       }
       or={
         <Mayre
-          of={<Table columns={tableSettings.RecentAuthLogRecordsColumns} data={data?.slice(data.length - 10, data.length).concat().sort(sortBy('createdAt', 'desc'))} isLoading={isLoading} showPagination={false} />}
+          of={<Table columns={tableSettings.recentAuthLogRecordsColumns} data={data?.slice(data.length - 10, data.length).concat().sort(sortBy('createdAt', 'desc'))} isLoading={isLoading} showPagination={false} />}
           or={<div>Error mate: {error?.response?.data?.message}</div>}
           when={!!isLoading}
         />

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
-import { TableSettingsContext, TableSettingsUpdateContext } from '../context/TableSettingsContext'
+import { TableSettingsContext } from '../context/TableSettingsContext'
 import { setQueryTableSettings } from '../services/appsettings'
 
 export const SettingsDrawer = (props) => {
@@ -10,7 +10,6 @@ export const SettingsDrawer = (props) => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const tableSettings = useContext(TableSettingsContext)
-  const tableSettingsUpdate = useContext(TableSettingsUpdateContext)
 
   useEffect(() => {
     switch (router.pathname) {
@@ -38,15 +37,12 @@ export const SettingsDrawer = (props) => {
 
     switch (router.pathname) {
       case '/employees':
-        tableSettingsUpdate({ ...tableSettings, activityLogColumns: updatedSettings })
         setQueryTableSettings(queryClient, { ...tableSettings, employeeColumns: updatedSettings })
         break
       case '/activitylogs':
-        tableSettingsUpdate({ ...tableSettings, activityLogColumns: updatedSettings })
         setQueryTableSettings(queryClient, { ...tableSettings, activityLogColumns: updatedSettings })
         break
       case '/loginhistory':
-        tableSettingsUpdate({ ...tableSettings, authLogColumns: updatedSettings })
         setQueryTableSettings(queryClient, { ...tableSettings, authLogColumns: updatedSettings })
         break
       default:
