@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { QueryObserverResult } from 'react-query';
 import { useFetchPersonAccounts } from '../../services/account';
 import Table from '../../components/Table'
-import PersonColumns from '../../columns/PersonColumns'
 import Mayre from 'mayre';
 import { AxiosError } from 'axios';
 import { PersonAccountResult } from '../../models/Account';
 import { store } from 'react-notifications-component';
 import { NotificationType } from '../../models/NotificationType';
+import { TableSettingsContext } from '../../context/TableSettingsContext';
 
 const PersonTable = (props) => {
   const { data, isLoading, error, isFetchedAfterMount }: QueryObserverResult<PersonAccountResult[], AxiosError> = useFetchPersonAccounts(props?.cookies?.a_t)
+  const tableSettings = useContext(TableSettingsContext)
 
   useEffect(() => {
     if (data && data.length !== 0) {
@@ -36,10 +37,10 @@ const PersonTable = (props) => {
 
   return (
     <Mayre
-      of={<Table columns={PersonColumns} data={data} isLoading={isLoading} />}
+      of={<Table columns={tableSettings.personColumns} data={data} isLoading={isLoading} />}
       or={
         <Mayre
-          of={<Table columns={PersonColumns} data={data} isLoading={isLoading} />}
+          of={<Table columns={tableSettings.personColumns} data={data} isLoading={isLoading} />}
           or={<div>Error mate: {error?.response?.data?.message}</div>}
           when={!!isLoading}
         />

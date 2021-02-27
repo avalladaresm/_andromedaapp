@@ -1,5 +1,6 @@
 import { QueryClient } from "react-query"
 import { AuthLog } from "../models/AuthLog"
+import { TablesColumns } from "../models/TablesColumns"
 
 export const setPlatformSettings = (queryClient: QueryClient, platform: AuthLog) => {
   queryClient.setQueryData('Platform', platform)
@@ -15,6 +16,6 @@ export const setQueryTableSettings = (queryClient: QueryClient, tableSettings: a
 }
 
 export const useQueryTableSettings = (queryClient: QueryClient) => {
-  const res = queryClient.getQueryData('TableSettings')
+  const res: TablesColumns = queryClient.getQueryData('TableSettings')
   return res
 }
