@@ -51,7 +51,6 @@ const PersonColumns = [
     Header: 'State',
     accessor: 'state'
   },
-  ,
   {
     Header: 'Country',
     accessor: 'country'

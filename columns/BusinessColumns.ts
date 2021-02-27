@@ -39,7 +39,6 @@ const BusinessColumns = [
     Header: 'State',
     accessor: 'state'
   },
-  ,
   {
     Header: 'Country',
     accessor: 'country'

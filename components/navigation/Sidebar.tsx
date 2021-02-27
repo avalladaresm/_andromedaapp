@@ -17,7 +17,8 @@ export const Sidebar = (props) => {
 
   const allowedPagesWithSettingsDrawer = [
     '/employees',
-    '/accounts',
+    '/accounts/persons',
+    '/accounts/businesses',
     '/loginhistory',
     '/activitylogs'
   ]

@@ -1,17 +1,18 @@
 import React, { useEffect } from "react";
 import { useQueryClient } from "react-query";
+import PersonTable from "../PersonTable";
 import Mayre from "mayre";
-import { CurrentUserAuthData } from "../../models/CurrentUserAuthData";
-import { useAuth } from "../../services/auth";
-import MainContainer from "../../components/navigation";
+import { CurrentUserAuthData } from "../../../models/CurrentUserAuthData";
+import { useAuth } from "../../../services/auth";
+import MainContainer from "../../../components/navigation";
 import Error from 'next/error'
 import { Context } from "vm";
-import { documentCookieJsonify } from "../../utils/utils";
-import Spin from "../../components/Spin";
+import { documentCookieJsonify } from "../../../utils/utils";
+import Spin from "../../../components/Spin";
 import { useRouter } from "next/router";
-import { ActivityLogType } from "../../models/ActivityLogType";
-import { createActivityLog } from "../../services/activitylog";
-import { usePlatformSettings } from "../../services/appsettings";
+import { ActivityLogType } from "../../../models/ActivityLogType";
+import { createActivityLog } from "../../../services/activitylog";
+import { usePlatformSettings } from "../../../services/appsettings";
 
 const Accounts = (props) => {
 
@@ -29,8 +30,12 @@ const Accounts = (props) => {
   return (
     <Mayre
       of={
-        <MainContainer header='Accounts'>
-          <div>Umm, nothing for now</div>
+        <MainContainer header='Person accounts'>
+          <Mayre
+            of={<div>Verifying your credentials...</div>}
+            or={<PersonTable {...props} />}
+            when={!auth?.a_t}
+          />
         </MainContainer >
       }
       or={

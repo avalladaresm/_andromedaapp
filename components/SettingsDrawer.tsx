@@ -13,6 +13,12 @@ export const SettingsDrawer = (props) => {
 
   useEffect(() => {
     switch (router.pathname) {
+      case '/accounts/persons':
+        setSettings(tableSettings.personColumns)
+        break
+      case '/accounts/businesses':
+        setSettings(tableSettings.businessColumns)
+        break
       case '/employees':
         setSettings(tableSettings.employeeColumns)
         break
@@ -36,6 +42,12 @@ export const SettingsDrawer = (props) => {
     })
 
     switch (router.pathname) {
+      case '/accounts/persons':
+        setQueryTableSettings(queryClient, { ...tableSettings, personColumns: updatedSettings })
+        break
+      case '/accounts/businesses':
+        setQueryTableSettings(queryClient, { ...tableSettings, businessColumns: updatedSettings })
+        break
       case '/employees':
         setQueryTableSettings(queryClient, { ...tableSettings, employeeColumns: updatedSettings })
         break

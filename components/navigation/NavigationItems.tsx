@@ -8,7 +8,7 @@ import { NavigationItem } from './NavigationItem'
 import { MdAccountBox, MdComment, MdDashboard, MdHistory, MdNotificationsActive, MdViewList } from 'react-icons/md'
 import { FaBoxes, FaUserPlus, FaUsers, FaWarehouse } from 'react-icons/fa'
 import { AiOutlineFundProjectionScreen } from 'react-icons/ai'
-import {HiOutlineRefresh} from 'react-icons/hi'
+import { HiOutlineRefresh } from 'react-icons/hi'
 
 export const NavigationItems = (props) => {
   const router = useRouter()
@@ -45,6 +45,14 @@ export const NavigationItems = (props) => {
       route: '/accounts',
       activePage: router.pathname.startsWith('/accounts'),
       actions: [{
+        title: 'Persons',
+        onClick: () => router.push('/accounts/persons'),
+        icon: <MdAccountBox />
+      }, {
+        title: 'Businesses',
+        onClick: () => router.push('/accounts/businesses'),
+        icon: <MdAccountBox />
+      }, {
         title: 'Refresh',
         onClick: () => { queryClient.refetchQueries(['PersonAccounts']), queryClient.refetchQueries(['BusinessAccounts']) },
         icon: <HiOutlineRefresh />
