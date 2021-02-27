@@ -72,12 +72,12 @@ export const SettingsDrawer = (props) => {
   return (
     <div>
       {props.isOpen &&
-        <div className={`flex flex-col fixed top-12 bottom-0 right-0 overflow-y-auto flex-no-wrap overflow-hidden bg-blueGray-300 z-10 pt-4 pb-2 w-20 px-2 sm:w-60 sm:px-4`}>
+        <div className={`flex flex-col fixed top-12 bottom-0 right-0 overflow-y-auto flex-no-wrap overflow-hidden bg-blueGray-300 z-10 pt-4 pb-2 w-52 px-3 sm:w-60 sm:px-4`}>
           <div className='space-y-3'>
             <div>
               Visible columns
             </div>
-            <div className='flex flex-col space-y-1'>
+            <div className='space-y-1'>
               {settings?.map((s, i) => (
                 <div key={i} className='space-x-1'>
                   <input key={'i' + i} type='checkbox' value={s.Header} defaultChecked={s.checked} className='space-y-3' onChange={(e) => updateVisibleColumnIsChecked(e)} />
